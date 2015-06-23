@@ -44,4 +44,4 @@ gulp.task('add-headers', ['minify'], function(){
 });
 
 // Default task
-gulp.task('default'), ['lint', 'minify', 'add-headers'];
+gulp.task('default', ['lint', 'minify', 'add-headers'], function(){});

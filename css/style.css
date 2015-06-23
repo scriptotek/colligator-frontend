@@ -7,7 +7,7 @@ body {
     /* background: tomato; */
 }
 #carousel {
-    /* background: gray; */
+    background: gray;
     min-height: 250px;
 }
 #footerBox {

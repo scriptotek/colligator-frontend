@@ -6,9 +6,6 @@
     "stianlagstad <stianlagstad@gmail.com>"
   ],
   "main": "index.html",
-  "moduleType": [
-    "node"
-  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -16,5 +13,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "jquery-touchswipe": "~1.6.9"
+  }
 }

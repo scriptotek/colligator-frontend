@@ -4,7 +4,10 @@ var gulp = require('gulp');
 // Include plugins
 var notify = require('gulp-notify'),
 	bower = require('gulp-bower'),
-	jshint = require('gulp-jshint');
+	jshint = require('gulp-jshint')
+	usemin = require('gulp-usemin')
+	uglify = require('gulp-uglify')
+	minifyCss = require('gulp-minify-css');
 
 // Lint task
 gulp.task('lint', function() {
@@ -13,16 +16,12 @@ gulp.task('lint', function() {
 		.pipe(jshint.reporter('default'));
 });
 
-// Gulp task
-gulp.task('bower', function() {
-	return bower()
-		.pipe(gulp.dest('?????????????????????????????????????????'))
+// Default
+gulp.task('default', function() {
+	gulp.src('index.html')
+		.pipe(usemin({
+			css: [minifyCss(), 'concat'],
+			js: [uglify(), 'concat']
+		}))
+		.pipe(gulp.dest('dist'));
 });
-
-// Watch files for changes
-gulp.task('watch', function() {
-	gulp.watch('js/*.js', ['lint', 'scripts']);
-});
-
-// Default task
-gulp.task('default', ['lint', 'watch']);

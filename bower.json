@@ -16,6 +16,6 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "jquery-touchswipe": "~1.6.9"
+    "hammer.js": "~2.0.4"
   }
 }

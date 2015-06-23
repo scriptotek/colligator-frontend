@@ -12,7 +12,8 @@ var jshint = require('gulp-jshint')
 gulp.task('lint', function() {
 	return gulp.src('js/*.js')
 		.pipe(jshint())
-		.pipe(jshint.reporter('default'));
+		.pipe(jshint.reporter('default'))
+		.pipe(jshint.reporter('fail'));
 });
 
 // Minify task. Minifies and concatenates js and css as marked in index.html, but only after the lint task is done.

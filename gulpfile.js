@@ -47,7 +47,7 @@ gulp.task('move-images', function() {
 		.pipe(gulp.dest('dist/images'));
 });
 
-// Watch task
+// Watch task. When the files in the array are changed, the default task will be ran.
 gulp.task('watch', function() {
 	var watchFiles = [
 		'index.html',
@@ -60,4 +60,6 @@ gulp.task('watch', function() {
 });
 
 // Default task
-gulp.task('default', ['lint', 'minify', 'add-headers', 'move-images'], function(){});
+gulp.task('default', ['lint', 'minify', 'add-headers', 'move-images'], function(){
+
+});

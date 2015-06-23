@@ -15,7 +15,7 @@ gulp.task('lint', function() {
 		.pipe(jshint.reporter('default'));
 });
 
-// Minify task. Minifies and concats js and css as marked in index.html, but only after the lint task is done.
+// Minify task. Minifies and concatenates js and css as marked in index.html, but only after the lint task is done.
 gulp.task('minify', ['lint'], function() {
 	// We use a return statement because the result of this will be returned to the default task (see below) when done. In other words: The default task will work on the result of this minify task.
 	return gulp.src('index.html')

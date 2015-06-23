@@ -43,5 +43,11 @@ gulp.task('add-headers', ['minify'], function(){
 		.pipe(gulp.dest('dist/css'));
 });
 
+// Images task. Move images to dist
+gulp.task('move-images', function() {
+	gulp.src('images/*')
+		.pipe(gulp.dest('dist/images'));
+});
+
 // Default task
-gulp.task('default', ['lint', 'minify', 'add-headers'], function(){});
+gulp.task('default', ['lint', 'minify', 'add-headers', 'move-images'], function(){});

@@ -8,7 +8,8 @@ var notify = require('gulp-notify'),
 	usemin = require('gulp-usemin')
 	uglify = require('gulp-uglify')
 	minifyCss = require('gulp-minify-css')
-	header = require('gulp-header');
+	header = require('gulp-header')
+	livereload = require('gulp-livereload');
 
 // Lint task. Only for our own js files located in /js
 gulp.task('lint', function() {
@@ -49,5 +50,18 @@ gulp.task('move-images', function() {
 		.pipe(gulp.dest('dist/images'));
 });
 
+// Watch task
+gulp.task('watch', function() {
+	livereload.listen();
+	var watchFiles = [
+		'index.html',
+		'css/*',
+		'js/*',
+		'images/*'
+	];
+
+	gulp.watch(watchFiles, ['default']);
+});
+
 // Default task
-gulp.task('default', ['lint', 'minify', 'add-headers', 'move-images'], function(){});
+gulp.task('default', ['lint', 'minify', 'add-headers', 'move-images', 'watch'], function(){});

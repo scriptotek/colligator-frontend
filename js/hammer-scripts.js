@@ -13,3 +13,7 @@ mc.on('swiperight', function(ev) {
 	console.log('swiperight');
 	rotateCarousel(1);
 });
+
+mc.on('panright panleft', function(ev){
+	console.log(ev);
+});

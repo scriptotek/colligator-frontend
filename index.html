@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/normalize.css" type="text/css">
     <link rel='stylesheet' href='css/opensans.css'  type='text/css'>
     <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="css/carousel.css" type="text/css">
     <!-- endbuild -->
 </head>
 <body>
@@ -17,9 +18,18 @@
     </div>
 </div>
 
-<div id="carousel" class="flexContainerCenter">
+<div id="carouselFlexContainer" class="flexContainerCenter">
     <div class="flex-item">
-        <img src="images/carousel.png" alt="">
+        <!-- <img src="images/carousel.png" alt=""> -->
+        <div id="carouselcontainer">
+            <div id="carousel"></div>
+            <div id="navigateleftarea">
+                <img id="leftarrow" src="http://folk.uio.no/kyrretl/bibl/leap/kart/gfx/leftarrow.png">
+            </div>
+            <div id="navigaterightarea">
+                <img id="rightarrow" src="http://folk.uio.no/kyrretl/bibl/leap/kart/gfx/leftarrow.png">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -33,9 +43,10 @@
 </div>
 
 <!-- build:js js/scripts.js -->
-<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/bower_components/hammer.js/hammer.min.js"></script>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/hammer.js/hammer.min.js"></script>
 <script type="text/javascript" src="js/hammer-scripts.js"></script>
+<script type="text/javascript" src="js/carousel.js"></script>
 <!-- endbuild -->
 
 </body>

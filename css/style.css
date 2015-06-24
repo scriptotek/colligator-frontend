@@ -4,11 +4,11 @@ body {
 }
 
 #top {
-    /* background: tomato; */
+     background: tomato; 
 }
-#carousel {
+#carouselFlexContainer {
     background: gray;
-    min-height: 250px;
+    height: 350px;
 }
 #footerBox {
     /* background: yellow; */

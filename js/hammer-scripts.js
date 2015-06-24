@@ -14,6 +14,6 @@ mc.on('swiperight', function(ev) {
 	rotateCarousel(1);
 });
 
-mc.on('panright panleft', function(ev){
+mc.on('panleft panright', function(ev){
 	console.log(ev);
 });

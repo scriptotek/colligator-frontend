@@ -1,6 +1,10 @@
 // To avoid polluting the global scope with our function declarations, we wrap
 // everything inside an IIFE
-(function() {
+var carouselObject = (function carouselClass() {
+
+    // Create object that we can return later, so that the rotate-function becomes available from the outside.
+    var myModule = {};
+
     function makeCarousel(){
         rotateBlocked = false;
 
@@ -104,7 +108,7 @@
         return $.Deferred().resolve();
     }
 
-    function rotateCarousel(leftright) {
+    myModule.rotate = function rotateCarousel(leftright) {
 
         //left = -1 right = 1
         if (rotateBlocked) return false;
@@ -135,7 +139,7 @@
             });
 
         });
-    }
+    };
 
     function zIndexCalc(deg) {
         var cos = degCos(deg);
@@ -161,11 +165,11 @@
 
     $(window).load(function() {
         $("#navigateleftarea").on( "click", function() {
-                rotateCarousel(-1);
+                myModule.rotateCarousel(-1);
         });
 
         $("#navigaterightarea").on( "click", function() {
-                rotateCarousel(1);
+                myModule.rotateCarousel(1);
         });
 
         // currentColl="biologi";  //Liten
@@ -179,4 +183,6 @@
     });
 
     $(window).resize(function(){location.reload();});
+
+    return myModule;
 })();

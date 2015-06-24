@@ -1,3 +1,4 @@
+/* The hammerOverlay div captures swipe/pan events, and must therefore be on top of the carousel. */
 #hammerOverlay{
     position:absolute;
     z-index:1000;

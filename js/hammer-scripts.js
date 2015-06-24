@@ -1,8 +1,10 @@
 // Just to check if we load
-console.log(42);
+console.log("hammer-scripts.js loads");
 
+// Get the element we want touch events on
 var hammerOverlay = document.getElementById('hammerOverlay');
 var mc = new Hammer(hammerOverlay);
+// Register events
 mc.on('swipeleft', function(ev) {
 	console.log('swipeleft');
 	rotateCarousel(-1);

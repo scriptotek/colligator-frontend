@@ -52,20 +52,18 @@
 
 	function updateCarouselProperties(rotate){
 		
-		//Set active cover - the cover that has degree = 0 (facing front)
+		//Set active cover - the cover that has degree ~ 0 (facing front)
+		var minDist = 1000,
+			minDistKey = -1;
 		$.each(items.deg, function(key, val) {
-			
-			items.deg[key] = round(((items.deg[key]+rotate)%360),2);	
-			//console.log(key,items.title[key],items.deg[key]); 
-			
-			if (items.deg[key]===0) {
-				activecover = key;
-				
-				$myCarousel.trigger('getActivecover', items.imgid[key]);
-			}
+			items.deg[key] = (items.deg[key] + rotate) % 360;
+			var x = Math.min(Math.abs(360-items.deg[key]), Math.abs(items.deg[key]-0));
+			if (x < minDist) { minDist = x; minDistKey = key; }
 		});
-		
-		//console.log(rotate,activecover,items.deg[activecover]);
+
+		activecover = minDistKey;
+		$myCarousel.trigger('getActivecover', items.imgid[minDistKey]);
+		console.log('Active cover: ' + minDistKey);
 	}
 
 
@@ -103,10 +101,10 @@
 
 			rdur=rotatetime;
 
-			rotate=round((sector*numOfCoversToMove),2);
+			rotate=(sector*numOfCoversToMove);
 		}
 
-		rotated=round((rotated+rotate),2);
+		rotated=rotated+rotate;
 
 		// console.log(numOfCoversToMove,rotate,rotated);
 
@@ -152,9 +150,9 @@
 			sensitivity= 200;
 			rotatetime = 600;
 			side = round($myCarousel.height()/1.3,2);
-			sector = round(360/$imgs.length,2);
-			radius = round(side/2/degTan(sector/2),2);
-			perspective = round(6000/$imgs.length,0);
+			sector = 360/$imgs.length;
+			radius = side/2/degTan(sector/2);
+			perspective = 6000/$imgs.length;
 			rotated = 0;
 
 			items = {};
@@ -180,7 +178,7 @@
 				$(".carouseal_element").eq(i).attr('id',$img.attr("id"));
 				items.imgid.push($img.attr("id"));
 
-				rotate = round(rotate + sector,2);
+				rotate = rotate + sector;
 
 			});
 			//Add transforms to carousel

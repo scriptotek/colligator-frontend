@@ -55,7 +55,7 @@
     <%= title %>, <%= authors %> (<%= publisher %>)
 </script>
 <script id="bookListTemplate" type="text/template">
-<img src="<%= cover %>" data-url="<%= id %>" id="<%= id %>" alt="">
+<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
 </script>
 <script id="bookFullTemplate" type="text/template">
     <hr>
@@ -177,7 +177,7 @@ var BooksView = Backbone.View.extend({
         var self = this;
         $("#books").on('getActivecover', function (e, bookId) {
             // Get the bookModel with this bookId
-            var book = books.findWhere({ id: Number(bookId) });
+            var book = books.findWhere({ id: Number(bookId.substr(1)) });
             // Trigger newBookSelected event to update the selected book
             self.eventAggregator.trigger('newBookSelected', book);
         });
@@ -227,7 +227,7 @@ var BookFullView = Backbone.View.extend({
         this.eventAggregator.on('newBookSelected', this.onNewBookSelected, this);
     },
     onNewBookSelected: function(book) {
-        console.log('new book for bookFullView');
+        console.log('new book for bookFullView:'+this.model.get('id'));
         // Update the model
         this.model = book;
         this.render();
@@ -255,7 +255,7 @@ var AppRouter = Backbone.Router.extend({
     },
     viewBookById: function(bookId) {
         // Get the bookModel with this bookId
-        var book = this.books.findWhere({ id: Number(bookId) });
+        var book = this.books.findWhere({ id: Number(bookId.substr(1)) });
         // Trigger newBookSelected event to update the selected book
         this.eventAggregator.trigger('newBookSelected', book);
     },
@@ -268,7 +268,7 @@ var AppRouter = Backbone.Router.extend({
             data: {
                 collection: 1,
                 real: emneord,
-                limit:100 
+                limit:61
                 // q:'isbns=074723969X'
             },
             success: function() {
@@ -312,7 +312,7 @@ books.fetch({
     data: {
         collection: 1,
         real: 'Forskning',
-        limit:100 
+        limit:61
         // q:'isbns=074723969X'
     },
     success: function() {

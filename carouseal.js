@@ -127,7 +127,7 @@
 			rotateCarousel(0,setactivecover);
 			return this;
 		}
-		
+
 		console.log('Carouseal honking!');
 	
 		// traverse all nodes

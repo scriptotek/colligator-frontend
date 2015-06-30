@@ -15,7 +15,11 @@
         vertical-align: top;
         display: none;
     }
+    #books{
+        height: 250px;
+    }
     </style>
+    <link rel="stylesheet" href="carouseal.css">
 </head>
 <body>
 
@@ -44,6 +48,8 @@
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/backbone/backbone.js"></script>
+<script src="bower_components/hammerjs/hammer.js"></script>
+<script src="carouseal.js"></script>
 
 <script id="bookListTemplate2" type="text/template">
     <%= title %>, <%= authors %> (<%= publisher %>)
@@ -137,6 +143,8 @@ var BooksView = Backbone.View.extend({
     render: function() {
         // Remove old views
         this.removeOldViews();
+        // Empty content in case carouseal left something
+        this.$el.empty();
 
         // Create new views
         var self = this;
@@ -145,16 +153,33 @@ var BooksView = Backbone.View.extend({
             self._views.push(bookView);
             self.$el.append(bookView.render().$el);
         });
+        // Now that we have the images in the div, convert them to a carousel
+        this.convertToCarousel();
         return this;
     },
-    initialize: function() {
+    initialize: function(options) {
         // Store reference to subviews created in render(), as we need to remove them when rerendering
         this._views = [];
+        // Store reference to the event aggregator
+        this.eventAggregator = options.eventAggregator;
     },
     removeOldViews: function() {
         _.each(this._views, function(view) {
             view.remove();
             view.unbind();
+        });
+    },
+    convertToCarousel: function() {
+        // Convert to carouseal
+        $("#books").carouSeal();
+        
+        // Add listener for the rotate-event
+        var self = this;
+        $("#books").on('getActivecover', function (e, bookId) {
+            // Get the bookModel with this bookId
+            var book = books.findWhere({ id: Number(bookId) });
+            // Trigger newBookSelected event to update the selected book
+            self.eventAggregator.trigger('newBookSelected', book);
         });
     }
 });
@@ -202,6 +227,7 @@ var BookFullView = Backbone.View.extend({
         this.eventAggregator.on('newBookSelected', this.onNewBookSelected, this);
     },
     onNewBookSelected: function(book) {
+        console.log('new book for bookFullView');
         // Update the model
         this.model = book;
         this.render();
@@ -242,7 +268,7 @@ var AppRouter = Backbone.Router.extend({
             data: {
                 collection: 1,
                 real: emneord,
-                limit: 10
+                limit: 4
                 // q:'isbns=074723969X'
             },
             success: function() {
@@ -285,7 +311,7 @@ books.fetch({
     data: {
         collection: 1,
         real: 'Forskning',
-        limit: 10
+        limit: 4
         // q:'isbns=074723969X'
     },
     success: function() {
@@ -311,7 +337,8 @@ books.fetch({
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
 
 var booksView = new BooksView({
-    model: books
+    model: books,
+    eventAggregator: eventAggregator
 });
 
 var bookFullView = new BookFullView({

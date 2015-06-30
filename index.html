@@ -157,14 +157,16 @@ var BooksView = Backbone.View.extend({
     },
     convertToCarousel: function() {
         // Convert to carouseal
-        $("#books").carouSeal();
+        // $("#books").carouSeal();
+        carouSeal.element = $("#books");
+        carouSeal.createCarousel();
 
         // Set crouselCreated to true
         this._carouselCreated = true;
         
         // Add listener for the rotate-event
         var self = this;
-        $("#books").on('getActivecover', function (e, bookId) {
+        $("#books").on('listenForActivecover', function (e, bookId) {
             // We gave the images ids like "b345". We just want the number:
             bookId = bookId.substr(1);
             // Get the bookModel with this bookId
@@ -256,55 +258,28 @@ var AppRouter = Backbone.Router.extend({
         '*other': 'defaultView'
     },
     defaultView: function() {
-        router.navigate('searchEmneord/Forskning', {
-            trigger: true
-        });
+        this.fetchAndRenderBooks('Forskning');
     },
     viewBookById: function(emneord,bookId) {
-        // Does the carousel already exist? It does if we have a #carouseal_carousel on the page
+        // Does the carousel already exist?
         if (booksView._carouselCreated) {
             console.log('carousel exists already');
             console.log('spin to id: '+bookId);
-            $("#books").carouSeal('b'+bookId);
-
+            carouSeal.rotateTo('b'+bookId);
         } else {
             console.log('carousel must be created with emneord: '+emneord);
             console.log('then spin to id: '+bookId);
+            this.fetchAndRenderBooks(emneord);
+            carouSeal.rotateTo('b'+bookId);
         }
     },
     carouselView: function(emneord) {
-        // Does the carousel already exist? It does if we have a #carouseal_carousel on the page
-        if (booksView._carouselCreated) {
-            console.log('carousel exists already');
-            $("#books").carouSeal('b'+books.at(0).get('id'));
+        // Create carousel if it doesn't exist or if we have a new emneord
+        if (!booksView._carouselCreated || booksView._emneord!==emneord) {
+            this.fetchAndRenderBooks(emneord);
         } else {
-            $('.loader').toggle();
-            books.fetch({
-                data: {
-                    collection: 1,
-                    real: emneord,
-                    limit: 100,
-                    q: '_exists_:subjects.noubomn'
-                },
-                success: function() {
-                    // Hide the loading icon
-                    $('.loader').toggle();
-                    // Do we have any books?
-                    if (books.length>0) {
-                        // Set the first book to bookFullView
-                        bookFullView.model = books.at(0);
-                        // Render views
-                        bookFullView.render();
-                        booksView.render();
-                    }else{
-                        // Show error message if no books are found
-                        $('#books').html('<p>No books found..</p>');
-                    }
-                },
-                error: function(){
-                    console.log('error in fetch');
-                }
-            });
+            // Otherwise we just spin to position
+            $("#books").carouSeal('b'+books.at(0).get('id'));
         }
     },
     initialize: function(options) {
@@ -312,6 +287,42 @@ var AppRouter = Backbone.Router.extend({
         this.eventAggregator = options.eventAggregator;
         // Store reference to book collection
         this.books = options.books;
+    },
+    fetchAndRenderBooks: function(emneord) {
+        $('.loader').toggle();
+        books.fetch({
+            data: {
+                collection: 1,
+                real: emneord,
+                limit: 100,
+                q: '_exists_:subjects.noubomn'
+            },
+            success: function() {
+                // Hide the loading icon
+                $('.loader').toggle();
+                // Do we have any books?
+                if (books.length>0) {
+                    // Set the first book to bookFullView
+                    bookFullView.model = books.at(0);
+                    // Render views
+                    bookFullView.render();
+                    booksView.render();
+
+                    // Store emneord in booksView
+                    booksView._emneord = emneord;
+
+                    router.navigate('searchEmneord/' + emneord + '/'+bookFullView.model.get('id'), {
+                        trigger: false
+                    });
+                }else{
+                    // Show error message if no books are found
+                    $('#books').html('<p>No books found..</p>');
+                }
+            },
+            error: function(){
+                console.log('error in fetch');
+            }
+        });
     }
 });
 

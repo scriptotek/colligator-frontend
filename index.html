@@ -52,8 +52,10 @@
     <hr>
     <h2><%= title %></h2>
     <small><%= authors %> (<%= publisher %>)</small>
+    <p><img src="<%= cover %>" alt=""></p>
+    <p><%= description %></p>
+    <p><strong>Emneord:</strong></p>
     <ul>
-        Emneord: 
         <% _.each(subjects.noubomn, function(noubomnSubject) { %>
             <li class="emneord"><%= noubomnSubject.prefLabel %></li>
         <% }); %>
@@ -70,7 +72,9 @@ var Book = Backbone.Model.extend({
         title: '',
         isbn: '',
         authors: '',
-        publisher: ''
+        publisher: '',
+        cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita rem explicabo nihil, harum sint sunt aliquam, nemo iste impedit eos voluptatum sed. Excepturi eaque quod ullam culpa praesentium beatae distinctio, voluptatem, illum accusamus cum corporis, at perferendis amet? Voluptatem iste, architecto ut.'
     }
 });
 

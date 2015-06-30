@@ -15,7 +15,9 @@ var carouSeal= (function () {
 	}
 	
 
-	function panCarousel(x,d){
+	function panCarousel(x,d,c){
+
+		var mid = Math.round($(window).width()/2);
 
 		if (d==2) direction="left";
 		if (d==4) direction="right";
@@ -29,20 +31,33 @@ var carouSeal= (function () {
 		//console.log(currentdirection,x,originX,x-originX);
 		
 	
-		var speedreducer = 0.05;
-		var rotate = (180*(x-originX)*speedreducer)/(Math.PI*radius);
+		//var speedreducer = 0.05;
+		//var rotate = (180*(x-originX)*speedreducer)/(Math.PI*radius);
 		
+		
+		//console.log("center.x",c,"mid",mid,"x",x,"originx",originX,"c-mid",c-mid);
+
+		var edge = mid/2.25;
+		
+		projectedX = (Math.pow(edge,4)-Math.pow(Math.abs(c-mid),4))/Math.pow(edge,4);
+		
+		if (d==2) projectedX = projectedX*-1;
+
+		var rotate = 0.1;
+
+		console.log(projectedX,rotate);
+
 		rotated=rotated+rotate;
 
-		//console.log(rotated,rotate);
+		console.log(rotated,rotate);
 
 		$(".carouseal_carousel").css({
 			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",	
 			"transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",
 		});
 
-		updateCarouselDegrees(rotate);
-	
+		//updateCarouselDegrees(rotate);
+			
 	}
 
 	function setActiveCover(){
@@ -133,6 +148,113 @@ var carouSeal= (function () {
 
 	}
 
+	function createCarousel($myCarousel,$imgs) {
+
+		activecover=0;
+		sensitivity= 200;
+		rotatetime = 600;
+		side = round($myCarousel.height()/1.3,2);
+		sector = 360/$imgs.length;
+		radius = side/2/degTan(sector/2);
+		circumference = side*$imgs.length;
+		perspective = 8000/$imgs.length;
+		rotated = 0;
+
+		items = {};
+		items.deg = [];
+		items.imgid = [];
+
+		//Empty element
+		$myCarousel.empty();
+
+		//Add carousel structure to element
+		$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div class="carouseal_carousel"></div></div>');
+		
+		//Add images back to div with new structure
+		var rotate = 0;
+		$imgs.each(function(i){
+
+			items.deg.push(rotate);
+			
+			$img = $(this);
+			
+			//Add transforms to elements, 
+
+			$myCarousel.find(".carouseal_carousel").append('<div class="carouseal_element" style="width:'+side+'px; transform: rotateY('+rotate+'deg) translateZ('+radius+'px); -webkit-transform: rotateY('+rotate+'deg) translateZ('+radius+'px);"></div>');
+			
+	
+			//Add images
+			$img.css({"height":"100%"});
+			$(".carouseal_element").eq(i).append($img);
+				
+			//If images have ids add them to carousel_element members
+			$(".carouseal_element").eq(i).attr('id',$img.attr("id"));
+			items.imgid.push($img.attr("id"));
+			
+			//Debug
+			$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
+
+			rotate = rotate + sector;
+		});
+
+		//Add transforms to carousel
+		$(".carouseal_carousel").css ({
+			"-webkit-transform":"translateZ("+(-radius)+"px)",
+			"transform":"translateZ("+(-radius)+"px)",
+			"width":side
+		});
+
+		//Add perspective to carouseal_container
+		$(".carouseal_container").css ({
+			"-webkit-perspective":perspective,
+			"perspective": perspective
+		});
+		
+		//Register hammer.js events
+		// console.log('Hammer time!');
+
+		//Globals to be used with hammer pan
+		originX=0;
+		currentdirection="";
+
+		var hammerOverlay = document.getElementById('hammer_overlay');
+		var mc = new Hammer(hammerOverlay);
+		
+		mc.on('swipeleft', function(ev) {
+			//console.log('swipeleft');
+			//rotateCarousel(ev.deltaX);
+		});
+		mc.on('swiperight', function(ev) {
+			//console.log('swiperight');
+			//rotateCarousel(ev.deltaX);
+		});
+
+		mc.on('panstart',function(ev) {
+		 	originX=0;
+		 	//console.log('panstart',originX);
+		 });
+
+		 mc.on('pan',function(ev) {
+		 	//console.log('pan',ev);
+		 	panCarousel(ev.deltaX,ev.direction,ev.center.x);
+		 });
+	
+		 mc.on('panend',function(ev) {
+		 	//console.log('panend');
+		 	//setActiveCover();
+		 	//rotateCarousel(0,items.imgid[activecover]);
+		 });
+		//////////////////////////////////
+
+	}
+
+	function createSlider(){
+
+
+
+
+	}
+
 
 	var obj = {};
 
@@ -151,7 +273,7 @@ var carouSeal= (function () {
 		
 	};
 
-	obj.createCarousel = function() {
+	obj.initCarousel = function() {
 
 		// console.log('Carouseal honking!');
 
@@ -169,101 +291,15 @@ var carouSeal= (function () {
 				return this;
 			}
 
-			activecover=0;
-			sensitivity= 200;
-			rotatetime = 600;
-			side = round($myCarousel.height()/1.3,2);
-			sector = 360/$imgs.length;
-			radius = side/2/degTan(sector/2);
-			circumference = side*$imgs.length;
-			perspective = 8000/$imgs.length;
-			rotated = 0;
+			//Create carouseal if there are more than four images
+			//if ($imgs.length>4) createCarousel($myCarousel,$imgs);
 
-			items = {};
-			items.deg = [];
-			items.imgid = [];
+			//Else make static row of 2-d images
+			//else createSlider($myCarousel,$imgs);
 
-			//Empty element
-			$myCarousel.empty();
-
-			//Add carousel structure to element
-			$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div class="carouseal_carousel"></div></div>');
-			
-			//Add images back to div with new structure
-			var rotate = 0;
-			$imgs.each(function(i){
-
-				items.deg.push(rotate);
-				
-				$img = $(this);
-				
-				//Add transforms to elements
-				$myCarousel.find(".carouseal_carousel").append('<div class="carouseal_element" style="width:'+side+'px; transform: rotateY('+rotate+'deg) translateZ('+radius+'px); -webkit-transform: rotateY('+rotate+'deg) translateZ('+radius+'px);"></div>');
-
-				//Add images
-				$img.css({"height":"100%"});
-				$(".carouseal_element").eq(i).append($img);
-					
-				//If images have ids add them to carousel_element members
-				$(".carouseal_element").eq(i).attr('id',$img.attr("id"));
-				items.imgid.push($img.attr("id"));
-				
-				//Debug
-				$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
-
-				rotate = rotate + sector;
-			});
-
-			//Add transforms to carousel
-			$(".carouseal_carousel").css ({
-				"-webkit-transform":"translateZ("+(-radius)+"px)",
-				"transform":"translateZ("+(-radius)+"px)",
-				"width":side
-			});
-
-			//Add perspective to carouseal_container
-			$(".carouseal_container").css ({
-				"-webkit-perspective":perspective,
-				"perspective": perspective
-			});
-			
-			//Register hammer.js events
-			// console.log('Hammer time!');
-
-			//Globals to be used with hammer pan
-			originX=0;
-			currentdirection="";
-
-			var hammerOverlay = document.getElementById('hammer_overlay');
-			var mc = new Hammer(hammerOverlay);
-			
-			mc.on('swipeleft', function(ev) {
-				//console.log('swipeleft');
-				rotateCarousel(ev.deltaX);
-			});
-			mc.on('swiperight', function(ev) {
-				//console.log('swiperight');
-				rotateCarousel(ev.deltaX);
-			});
-
-			// mc.on('panstart',function(ev) {
-			// 	originX=0;
-			// 	//console.log('panstart',originX);
-			// });
-
-			// mc.on('pan',function(ev) {
-			// 	//console.log('pan',ev);
-			// 	panCarousel(ev.deltaX,ev.direction);
-			// });
-		
-			// mc.on('panend',function(ev) {
-			// 	//console.log('panend');
-			// 	setActiveCover();
-			// 	rotateCarousel(0,items.imgid[activecover]);
-			// });
-			//////////////////////////////////
+			createCarousel($myCarousel,$imgs)
 		});
-
+			
 		carouSeal.element.trigger('carouselDone');
 
 	};

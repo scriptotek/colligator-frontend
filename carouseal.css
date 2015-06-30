@@ -7,6 +7,22 @@
 }
 /*---------*/
 
+/*FOR DEBUGGING PURPOSES*/
+.debug{
+	position:absolute;
+	z-index:100;
+	width:100%;
+	height:100%;
+	left: 0px;
+	top: 0px;
+	line-height:450%;
+	font-size: 80px;
+	font-weight: bold;
+	text-align: center;
+}
+/*------------------------*/
+
+
 /*Carouseal classes*/
 .carouseal_container{
 	overflow:hidden;

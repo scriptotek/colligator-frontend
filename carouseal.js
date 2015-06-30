@@ -56,7 +56,7 @@
 		$.each(items.deg, function(key, val) {
 			
 			items.deg[key] = round(((items.deg[key]+rotate)%360),2);	
-			//console.log(key,items.title[key],items.deg[key]); 
+			// console.log(key,items.deg[key],items.imgid[key]); 
 			
 			if (items.deg[key]===0) {
 				activecover = key;
@@ -129,7 +129,7 @@
 			rotateCarousel(0,setactivecover);
 			return this;
 		}
-		
+
 		console.log('Carouseal honking!');
 	
 		// traverse all nodes

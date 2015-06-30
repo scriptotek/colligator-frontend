@@ -112,6 +112,12 @@ var BookView = Backbone.View.extend({
         this.$el.attr('id', 'book'+this.model.get('id'));
         // Give the element a data-url attribute
         this.$el.attr('data-url', this.model.get('id'));
+
+        // var self = this;
+        // setInterval(function(){
+        //     console.log('running');
+        // }, 2000);
+
         return this;
     },
     events: {
@@ -132,14 +138,27 @@ var BooksView = Backbone.View.extend({
     tagName: 'ul',
     className: 'books',
     render: function() {
+        // Remove old views
+        this.removeOldViews();
+
+        // Create new views
         var self = this;
-        // Remove previous results
-        self.$el.empty();
         this.model.each(function(book) {
             var bookView = new BookView({ model: book });
+            self._views.push(bookView);
             self.$el.append(bookView.render().$el);
         });
         return this;
+    },
+    initialize: function() {
+        // Store reference to subviews created in render(), as we need to remove them when rerendering
+        this._views = [];
+    },
+    removeOldViews: function() {
+        _.each(this._views, function(view) {
+            view.remove();
+            view.unbind();
+        });
     }
 });
 
@@ -226,7 +245,7 @@ var AppRouter = Backbone.Router.extend({
             data: {
                 collection: 1,
                 real: emneord,
-                limit: 10
+                limit: 2
                 // q:'isbns=074723969X'
             },
             success: function() {
@@ -269,7 +288,7 @@ books.fetch({
     data: {
         collection: 1,
         real: 'Forskning',
-        limit: 10
+        limit: 2
         // q:'isbns=074723969X'
     },
     success: function() {

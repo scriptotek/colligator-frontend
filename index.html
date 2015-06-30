@@ -16,7 +16,7 @@
         display: none;
     }
     #books{
-        height: 250px;
+        height: 350px;
     }
     </style>
     <link rel="stylesheet" href="carouseal.css">
@@ -268,7 +268,7 @@ var AppRouter = Backbone.Router.extend({
             data: {
                 collection: 1,
                 real: emneord,
-                limit: 15
+                limit:100 
                 // q:'isbns=074723969X'
             },
             success: function() {
@@ -281,6 +281,7 @@ var AppRouter = Backbone.Router.extend({
                     // Render views
                     bookFullView.render();
                     booksView.render();
+			console.log(books.length);
                 }else{
                     // Show error message if no books are found
                     $('#books').html('<p>No books found..</p>');
@@ -311,7 +312,7 @@ books.fetch({
     data: {
         collection: 1,
         real: 'Forskning',
-        limit: 15
+        limit:100 
         // q:'isbns=074723969X'
     },
     success: function() {
@@ -324,6 +325,7 @@ books.fetch({
             // Render views
             bookFullView.render();
             booksView.render();
+		console.log(books.length);
         }else{
             // Show error message if no books are found
             $('#books').html('<p>No books found..</p>');

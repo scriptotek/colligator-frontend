@@ -29,7 +29,7 @@ var carouSeal= (function () {
 		//console.log(currentdirection,x,originX,x-originX);
 		
 	
-		var speedreducer = 0.1;
+		var speedreducer = 0.05;
 		var rotate = (180*(x-originX)*speedreducer)/(Math.PI*radius);
 		
 		rotated=rotated+rotate;

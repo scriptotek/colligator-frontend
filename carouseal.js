@@ -13,31 +13,37 @@
 
 		return Math.cos(deg*Math.PI/180);
 	}
+	
 
+	//
 	function findClosestCover(){
 		//console.log('find closest cover');
-		var smallestdistance = 360;
-		var closestcover = 0;
+		var minDist = Infinity; //We needed a somewhat high number, ok?
+		var	minDistKey = -1;
 
 		$.each(items.deg, function(key, val) {
 			//console.log(key,val,smallestdistance);
-			
-			if (Math.abs(val)<smallestdistance) {
-				smallestdistance = Math.abs(val);  
-				closestcover = key;
+
+			var x = Math.min(Math.abs(360-items.deg[key]), Math.abs(items.deg[key]-0));
+					
+			if (x < minDist) {
+				minDist = x; 
+				minDistKey = key; 
 			}
 		});
 
-		//console.log(":::::::::::::::::::",closestcover);
-		rotateCarousel(0,closestcover);
+		closestcover = minDistKey;
+		console.log(":::::::::::::::::::",closestcover);
+		rotateCarousel(0,items.imgid[closestcover]);
 
 	}
 
 	function panCarousel(x){
 
-		var rotate = round(x/200,2);
+		var speedreducer = 0.1;
+		var rotate = (180*x*speedreducer)/(Math.PI*radius);
 		
-		rotated=round((rotated+rotate),2);
+		rotated=rotated+rotate;
 
 		//console.log(rotated,rotate);
 
@@ -53,17 +59,24 @@
 	function updateCarouselProperties(rotate){
 		
 		//Set active cover - the cover that has degree ~ 0 (facing front)
-		var minDist = 1000,
-			minDistKey = -1;
+		var minDist = Infinity; //We needed a somewhat high number, ok?
+		var	minDistKey = -1;
+
 		$.each(items.deg, function(key, val) {
+			
 			items.deg[key] = (items.deg[key] + rotate) % 360;
+			
 			var x = Math.min(Math.abs(360-items.deg[key]), Math.abs(items.deg[key]-0));
-			if (x < minDist) { minDist = x; minDistKey = key; }
+		
+			if (x < minDist) {
+				minDist = x; 
+				minDistKey = key; 
+			}
 		});
 
 		activecover = minDistKey;
 		$myCarousel.trigger('getActivecover', items.imgid[minDistKey]);
-		console.log('Active cover: ' + minDistKey);
+		//console.log('Active cover: ' + minDistKey);
 	}
 
 
@@ -77,7 +90,7 @@
 		if (id!==undefined) {
 
 			$.each(items.imgid, function(key, val) {
-			
+
 				if (val == id) {
 					cover = key;
 					return false;
@@ -86,7 +99,7 @@
 
 			//Get cover from id
 
-			// console.log(":::::",cover);
+			//console.log(":::::",cover);
 
 			rotate=-items.deg[cover];
 			//console.log("XXXXXX",cover,-items.deg[cover]);
@@ -152,7 +165,8 @@
 			side = round($myCarousel.height()/1.3,2);
 			sector = 360/$imgs.length;
 			radius = side/2/degTan(sector/2);
-			perspective = 6000/$imgs.length;
+			circumference = side*$imgs.length;
+			perspective = 8000/$imgs.length;
 			rotated = 0;
 
 			items = {};
@@ -202,11 +216,11 @@
 			
 			mc.on('swipeleft', function(ev) {
 				//console.log('swipeleft',ev);
-				rotateCarousel(ev.deltaX);
+				//rotateCarousel(ev.deltaX);
 			});
 			mc.on('swiperight', function(ev) {
 				//console.log('swiperight',ev);
-				rotateCarousel(ev.deltaX);
+				//rotateCarousel(ev.deltaX);
 			});
 
 			mc.on('panstart',function(ev) {
@@ -215,17 +229,17 @@
 
 			mc.on('panleft',function(ev) {
 				//console.log('panleft',ev);
-				//panCarousel(ev.deltaX);
+				panCarousel(ev.deltaX);
 			});
 
 			mc.on('panright',function(ev) {
 				//console.log('panright',ev);
-				//panCarousel(ev.deltaX);
+				panCarousel(ev.deltaX);
 			});
 
 			mc.on('panend',function(ev) {
 				//console.log('panend');
-				//findClosestCover();
+				findClosestCover();
 			});
 			//////////////////////////////////
 		});

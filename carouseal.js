@@ -139,7 +139,7 @@ var carouSeal= (function () {
 
 	obj.rotateTo = function(id) {
 
-		 rotateCarousel(0,id)
+		 rotateCarousel(0,id);
 		
 	};
 
@@ -209,7 +209,7 @@ var carouSeal= (function () {
 				items.imgid.push($img.attr("id"));
 				
 				//Debug
-				$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
+				// $(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
 
 				rotate = rotate + sector;
 			});
@@ -236,31 +236,31 @@ var carouSeal= (function () {
 
 			var hammerOverlay = document.getElementById('hammer_overlay');
 			var mc = new Hammer(hammerOverlay);
-			/*
+			
 			mc.on('swipeleft', function(ev) {
 				//console.log('swipeleft');
-				//rotateCarousel(ev.deltaX);
+				rotateCarousel(ev.deltaX);
 			});
 			mc.on('swiperight', function(ev) {
 				//console.log('swiperight');
 				//rotateCarousel(ev.deltaX);
 			});
-*/
-			mc.on('panstart',function(ev) {
-				originX=0;
-				//console.log('panstart',originX);
-			});
 
-			mc.on('pan',function(ev) {
-				//console.log('pan',ev);
-				panCarousel(ev.deltaX,ev.direction);
-			});
+			// mc.on('panstart',function(ev) {
+			// 	originX=0;
+			// 	//console.log('panstart',originX);
+			// });
+
+			// mc.on('pan',function(ev) {
+			// 	//console.log('pan',ev);
+			// 	panCarousel(ev.deltaX,ev.direction);
+			// });
 		
-			mc.on('panend',function(ev) {
-				//console.log('panend');
-				setActiveCover();
-				rotateCarousel(0,items.imgid[activecover]);
-			});
+			// mc.on('panend',function(ev) {
+			// 	//console.log('panend');
+			// 	setActiveCover();
+			// 	rotateCarousel(0,items.imgid[activecover]);
+			// });
 			//////////////////////////////////
 		});
 

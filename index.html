@@ -51,12 +51,10 @@
 <script src="bower_components/hammerjs/hammer.js"></script>
 <script src="carouseal.js"></script>
 
-<script id="bookListTemplate2" type="text/template">
-    <%= title %>, <%= authors %> (<%= publisher %>)
-</script>
 <script id="bookListTemplate" type="text/template">
 <img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
 </script>
+
 <script id="bookFullTemplate" type="text/template">
     <hr>
     <h2><%= title %></h2>
@@ -91,17 +89,8 @@ var Books = Backbone.Collection.extend({
     model: Book,
     url: 'http://colligator.biblionaut.net/api/documents',
     parse: function(response, options) {
-
-        // Only keep books that has a noubomn subject. If the book doesn't have the array subjects.noubomn we filter it out.
-        var data = _.filter(response.documents, function(book) {
-            if (book.subjects.noubomn===undefined) {
-                // console.log('Removed book '+book.title);
-                return false;
-            }
-            else return true;
-        });
-
-        return data;
+        // The Books collection wants an array, so only give it the books
+        return response.documents;
     }
 });
 
@@ -111,16 +100,13 @@ var BookView = Backbone.View.extend({
     tagName: 'li',
     className: 'book',
     render: function() {
+
         // Create template function
         template = _.template($('#bookListTemplate').html());
         // Give data to template function and produce html
         html = template(this.model.toJSON());
         // Insert produced html into the view element
         this.$el.append(html);
-        // // Give the element an id
-        // this.$el.attr('id', 'book'+this.model.get('id'));
-        // // Give the element a data-url attribute
-        // this.$el.attr('data-url', this.model.get('id'));
 
         return this;
     },
@@ -141,6 +127,7 @@ var BooksView = Backbone.View.extend({
     el: '#books',
     className: 'books',
     render: function() {
+
         // Remove old views
         this.removeOldViews();
         // Empty content in case carouseal left something
@@ -176,8 +163,10 @@ var BooksView = Backbone.View.extend({
         // Add listener for the rotate-event
         var self = this;
         $("#books").on('getActivecover', function (e, bookId) {
+            // We gave the images ids like "b345". We just want the number:
+            bookId = bookId.substr(1);
             // Get the bookModel with this bookId
-            var book = books.findWhere({ id: Number(bookId.substr(1)) });
+            var book = books.findWhere({ id: Number(bookId) });
             // Trigger newBookSelected event to update the selected book
             self.eventAggregator.trigger('newBookSelected', book);
         });
@@ -187,7 +176,11 @@ var BooksView = Backbone.View.extend({
 var BookFullView = Backbone.View.extend({
     el: '#bookFull',
     render: function() {
-        // Just in case we want to start without a model
+
+        var template; // Will hold the compiled template
+        var html; // Will hold the result of template(data)
+
+        // Only show information about a book if we have one
         if (this.model) {
             // Create a print-friendly attribute for the author names
             var authors = '';
@@ -261,14 +254,13 @@ var AppRouter = Backbone.Router.extend({
     },
     defaultRoute: function() {
         console.log('defaultRoute');
-    },
-    searchEmneordView: function(emneord) {
+
         $('.loader').toggle();
         books.fetch({
             data: {
                 collection: 1,
-                real: emneord,
-                limit:61
+                real: 'Forskning', // REMEMBER TO REMOVE THIS
+                limit: 100
                 // q:'isbns=074723969X'
             },
             success: function() {
@@ -281,7 +273,37 @@ var AppRouter = Backbone.Router.extend({
                     // Render views
                     bookFullView.render();
                     booksView.render();
-			console.log(books.length);
+                    console.log('books.length:'+books.length);
+                    console.log(books);
+                }else{
+                    // Show error message if no books are found
+                    $('#books').html('<p>No books found..</p>');
+                }
+            },
+            error: function(){
+                console.log('error in fetch');
+            }
+        });
+    },
+    searchEmneordView: function(emneord) {
+        $('.loader').toggle();
+        books.fetch({
+            data: {
+                collection: 1,
+                real: emneord,
+                limit: 100
+                // q:'isbns=074723969X'
+            },
+            success: function() {
+                // Hide the loading icon
+                $('.loader').toggle();
+                // Do we have any books?
+                if (books.length>0) {
+                    // Set the first book to bookFullView
+                    bookFullView.model = books.at(0);
+                    // Render views
+                    bookFullView.render();
+                    booksView.render();
                 }else{
                     // Show error message if no books are found
                     $('#books').html('<p>No books found..</p>');
@@ -307,34 +329,6 @@ var eventAggregator = _.extend({}, Backbone.Events);
 // ---------------------------------------- CREATE COLLECTION
 
 var books = new Books();
-$('.loader').toggle();
-books.fetch({
-    data: {
-        collection: 1,
-        real: 'Forskning',
-        limit:61
-        // q:'isbns=074723969X'
-    },
-    success: function() {
-        // Hide the loading icon
-        $('.loader').toggle();
-        // Do we have any books?
-        if (books.length>0) {
-            // Set the first book to bookFullView
-            bookFullView.model = books.at(0);
-            // Render views
-            bookFullView.render();
-            booksView.render();
-		console.log(books.length);
-        }else{
-            // Show error message if no books are found
-            $('#books').html('<p>No books found..</p>');
-        }
-    },
-    error: function(){
-        console.log('error in fetch');
-    }
-});
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
 

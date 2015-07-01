@@ -1,4 +1,4 @@
-(function($) {
+var carouSeal= (function () {
 
 	function round(number,places) {
 		return +(Math.round(number + "e+" + places)  + "e-" + places);
@@ -15,33 +15,22 @@
 	}
 	
 
-	//
-	function findClosestCover(){
-		//console.log('find closest cover');
-		var minDist = Infinity; //We needed a somewhat high number, ok?
-		var	minDistKey = -1;
+	function panCarousel(x,d){
 
-		$.each(items.deg, function(key, val) {
-			//console.log(key,val,smallestdistance);
+		if (d==2) direction="left";
+		if (d==4) direction="right";
 
-			var x = Math.min(Math.abs(360-items.deg[key]), Math.abs(items.deg[key]-0));
-					
-			if (x < minDist) {
-				minDist = x; 
-				minDistKey = key; 
-			}
-		});
-
-		closestcover = minDistKey;
-		console.log(":::::::::::::::::::",closestcover);
-		rotateCarousel(0,items.imgid[closestcover]);
-
-	}
-
-	function panCarousel(x){
-
+		if (direction!=currentdirection) {
+			currentdirection = direction;
+			originX=x;
+			
+		}
+		
+		//console.log(currentdirection,x,originX,x-originX);
+		
+	
 		var speedreducer = 0.1;
-		var rotate = (180*x*speedreducer)/(Math.PI*radius);
+		var rotate = (180*(x-originX)*speedreducer)/(Math.PI*radius);
 		
 		rotated=rotated+rotate;
 
@@ -52,37 +41,48 @@
 			"transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",
 		});
 
-		updateCarouselProperties(rotate);
+		updateCarouselDegrees(rotate);
+	
 	}
 
+	function setActiveCover(){
 
-	function updateCarouselProperties(rotate){
-		
 		//Set active cover - the cover that has degree ~ 0 (facing front)
-		var minDist = Infinity; //We needed a somewhat high number, ok?
-		var	minDistKey = -1;
+		var mindist = Infinity; //We needed a somewhat high number, ok?
+		var	mindistkey = -1;
+		var currentcover = activecover;
 
 		$.each(items.deg, function(key, val) {
 			
-			items.deg[key] = (items.deg[key] + rotate) % 360;
-			
 			var x = Math.min(Math.abs(360-items.deg[key]), Math.abs(items.deg[key]-0));
 		
-			if (x < minDist) {
-				minDist = x; 
-				minDistKey = key; 
+			if (x < mindist) {
+				mindist = x; 
+				mindistkey = key;
 			}
 		});
 
-		activecover = minDistKey;
-		$myCarousel.trigger('getActivecover', items.imgid[minDistKey]);
-		//console.log('Active cover: ' + minDistKey);
+		if (currentcover!=mindistkey) {
+			activecover = mindistkey;
+			carouSeal.element.trigger('listenForActivecover', items.imgid[mindistkey]);
+			//console.log('Change in active cover: ' + mindistkey);
+		}
 	}
 
+	function updateCarouselDegrees(rotate){
+		
+		$.each(items.deg, function(key, val) {
+			
+			items.deg[key] = (items.deg[key] + rotate) % 360;
+		
+		});	
+		setActiveCover();
+	}
 
 	function rotateCarousel(x,id) {
 
-		//console.log("rotateCarousel",x);
+
+		//console.log("rotateCarousel",x,id);
 
 		var rotate = 0;
 		var rdur = 200;
@@ -107,6 +107,7 @@
 
 
 		else {
+			//Sensitivity is how many pixels it takes to move one image
 			if (Math.abs(x)<sensitivity && x<0) x=-sensitivity;
 			else if (Math.abs(x)<sensitivity && x>0) x=sensitivity;
 
@@ -128,36 +129,45 @@
 			"transition":"all "+rdur+"ms ease-in-out"
 		});
 
-		updateCarouselProperties(rotate);
+		updateCarouselDegrees(rotate);
+
 	}
 
 
-	// jQuery plugin definition
-	$.fn.carouSeal = function(setactivecover) {
+	var obj = {};
 
-		//Detect user requested rotation to specific cover
-		if (setactivecover!==undefined) {
-			rotateCarousel(0,setactivecover);
-			return this;
-		}
+
+	obj.rotateTo = function(id) {
+
+		 rotateCarousel(0,id)
+		
+	};
+
+
+	obj.getActiveCover = function() {
+
+		
+		return items.imgid[activecover];
+		
+	};
+
+	obj.createCarousel = function() {
 
 		console.log('Carouseal honking!');
-	
-		// traverse all nodes
-		this.each(function() {
 
+		// traverse all nodes
+		carouSeal.element.each(function() {
+
+			//Fetch element to be honked
 			$myCarousel = $(this);
-			//$myCarousel.addClass('carouseal_container');
-			
-			//Make sure element contains only images
+
 			//Find all images in element
 			var $imgs = $myCarousel.find("img");
 
-			//Empty element
-			$myCarousel.empty();
-
-			//Add carousel structure to element
-			$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div class="carouseal_carousel"></div></div>');
+			if (!$imgs.length) {
+				console.log('No images in element!');
+				return this;
+			}
 
 			activecover=0;
 			sensitivity= 200;
@@ -172,6 +182,12 @@
 			items = {};
 			items.deg = [];
 			items.imgid = [];
+
+			//Empty element
+			$myCarousel.empty();
+
+			//Add carousel structure to element
+			$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div class="carouseal_carousel"></div></div>');
 			
 			//Add images back to div with new structure
 			var rotate = 0;
@@ -191,10 +207,13 @@
 				//If images have ids add them to carousel_element members
 				$(".carouseal_element").eq(i).attr('id',$img.attr("id"));
 				items.imgid.push($img.attr("id"));
+				
+				//Debug
+				$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
 
 				rotate = rotate + sector;
-
 			});
+
 			//Add transforms to carousel
 			$(".carouseal_carousel").css ({
 				"-webkit-transform":"translateZ("+(-radius)+"px)",
@@ -211,41 +230,42 @@
 			//Register hammer.js events
 			console.log('Hammer time!');
 
+			//Globals to be used with hammer pan
+			originX=0;
+			currentdirection="";
+
 			var hammerOverlay = document.getElementById('hammer_overlay');
 			var mc = new Hammer(hammerOverlay);
-			
+			/*
 			mc.on('swipeleft', function(ev) {
-				//console.log('swipeleft',ev);
+				//console.log('swipeleft');
 				//rotateCarousel(ev.deltaX);
 			});
 			mc.on('swiperight', function(ev) {
-				//console.log('swiperight',ev);
+				//console.log('swiperight');
 				//rotateCarousel(ev.deltaX);
 			});
-
+*/
 			mc.on('panstart',function(ev) {
-				//console.log('panstart');
+				originX=0;
+				//console.log('panstart',originX);
 			});
 
-			mc.on('panleft',function(ev) {
-				//console.log('panleft',ev);
-				panCarousel(ev.deltaX);
+			mc.on('pan',function(ev) {
+				//console.log('pan',ev);
+				panCarousel(ev.deltaX,ev.direction);
 			});
-
-			mc.on('panright',function(ev) {
-				//console.log('panright',ev);
-				panCarousel(ev.deltaX);
-			});
-
+		
 			mc.on('panend',function(ev) {
 				//console.log('panend');
-				findClosestCover();
+				setActiveCover();
+				rotateCarousel(0,items.imgid[activecover]);
 			});
 			//////////////////////////////////
 		});
 
-		// allow jQuery chaining
-		return this;
 	};
+	
+	return obj;
 
-})(jQuery);
+})();

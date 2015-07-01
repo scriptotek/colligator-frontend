@@ -157,14 +157,16 @@ var BooksView = Backbone.View.extend({
     },
     convertToCarousel: function() {
         // Convert to carouseal
-        $("#books").carouSeal();
+        // $("#books").carouSeal();
+        carouSeal.element = $("#books");
+        carouSeal.createCarousel();
 
         // Set crouselCreated to true
         this._carouselCreated = true;
         
         // Add listener for the rotate-event
         var self = this;
-        $("#books").on('getActivecover', function (e, bookId) {
+        $("#books").on('listenForActivecover', function (e, bookId) {
             // We gave the images ids like "b345". We just want the number:
             bookId = bookId.substr(1);
             // Get the bookModel with this bookId
@@ -231,8 +233,7 @@ var BookFullView = Backbone.View.extend({
         // We need to figure out where we are, that is what the url looks like
         var fragmentArray = Backbone.history.getFragment().split('/');
         router.navigate(fragmentArray[0]+'/'+fragmentArray[1]+'/'+book.get('id'), {
-            trigger: true,
-            replace: true
+            trigger: true
         });
     },
     events: {
@@ -264,12 +265,12 @@ var AppRouter = Backbone.Router.extend({
         if (booksView._carouselCreated) {
             console.log('carousel exists already');
             console.log('spin to id: '+bookId);
-            $("#books").carouSeal('b'+bookId);
+            carouSeal.rotateTo('b'+bookId);
         } else {
             console.log('carousel must be created with emneord: '+emneord);
             console.log('then spin to id: '+bookId);
             this.fetchAndRenderBooks(emneord);
-            $("#books").carouSeal('b'+bookId);
+            carouSeal.rotateTo('b'+bookId);
         }
     },
     carouselView: function(emneord) {

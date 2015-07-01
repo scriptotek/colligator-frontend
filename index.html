@@ -89,8 +89,16 @@ var Books = Backbone.Collection.extend({
     model: Book,
     url: 'http://colligator.biblionaut.net/api/documents',
     parse: function(response, options) {
-        // The Books collection wants an array, so only give it the books
-        return response.documents;
+
+        // In the Book model above we've set a default image for the cover. The API gives cover: null if it didn't find a cover. Backbone will replace our own placeholder if the API returns any value at all (including null) for the cover property. Hence, we delete the cover property if the value is null, so that our placeholder cover is kept.
+        var data = _.map(response.documents, function(val, ind, all) {
+            if (val.cover===null) {
+                delete val.cover;
+            }
+            return val;
+        });
+
+        return data;
     }
 });
 
@@ -109,17 +117,6 @@ var BookView = Backbone.View.extend({
         this.$el.append(html);
 
         return this;
-    },
-    events: {
-        'click': 'onClick'
-    },
-    onClick: function(e) {
-        var $li = $(e.target);
-        // Change URL and trigger route handler
-        router.navigate($li.attr('data-url'), {
-            trigger: true,
-            book: this.model
-        });
     }
 });
 
@@ -149,6 +146,8 @@ var BooksView = Backbone.View.extend({
         this._views = [];
         // Store reference to the event aggregator
         this.eventAggregator = options.eventAggregator;
+        // Helper variable for the carousel
+        this._carouselCreated = false;
     },
     removeOldViews: function() {
         _.each(this._views, function(view) {
@@ -159,6 +158,9 @@ var BooksView = Backbone.View.extend({
     convertToCarousel: function() {
         // Convert to carouseal
         $("#books").carouSeal();
+
+        // Set crouselCreated to true
+        this._carouselCreated = true;
         
         // Add listener for the rotate-event
         var self = this;
@@ -220,10 +222,17 @@ var BookFullView = Backbone.View.extend({
         this.eventAggregator.on('newBookSelected', this.onNewBookSelected, this);
     },
     onNewBookSelected: function(book) {
-        console.log('new book for bookFullView:'+this.model.get('id'));
-        // Update the model
+        // The carousel has been rotated. Updating bookFullView..
+
+        // Update the model and render
         this.model = book;
         this.render();
+        // Change URL and trigger route handler
+        // We need to figure out where we are, that is what the url looks like
+        var fragmentArray = Backbone.history.getFragment().split('/');
+        router.navigate(fragmentArray[0]+'/'+fragmentArray[1]+'/'+book.get('id'), {
+            trigger: true
+        });
     },
     events: {
         'click .emneord': 'onEmneOrdClick'
@@ -242,77 +251,61 @@ var BookFullView = Backbone.View.extend({
 
 var AppRouter = Backbone.Router.extend({
     routes: {
-        ':bookId': 'viewBookById',
-        'searchEmneord/:emneord': 'searchEmneordView',
-        '*other': 'defaultRoute'
+        'searchEmneord/:emneord': 'carouselView',
+        'searchEmneord/:emneord/:bookId': 'viewBookById',
+        '*other': 'defaultView'
     },
-    viewBookById: function(bookId) {
-        // Get the bookModel with this bookId
-        var book = this.books.findWhere({ id: Number(bookId.substr(1)) });
-        // Trigger newBookSelected event to update the selected book
-        this.eventAggregator.trigger('newBookSelected', book);
+    defaultView: function() {
+        router.navigate('searchEmneord/Forskning', {
+            trigger: true
+        });
     },
-    defaultRoute: function() {
-        console.log('defaultRoute');
+    viewBookById: function(emneord,bookId) {
+        // Does the carousel already exist? It does if we have a #carouseal_carousel on the page
+        if (booksView._carouselCreated) {
+            console.log('carousel exists already');
+            console.log('spin to id: '+bookId);
+            $("#books").carouSeal('b'+bookId);
 
-        $('.loader').toggle();
-        books.fetch({
-            data: {
-                collection: 1,
-                real: 'Forskning', // REMEMBER TO REMOVE THIS
-                limit: 100
-                // q:'isbns=074723969X'
-            },
-            success: function() {
-                // Hide the loading icon
-                $('.loader').toggle();
-                // Do we have any books?
-                if (books.length>0) {
-                    // Set the first book to bookFullView
-                    bookFullView.model = books.at(0);
-                    // Render views
-                    bookFullView.render();
-                    booksView.render();
-                    console.log('books.length:'+books.length);
-                    console.log(books);
-                }else{
-                    // Show error message if no books are found
-                    $('#books').html('<p>No books found..</p>');
-                }
-            },
-            error: function(){
-                console.log('error in fetch');
-            }
-        });
+        } else {
+            console.log('carousel must be created with emneord: '+emneord);
+            console.log('then spin to id: '+bookId);
+        }
     },
-    searchEmneordView: function(emneord) {
-        $('.loader').toggle();
-        books.fetch({
-            data: {
-                collection: 1,
-                real: emneord,
-                limit: 100
-                // q:'isbns=074723969X'
-            },
-            success: function() {
-                // Hide the loading icon
-                $('.loader').toggle();
-                // Do we have any books?
-                if (books.length>0) {
-                    // Set the first book to bookFullView
-                    bookFullView.model = books.at(0);
-                    // Render views
-                    bookFullView.render();
-                    booksView.render();
-                }else{
-                    // Show error message if no books are found
-                    $('#books').html('<p>No books found..</p>');
+    carouselView: function(emneord) {
+        // Does the carousel already exist? It does if we have a #carouseal_carousel on the page
+        if (booksView._carouselCreated) {
+            console.log('carousel exists already');
+            $("#books").carouSeal('b'+books.at(0).get('id'));
+        } else {
+            $('.loader').toggle();
+            books.fetch({
+                data: {
+                    collection: 1,
+                    real: emneord,
+                    limit: 100,
+                    q: '_exists_:subjects.noubomn'
+                },
+                success: function() {
+                    // Hide the loading icon
+                    $('.loader').toggle();
+                    // Do we have any books?
+                    if (books.length>0) {
+                        // Set the first book to bookFullView
+                        bookFullView.model = books.at(0);
+                        // Render views
+                        bookFullView.render();
+                        booksView.render();
+                    }else{
+                        // Show error message if no books are found
+                        $('#books').html('<p>No books found..</p>');
+                    }
+                },
+                error: function(){
+                    console.log('error in fetch');
                 }
-            },
-            error: function(){
-                console.log('error in fetch');
-            }
-        });
+            });
+        }
     },
     initialize: function(options) {
         // Store reference to global event bus

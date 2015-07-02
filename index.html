@@ -268,7 +268,6 @@ var AppRouter = Backbone.Router.extend({
         });
     },
     spinCarousel: function(bookId) {
-        console.log('spinCarousel: ' + bookId);
         carouSeal.rotateTo('b'+bookId);
         this.navigate('cat/' + books._emneord + '/' + bookId);
     },
@@ -304,10 +303,6 @@ var AppRouter = Backbone.Router.extend({
             // Else just spin to position at once
             this.spinCarousel(bookId);
         }
-    },
-    execute: function (callback, args, name) {
-        console.log(name);
-        callback.apply(this, args);
     }
 });
 

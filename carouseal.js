@@ -153,7 +153,7 @@ var carouSeal= (function () {
 
 	obj.createCarousel = function() {
 
-		console.log('Carouseal honking!');
+		// console.log('Carouseal honking!');
 
 		// traverse all nodes
 		carouSeal.element.each(function() {
@@ -209,7 +209,7 @@ var carouSeal= (function () {
 				items.imgid.push($img.attr("id"));
 				
 				//Debug
-				// $(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
+				$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
 
 				rotate = rotate + sector;
 			});
@@ -228,7 +228,7 @@ var carouSeal= (function () {
 			});
 			
 			//Register hammer.js events
-			console.log('Hammer time!');
+			// console.log('Hammer time!');
 
 			//Globals to be used with hammer pan
 			originX=0;
@@ -243,7 +243,7 @@ var carouSeal= (function () {
 			});
 			mc.on('swiperight', function(ev) {
 				//console.log('swiperight');
-				//rotateCarousel(ev.deltaX);
+				rotateCarousel(ev.deltaX);
 			});
 
 			// mc.on('panstart',function(ev) {
@@ -263,6 +263,8 @@ var carouSeal= (function () {
 			// });
 			//////////////////////////////////
 		});
+
+		carouSeal.element.trigger('carouselDone');
 
 	};
 	

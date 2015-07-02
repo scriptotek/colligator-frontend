@@ -130,8 +130,6 @@ var BooksView = Backbone.View.extend({
         // Empty content in case carouseal left something
         this.$el.empty();
 
-        console.log(this.$el);
-
         // Create new views
         var self = this;
         this.model.each(function(book) {
@@ -139,8 +137,11 @@ var BooksView = Backbone.View.extend({
             self._views.push(bookView);
             self.$el.append(bookView.render().$el);
         });
+
         // Now that we have the images in the div, convert them to a carousel
-        this.convertToCarousel();
+        carouSeal.element = $("#books");
+        carouSeal.createCarousel();
+
         return this;
     },
     initialize: function(options) {
@@ -148,43 +149,12 @@ var BooksView = Backbone.View.extend({
         this._views = [];
         // Store reference to the event aggregator
         this.eventAggregator = options.eventAggregator;
-        // Helper variable for the carousel
-        this._carouselCreated = false;
-        // Helper variable to decide if we span the carousel or not
-        this._didWeSpin = false;
+
     },
     removeOldViews: function() {
         _.each(this._views, function(view) {
             view.remove();
             view.unbind();
-        });
-    },
-    convertToCarousel: function() {
-        // Convert to carouseal
-        // $("#books").carouSeal();
-        carouSeal.element = $("#books");
-        carouSeal.createCarousel();
-
-        // Set crouselCreated to true
-        this._carouselCreated = true;
-        
-        // Add listener for the rotate-event
-        // IMPORTANT. We do not want to react to this if we are the one who spins the carousel
-        var self = this;
-        $("#books").on('listenForActivecover', function (e, bookId) {
-            var d = new Date();
-            console.log('listenForActivecover triggered ' + d.getTime());
-            if (self._didWeSpin) {
-                self._didWeSpin = false;
-                console.log('didWeSpin set to FALSE');
-            } else {
-                // We gave the images ids like "b345". We just want the number:
-                bookId = bookId.substr(1);
-                // Get the bookModel with this bookId
-                var book = books.findWhere({ id: Number(bookId) });
-                // Trigger newBookSelected event to update the selected book
-                self.eventAggregator.trigger('newBookSelected', book);
-            }
         });
     }
 });
@@ -222,30 +192,12 @@ var BookFullView = Backbone.View.extend({
                 // Give data-emneord
                 $listItem.attr('data-emneord', $listItem.text());
                 // Give data-url
-                $listItem.attr('data-url', 'searchEmneord/'+$listItem.text());
+                $listItem.attr('data-url', 'cat/'+$listItem.text());
             });
             this.$el.attr('data-url', this.model.get('id'));
         }
 
         return this;
-    },
-    initialize: function(options) {
-        // Store reference to global event bus
-        this.eventAggregator = options.eventAggregator;
-        // Listen to the newBookSelected event
-        this.eventAggregator.on('newBookSelected', this.onNewBookSelected, this);
-    },
-    onNewBookSelected: function(book) {
-        // The carousel has been rotated. Updating bookFullView..
-
-        // Update the model and render
-        this.model = book;
-        this.render();
-        
-        // Change URL and trigger route handler
-        // We need to figure out where we are, that is what the url looks like
-        var fragmentArray = Backbone.history.getFragment().split('/');
-        router.navigate(fragmentArray[0]+'/'+fragmentArray[1]+'/'+book.get('id'));
     },
     events: {
         'click .emneord': 'onEmneOrdClick'
@@ -270,60 +222,30 @@ var AppRouter = Backbone.Router.extend({
         // Store reference to book collection
         this.books = options.books;
 
-        // This is _after_ every route
-        // this.on('route', function(route, params) {
-        //     console.log('-- from initialize');
-        //     console.log('route fired: ' + route);
-        //     console.log(params);
-        // });
-    },
-    execute: function(callback, args, name) {
-        // This gets ran _before_ every route
-
-        // console.log('-- from execute:');
-        // console.log(callback);
-        // console.log(args);
-        // console.log(name);
-
-        if (callback) callback.apply(this, args);
+        // Add listener for the rotate-event
+        var self = this;
+        $("#books").on('listenForActivecover', function (e, bookId) {
+            // We gave the images ids like "b345". We just want the number:
+            bookId = bookId.substr(1);
+            // Get the bookModel with this bookId
+            var book = books.findWhere({ id: Number(bookId) });
+            // Update the model and render
+            bookFullView.model = book;
+            bookFullView.render();
+            // Update url
+            self.navigate('cat/' + books._emneord + '/' + bookId);
+        });
     },
     routes: {
-        'searchEmneord/:emneord': 'searchEmneord',
-        'searchEmneord/:emneord/:bookId': 'viewBookById',
+        'cat/:emneord': 'viewEmneord',
+        'cat/:emneord/:bookId': 'viewBookById',
         '*other': 'defaultView'
     },
     defaultView: function() {
-        this.fetchAndRenderBooks('Forskning');
+        this.viewEmneord('Forskning');
     },
-    viewBookById: function(emneord,bookId) {
-        // Does the carousel already exist AND it's the same emneord? If so just spin to position
-        if (booksView._carouselCreated && booksView._emneord === emneord) {
-            booksView._didWeSpin = true;
-            console.log('didWeSpin set to TRUE1');
-            carouSeal.rotateTo('b'+bookId);
-        } else {
-            // Else we need to create the carousel
-            this.fetchAndRenderBooks(emneord);
-            // And when we're sure it's done, spin to position
-            $("#books").on('carouselDone', function() {
-                booksView._didWeSpin = true;
-                console.log('didWeSpin set to TRUE2');
-                carouSeal.rotateTo('b'+bookId);
-            });
-        }
-    },
-    searchEmneord: function(emneord) {
-        // Create carousel if it doesn't exist OR if we have a new emneord
-        if (!booksView._carouselCreated || booksView._emneord!==emneord) {
-            this.fetchAndRenderBooks(emneord);
-        } else {
-            // Otherwise we just spin to position
-            carouSeal.rotateTo('b'+books.at(0).get('id'));
-                console.log('didWeSpin set to TRUE3');
-            booksView._didWeSpin = true;
-        }
-    },
-    fetchAndRenderBooks: function(emneord) {
+    newCarousel: function(emneord, callback) {
+        // fetch books
         $('.loader').toggle();
         books.fetch({
             data: {
@@ -335,28 +257,57 @@ var AppRouter = Backbone.Router.extend({
             success: function() {
                 // Hide the loading icon
                 $('.loader').toggle();
-                // Do we have any books?
-                if (books.length>0) {
-                    // Set the first book to bookFullView
-                    bookFullView.model = books.at(0);
-                    // Render views
-                    bookFullView.render();
-                    booksView.render();
-
-                    // Store emneord in booksView
-                    booksView._emneord = emneord;
-
-                    // router.navigate('searchEmneord/' + emneord + '/' + books.at(0).get('id'));
-                    router.navigate('searchEmneord/' + emneord + '/' + books.at(0).get('id'), { replace: true });
-                }else{
-                    // Show error message if no books are found
-                    $('#books').html('<p>No books found..</p>');
-                }
+                // Store emneord in booksView
+                books._emneord = emneord;
+                // Render booksView
+                booksView.render();
             },
             error: function(){
                 console.log('error in fetch');
             }
         });
+    },
+    spinCarousel: function(bookId) {
+        console.log('spinCarousel: ' + bookId);
+        carouSeal.rotateTo('b'+bookId);
+        this.navigate('cat/' + books._emneord + '/' + bookId);
+    },
+    viewEmneord: function(emneord) {
+        var self = this;
+        // Load carousel
+        this.newCarousel(emneord);
+        // When that's done:
+        $("#books").one('carouselDone', function() {
+            // Render bookFullView
+            bookFullView.model = books.at(0);
+            bookFullView.render();
+            // Replace url
+            self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
+                replace: true
+            });
+        });
+    },
+    viewBookById: function(emneord,bookId) {
+        var self = this;
+        // new carousel IF new emneord
+        if (books._emneord !== emneord) {
+            // Create the carousel
+            this.newCarousel(emneord);
+            // Spin when it's done
+            $("#books").one('carouselDone', function() {
+                self.spinCarousel(bookId);
+                // Render bookFullView
+                bookFullView.model = books.findWhere({ id: Number(bookId) });
+                bookFullView.render();
+            });
+        } else {
+            // Else just spin to position at once
+            this.spinCarousel(bookId);
+        }
+    },
+    execute: function (callback, args, name) {
+        console.log(name);
+        callback.apply(this, args);
     }
 });
 
@@ -375,9 +326,7 @@ var booksView = new BooksView({
     eventAggregator: eventAggregator
 });
 
-var bookFullView = new BookFullView({
-    eventAggregator: eventAggregator
-});
+var bookFullView = new BookFullView();
 
 // Create an instance of the router
 var router = new AppRouter({

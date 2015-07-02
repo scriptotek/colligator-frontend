@@ -296,24 +296,18 @@ var AppRouter = Backbone.Router.extend({
             // Spin when it's done
             $("#books").one('carouselDone', function() {
                 self.spinCarousel(bookId);
-<<<<<<< HEAD
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
-=======
->>>>>>> d1205618f0b93088fdadcc8eec070b361b7b92ff
             });
         } else {
             // Else just spin to position at once
             this.spinCarousel(bookId);
         }
-<<<<<<< HEAD
     },
     execute: function (callback, args, name) {
         console.log(name);
         callback.apply(this, args);
-=======
->>>>>>> d1205618f0b93088fdadcc8eec070b361b7b92ff
     }
 });
 

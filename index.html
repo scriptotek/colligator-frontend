@@ -229,16 +229,16 @@ var BookFullView = Backbone.View.extend({
         // Update the model and render
         this.model = book;
         this.render();
+        
         // Change URL and trigger route handler
         // We need to figure out where we are, that is what the url looks like
         var fragmentArray = Backbone.history.getFragment().split('/');
-        router.navigate(fragmentArray[0]+'/'+fragmentArray[1]+'/'+book.get('id'), {
-            trigger: true
-        });
+        router.navigate(fragmentArray[0]+'/'+fragmentArray[1]+'/'+book.get('id'));
     },
     events: {
         'click .emneord': 'onEmneOrdClick'
     },
+    // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
         // Change URL and trigger route handler
@@ -252,8 +252,31 @@ var BookFullView = Backbone.View.extend({
 // ---------------------------------------- DEFINE ROUTER
 
 var AppRouter = Backbone.Router.extend({
+    initialize: function(options) {
+        // Store reference to global event bus
+        this.eventAggregator = options.eventAggregator;
+        // Store reference to book collection
+        this.books = options.books;
+
+        // This is _after_ every route
+        this.on('route', function(route, params) {
+            console.log('-- from initialize');
+            console.log('route fired: ' + route);
+            console.log(params);
+        });
+    },
+    execute: function(callback, args, name) {
+        // This gets ran _before_ every route
+
+        console.log('-- from execute:');
+        console.log(callback);
+        console.log(args);
+        console.log(name);
+
+        if (callback) callback.apply(this, args);
+    },
     routes: {
-        'searchEmneord/:emneord': 'carouselView',
+        'searchEmneord/:emneord': 'searchEmneord',
         'searchEmneord/:emneord/:bookId': 'viewBookById',
         '*other': 'defaultView'
     },
@@ -261,32 +284,26 @@ var AppRouter = Backbone.Router.extend({
         this.fetchAndRenderBooks('Forskning');
     },
     viewBookById: function(emneord,bookId) {
-        // Does the carousel already exist?
+        // Does the carousel already exist? If so just spin to position
         if (booksView._carouselCreated) {
-            console.log('carousel exists already');
-            console.log('spin to id: '+bookId);
             carouSeal.rotateTo('b'+bookId);
         } else {
-            console.log('carousel must be created with emneord: '+emneord);
-            console.log('then spin to id: '+bookId);
+            // Else we need to create the carousel
             this.fetchAndRenderBooks(emneord);
-            carouSeal.rotateTo('b'+bookId);
+            // And when we're sure it's done, spin to position
+            $("#books").on('carouselDone', function() {
+                carouSeal.rotateTo('b'+bookId);
+            });
         }
     },
-    carouselView: function(emneord) {
-        // Create carousel if it doesn't exist or if we have a new emneord
+    searchEmneord: function(emneord) {
+        // Create carousel if it doesn't exist OR if we have a new emneord
         if (!booksView._carouselCreated || booksView._emneord!==emneord) {
             this.fetchAndRenderBooks(emneord);
         } else {
             // Otherwise we just spin to position
-            $("#books").carouSeal('b'+books.at(0).get('id'));
+            carouSeal.rotateTo('b'+books.at(0).get('id'));
         }
-    },
-    initialize: function(options) {
-        // Store reference to global event bus
-        this.eventAggregator = options.eventAggregator;
-        // Store reference to book collection
-        this.books = options.books;
     },
     fetchAndRenderBooks: function(emneord) {
         $('.loader').toggle();
@@ -311,9 +328,7 @@ var AppRouter = Backbone.Router.extend({
                     // Store emneord in booksView
                     booksView._emneord = emneord;
 
-                    router.navigate('searchEmneord/' + emneord + '/'+bookFullView.model.get('id'), {
-                        trigger: false
-                    });
+                    router.navigate('searchEmneord/' + emneord + '/' + books.at(0).get('id'));
                 }else{
                     // Show error message if no books are found
                     $('#books').html('<p>No books found..</p>');

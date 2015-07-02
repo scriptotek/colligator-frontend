@@ -1,0 +1,1090 @@
+{
+   "samling42":{
+      "fagområde":{
+         "estetiske_fag":{
+            "arkitektur":[
+
+            ],
+            "design":[
+
+            ],
+            "estetikk":[
+
+            ],
+            "kartografi":[
+
+            ],
+            "kunst":{
+               "bilder":[
+
+               ],
+               "billedkunst":[
+
+               ],
+               "fargelære":[
+
+               ],
+               "farger":[
+
+               ],
+               "skulpturer":[
+
+               ],
+               "symmetri":[
+
+               ]
+            }
+         },
+         "fremtidsforskning":[
+
+         ],
+         "heimkunnskap":{
+            "alkohol":{
+               "vin":{
+                  "ønologi":[
+
+                  ]
+               }
+            },
+            "ernæring":[
+
+            ],
+            "gastronomi":[
+
+            ],
+            "mat":[
+
+            ]
+         },
+         "humaniora":{
+            "arkeologi":[
+
+            ],
+            "etikk":{
+               "forskningsetikk":[
+
+               ]
+            },
+            "film":[
+
+            ],
+            "filosofi":{
+               "erkjennelsesteori":[
+
+               ],
+               "feministisk_filosofi":[
+
+               ],
+               "filosofer":[
+
+               ],
+               "filosofihistorie":[
+
+               ],
+               "humanisme":[
+
+               ],
+               "idéhistorie":[
+
+               ],
+               "logikk":[
+
+               ],
+               "matematikkhistorie":[
+
+               ],
+               "metafysikk":[
+
+               ],
+               "naturfilosofi":[
+
+               ],
+               "religionsfilosofi":[
+
+               ],
+               "tidsbegepet":[
+
+               ],
+               "vitenskapsfilosofi":[
+
+               ]
+            },
+            "historie":{
+               "filosofihistorie":[
+
+               ],
+               "forskningshistorie":[
+
+               ],
+               "historiografi":[
+
+               ],
+               "kjemihistorie":{
+                  "alkymi":[
+
+                  ]
+               },
+               "kulturhistorie":[
+
+               ],
+               "matematikkhistorie":[
+
+               ],
+               "naturhistorie":[
+
+               ],
+               "teknologihistorie":{
+                  "teknologisk_utvikling":[
+
+                  ]
+               },
+               "universitetshistorie":[
+
+               ],
+               "vitenskapshistorie":[
+
+               ]
+            },
+            "kultur":{
+               "kulturhistorie":[
+
+               ]
+            },
+            "litteratur":[
+
+            ],
+            "religionsvitenskap":{
+               "religion":[
+
+               ],
+               "religionsfilosofi":[
+
+               ],
+               "teologi":[
+
+               ]
+            },
+            "språk":[
+
+            ]
+         },
+         "naturvitenskap":{
+            "astronomi":{
+               "astrofysikk":[
+
+               ],
+               "astronomer":[
+
+               ],
+               "kosmogoni":[
+
+               ],
+               "kosmologi":[
+
+               ],
+               "romfart":[
+
+               ],
+               "romforskning":[
+
+               ],
+               "romskip":[
+
+               ],
+               "solsystemet":[
+
+               ],
+               "sorte_hull":[
+
+               ],
+               "universet":[
+
+               ]
+            },
+            "biologi":{
+               "arv":[
+
+               ],
+               "avstamning":[
+
+               ],
+               "biofysikk":[
+
+               ],
+               "biokjemi":[
+
+               ],
+               "biologer":{
+                  "botanikere":[
+
+                  ],
+                  "zoologer":[
+
+                  ]
+               },
+               "biologisk_krigføring":[
+
+               ],
+               "bioteknologi":[
+
+               ],
+               "botanikk":{
+                  "botanikere":[
+
+                  ],
+                  "hager":[
+
+                  ],
+                  "natur":[
+
+                  ],
+                  "ønologi":[
+
+                  ]
+               },
+               "dna":[
+
+               ],
+               "evolusjon":{
+                  "darwinisme":[
+
+                  ],
+                  "evolusjonsteorien":[
+
+                  ],
+                  "naturlig_seleksjon":[
+
+                  ]
+               },
+               "fysiologi":[
+
+               ],
+               "gener":{
+                  "genetikk":{
+                     "human_genetikk":[
+
+                     ]
+                  },
+                  "genteknologi":[
+
+                  ]
+               },
+               "genomer":[
+
+               ],
+               "hjernen":[
+
+               ],
+               "intelligens":{
+                  "kunstig_intelligens":[
+
+                  ]
+               },
+               "livets_opprinnelse":[
+
+               ],
+               "mennesker":[
+
+               ],
+               "mennesket":[
+
+               ],
+               "mikrobiologi":[
+
+               ],
+               "miljø":{
+                  "miljøvern":[
+
+                  ]
+               },
+               "molekylærbiologi":[
+
+               ],
+               "naturhistorie":[
+
+               ],
+               "sosiobiologi":[
+
+               ],
+               "zoologi":{
+                  "dyr":[
+
+                  ],
+                  "dyreliv":[
+
+                  ],
+                  "etologi":[
+
+                  ],
+                  "zoologer":[
+
+                  ]
+               },
+               "økologi":{
+                  "humanøkologi":[
+
+                  ]
+               }
+            },
+            "farmasi":{
+               "medisiner":[
+
+               ]
+            },
+            "fysikk":{
+               "atomer":[
+
+               ],
+               "atomkraft":[
+
+               ],
+               "biofysikk":[
+
+               ],
+               "energi":[
+
+               ],
+               "fysikere":[
+
+               ],
+               "kvanteteori":[
+
+               ],
+               "nanoteknologi":[
+
+               ],
+               "optikk":[
+
+               ],
+               "populærfysikk":[
+
+               ],
+               "relativitetsteorien":[
+
+               ],
+               "teoretisk_fysikk":[
+
+               ]
+            },
+            "geologi":{
+               "jorda":[
+
+               ],
+               "naturkatastrofer":[
+
+               ]
+            },
+            "informatikk":{
+               "databehandling":[
+
+               ],
+               "datamaskiner":[
+
+               ],
+               "informasjons-_og_kommunikasjonsteknologi":[
+
+               ],
+               "informasjonsteknologi":[
+
+               ],
+               "internett":[
+
+               ],
+               "kunstig_intelligens":[
+
+               ],
+               "virtuell_virkelighet":[
+
+               ]
+            },
+            "kjemi":{
+               "hverdagskjemi":[
+
+               ],
+               "kjemihistorie":{
+                  "alkymi":[
+
+                  ]
+               },
+               "kjemikere":[
+
+               ],
+               "kjemisk_krigføring":[
+
+               ],
+               "strukturkjemi":[
+
+               ]
+            },
+            "matematikk":{
+               "generell_matematikk":[
+
+               ],
+               "geometri":{
+                  "symmetri":[
+
+                  ]
+               },
+               "kaosteori":[
+
+               ],
+               "kryptografi":[
+
+               ],
+               "matematikere":[
+
+               ],
+               "matematikkhistorie":[
+
+               ],
+               "mekanikk":[
+
+               ],
+               "populærmatematikk":[
+
+               ],
+               "sansynlighetsregning":[
+
+               ],
+               "statistikk":{
+                  "statistiske_metoder":[
+
+                  ]
+               },
+               "tallteori":[
+
+               ],
+               "topologi":{
+                  "knuteteori":{
+                     "knuter":[
+
+                     ]
+                  }
+               }
+            },
+            "medisin":{
+               "anatomi":[
+
+               ],
+               "genetikk":{
+                  "human_genetikk":[
+
+                  ]
+               },
+               "hjernen":[
+
+               ],
+               "leger":[
+
+               ],
+               "sykdommer":[
+
+               ]
+            },
+            "naturforvaltning":{
+               "miljø":{
+                  "miljøvern":[
+
+                  ]
+               },
+               "natur":[
+
+               ]
+            },
+            "naturgeografi":{
+               "Atmosfæren":[
+
+               ],
+               "kartografi":[
+
+               ],
+               "klimaendringer":{
+                  "drivhuseffekten":[
+
+                  ],
+                  "global_oppvarming":[
+
+                  ],
+                  "klima":[
+
+                  ],
+                  "miljø":{
+                     "miljøvern":[
+
+                     ]
+                  },
+                  "miljøproblemer":{
+                     "forurensning":[
+
+                     ]
+                  },
+                  "miljøvern":[
+
+                  ],
+                  "naturkatastrofer":[
+
+                  ]
+               },
+               "meteorologi":{
+                  "klima":[
+
+                  ],
+                  "klimatologi":[
+
+                  ],
+                  "naturkatastrofer":[
+
+                  ]
+               },
+               "navigasjon":[
+
+               ],
+               "oseanografi":[
+
+               ]
+            },
+            "paleontologi":{
+               "dinosaurer":[
+
+               ],
+               "fosiler":[
+
+               ],
+               "paleoantropologi":[
+
+               ]
+            },
+            "polarforskning":{
+               "nordlys":[
+
+               ],
+               "polarekspedisjoner":[
+
+               ]
+            }
+         },
+         "pedagogikk":{
+            "formidling":[
+
+            ],
+            "kommunikasjon":{
+               "formidling":[
+
+               ]
+            },
+            "naturfagsundervisning":[
+
+            ],
+            "opplæring":[
+
+            ],
+            "undervisning":{
+               "forelesningsteknikk":[
+
+               ],
+               "naturfagsundervisning":[
+
+               ],
+               "polemikk":[
+
+               ]
+            },
+            "veiledning":{
+               "forskerveiledning":[
+
+               ],
+               "karriereplanlegging":[
+
+               ]
+            }
+         },
+         "rettsvitenskap":{
+            "etterretning":[
+
+            ],
+            "forfalskninger":{
+               "fusk":[
+
+               ]
+            },
+            "kriminalteknikk":[
+
+            ]
+         },
+         "samfunnsvitenskap":{
+            "antropologi":{
+               "paleoantropologi":[
+
+               ]
+            },
+            "geografi":{
+               "kartografi":[
+
+               ],
+               "navigasjon":[
+
+               ]
+            },
+            "globalisering":[
+
+            ],
+            "nazisme":[
+
+            ],
+            "politikk":{
+               "forskningspolitikk":[
+
+               ]
+            },
+            "psykologi":[
+
+            ],
+            "revolusjoner":[
+
+            ],
+            "samfunn":[
+
+            ],
+            "samfunnsendringer":[
+
+            ],
+            "sosiologi":{
+               "kunnskapssosiologi":[
+
+               ],
+               "samfunnsutvikling":[
+
+               ],
+               "vitenskapssosiologi":{
+                  "vitenskaplige_revolusjoner":[
+
+                  ]
+               }
+            },
+            "økonomi":[
+
+            ]
+         }
+      },
+      "forskning_og_undervisning":{
+         "formidling":[
+
+         ],
+         "forskeradministrasjon":[
+
+         ],
+         "forskning":[
+
+         ],
+         "forskningsetikk":[
+
+         ],
+         "forskningsformidling":[
+
+         ],
+         "forskningshistorie":[
+
+         ],
+         "forskningspolitikk":[
+
+         ],
+         "scientometri":[
+
+         ],
+         "undervisning":{
+            "forelesningsteknikk":[
+
+            ],
+            "naturfagsundervisning":[
+
+            ],
+            "polemikk":[
+
+            ]
+         },
+         "utdanning":[
+
+         ],
+         "veiledning":{
+            "forskerveiledning":[
+
+            ],
+            "karriereplanlegging":[
+
+            ]
+         },
+         "vitenskap":{
+            "kunnskapssosiologi":[
+
+            ],
+            "kunnskapsteorier":[
+
+            ],
+            "pseudovitenskap":[
+
+            ],
+            "vitenskapelig_personale":[
+
+            ],
+            "vitenskapsfilosofi":[
+
+            ],
+            "vitenskapshistorie":[
+
+            ],
+            "vitenskapssosiologi":{
+               "vitenskaplige_revolusjoner":[
+
+               ]
+            },
+            "vitenskapsteori":[
+
+            ]
+         },
+         "vitenskapelig_forfatterskap":{
+            "faglig_publisering":[
+
+            ],
+            "metoder":{
+               "analyse":[
+
+               ],
+               "statistiske_metoder":[
+
+               ]
+            },
+            "rapportskriving":[
+
+            ]
+         },
+         "vitenskapelig_kommunikasjon":[
+
+         ]
+      },
+      "institusjoner":{
+         "høgskoler":{
+            "høyere_utdanning":[
+
+            ]
+         },
+         "museer":[
+
+         ],
+         "nobelprisen":{
+            "nobelprisvinnere":[
+
+            ]
+         },
+         "universiteter":{
+            "høyere_utdanning":[
+
+            ],
+            "universitetshistorie":[
+
+            ]
+         }
+      },
+      "konflikter_kreativitet_kvinner_osv.":{
+         "arabisk_vitenskap":[
+
+         ],
+         "bevissthet":[
+
+         ],
+         "ekspedisjoner":{
+            "oppdagelsesreiser":[
+
+            ],
+            "polarekspedisjoner":[
+
+            ]
+         },
+         "forfatterskap":[
+
+         ],
+         "framstilling":[
+
+         ],
+         "grafisk_framstilling":[
+
+         ],
+         "helse":[
+
+         ],
+         "historisk_framstilling":[
+
+         ],
+         "illustrasjoner":[
+
+         ],
+         "industri":[
+
+         ],
+         "informasjon":[
+
+         ],
+         "katastrofer":[
+
+         ],
+         "kompleksitet":[
+
+         ],
+         "konflikter":{
+            "krigføring":{
+               "biologisk_krigføring":[
+
+               ],
+               "kjemisk_krigføring":[
+
+               ],
+               "militærvesen":[
+
+               ]
+            }
+         },
+         "kreativitet":{
+            "eksperimenter":[
+
+            ],
+            "innovasjon":[
+
+            ],
+            "oppdagelser":{
+               "oppdagelsesreiser":[
+
+               ]
+            },
+            "oppfinnelser":{
+               "instrumenter":{
+                  "måleinstrumenter":{
+                     "klokker":[
+
+                     ],
+                     "mikroskoper":{
+                        "mikroskopi":[
+
+                        ]
+                     }
+                  }
+               }
+            }
+         },
+         "kritikk":[
+
+         ],
+         "kronologi":[
+
+         ],
+         "kvinner":{
+            "jenter":[
+
+            ]
+         },
+         "laboratorier":{
+            "måleinstrumenter":{
+               "klokker":[
+
+               ],
+               "mikroskoper":{
+                  "mikroskopi":[
+
+                  ]
+               }
+            }
+         },
+         "landskap":[
+
+         ],
+         "liv":[
+
+         ],
+         "naturressurser":[
+
+         ],
+         "nettverk":[
+
+         ],
+         "overtro":{
+            "astrologi":[
+
+            ],
+            "monstre":[
+
+            ],
+            "myter":[
+
+            ]
+         },
+         "popularisering":[
+
+         ],
+         "redigering":[
+
+         ],
+         "seleksjon":[
+
+         ],
+         "sivilisasjoner":[
+
+         ],
+         "systemer":[
+
+         ],
+         "teknikk":[
+
+         ],
+         "teknologi":{
+            "informasjonsteknologi":[
+
+            ],
+            "teknologihistorie":{
+               "teknologisk_utvikling":[
+
+               ]
+            }
+         },
+         "tenkning":[
+
+         ],
+         "teorier":[
+
+         ],
+         "tid":[
+
+         ],
+         "ulykker":[
+
+         ],
+         "utvikling":[
+
+         ]
+      },
+      "personer":{
+         "astronomer":[
+
+         ],
+         "biologer":{
+            "botanikere":[
+
+            ],
+            "zoologer":[
+
+            ]
+         },
+         "filosofer":[
+
+         ],
+         "forskere":[
+
+         ],
+         "fysikere":[
+
+         ],
+         "ingeniører":[
+
+         ],
+         "kjemikere":[
+
+         ],
+         "kvinner":{
+            "jenter":[
+
+            ]
+         },
+         "leger":[
+
+         ],
+         "matematikere":[
+
+         ],
+         "nobelprisvinnere":[
+
+         ],
+         "vitenskapsmenn":[
+
+         ]
+      },
+      "sjanger":{
+         "barnebøker":[
+
+         ],
+         "bibliografier":[
+
+         ],
+         "billedverk":[
+
+         ],
+         "biografier":{
+            "enkeltbiografier":[
+
+            ],
+            "samlebiografier":[
+
+            ]
+         },
+         "humor":[
+
+         ],
+         "leksika":[
+
+         ],
+         "oppslagsverker":[
+
+         ],
+         "poesi":[
+
+         ],
+         "populærvitenskap":{
+            "populærmatematikk":[
+
+            ]
+         },
+         "science_fiction":[
+
+         ],
+         "sitater":{
+            "sitatordbøker":[
+
+            ]
+         },
+         "skjønnlitteratur":[
+
+         ],
+         "tegneserier":[
+
+         ]
+      },
+      "tidsperiode":{
+         "antikken":[
+
+         ],
+         "attende_århundre":[
+
+         ],
+         "middelalderen":[
+
+         ],
+         "nittende_århundre":[
+
+         ],
+         "oldtiden":[
+
+         ],
+         "opplysningstiden":[
+
+         ],
+         "renessansen":[
+
+         ],
+         "sekstende_århundre":[
+
+         ],
+         "syttende_århundre":[
+
+         ],
+         "tjuende_århundre":[
+
+         ]
+      }
+   }
+}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Backbone</title>
+    <title>42</title>
     <style>
     .loader{
         width: 100%;
@@ -14,34 +14,47 @@
         z-index: 42;
     }
     #books{
+        margin-top: 3em;
         height: 350px;
     }
+    .emneord{
+        margin: 1em;
+    }
     </style>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="carouseal.css">
 </head>
 <body>
 
-<div class="loader" title="0">
-    <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-    width="100px" height="100px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-    <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-    s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-    c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
-    <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-    C22.32,8.481,24.301,9.057,26.013,10.047z">
-        <animateTransform
-            attributeType="xml"
-            attributeName="transform"
-            type="rotate"
-            from="0 20 20"
-            to="360 20 20"
-            dur="0.5s"
-            repeatCount="indefinite"/>
-    </path>
-    </svg>
+<div class="container-fluid">
+
+    <div class="loader" title="0">
+        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="100px" height="100px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+        <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+        s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+        c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+        <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+        C22.32,8.481,24.301,9.057,26.013,10.047z">
+            <animateTransform
+                attributeType="xml"
+                attributeName="transform"
+                type="rotate"
+                from="0 20 20"
+                to="360 20 20"
+                dur="0.5s"
+                repeatCount="indefinite"/>
+        </path>
+        </svg>
+    </div>
+
+    <div id="books"></div>
+
+<div class="container">
+
+    <div id="bookFull"></div>
+
 </div>
-<div id="books"></div>
-<div id="bookFull"></div>
 
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/underscore/underscore.js"></script>
@@ -55,20 +68,29 @@
 
 <script id="bookFullTemplate" type="text/template">
     <hr>
-    <ul>
-        <% _.each(subjects.noubomn, function(noubomnSubject) { %>
-            <li class="emneord"><%= noubomnSubject.prefLabel %></li>
-        <% }); %>
-    </ul>
-    <h2><%= title %></h2>
-    <small><%= authors %> (<%= publisher %>)</small>
-    <p><img src="<%= cover %>" alt=""></p>
-    <p><%= description %></p>
-    <p><strong>Emneord:</strong></p>
+    <div class="container">
+        <h1><%= mainTitle %></h1>
+        <h4><%= subTitle.capitalizeFirstLetter() %></h4>
+        <p>
+            <small>Author(s): <%= authors %> (Publisher: <%= publisher %>)</small>
+        </p>
+        <p><%= desc %></p>
+        <p class="text-center">
+            <% _.each(subjects.noubomn, function(noubomnSubject) { %>
+                <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+            <% }); %>
+        </p>
+    </div>
 </script>
 
 <script type="text/javascript">
-// (function() {
+
+// Extending String so that we can easily capitalize the first letter
+String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+(function() {
 
 // ---------------------------------------- DEFINE MODEL + COLLECTION
 
@@ -79,7 +101,7 @@ var Book = Backbone.Model.extend({
         authors: '',
         publisher: '',
         cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita rem explicabo nihil, harum sint sunt aliquam, nemo iste impedit eos voluptatum sed. Excepturi eaque quod ullam culpa praesentium beatae distinctio, voluptatem, illum accusamus cum corporis, at perferendis amet? Voluptatem iste, architecto ut.'
+        desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita rem explicabo nihil, harum sint sunt aliquam, nemo iste impedit eos voluptatum sed. Excepturi eaque quod ullam culpa praesentium beatae distinctio, voluptatem, illum accusamus cum corporis, at perferendis amet? Voluptatem iste, architecto ut.'
     }
 });
 
@@ -176,6 +198,11 @@ var BookFullView = Backbone.View.extend({
             // Store in model
             this.model.set('authors', authors);
 
+            // The titles sometimes comes in as "Main title : subtitle : third title". We want that to display as mainTitle:"Main title" and the rest as restTitle:"subtitle : third title". In other words: Keep everything before the first " : " as the main title, and add the rest up as the subtitle.
+            var titles = this.model.get('title').split(' : ');
+            this.model.set('mainTitle', titles[0]);
+            this.model.set('subTitle', titles.splice(1).join(' : '));
+
             // Create template function
             template = _.template($('#bookFullTemplate').html());
             // Give data to template function and produce html
@@ -185,7 +212,7 @@ var BookFullView = Backbone.View.extend({
             // Give the element an id
             this.$el.attr('id', 'bookFull'+this.model.get('id'));
             // Give each emneord element a data-url and a data-emneord attribute
-            _.each(this.$('li.emneord'), function(el, i, li) {
+            _.each(this.$('.emneord'), function(el, i, li) {
                 var $listItem = $(el);
                 // Give data-emneord
                 $listItem.attr('data-emneord', $listItem.text());
@@ -203,6 +230,7 @@ var BookFullView = Backbone.View.extend({
     // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
+        console.log($li);
         // Change URL and trigger route handler
         router.navigate($li.attr('data-url'), {
             trigger: true,
@@ -330,7 +358,7 @@ var router = new AppRouter({
 // Tell backbone to start listening
 Backbone.history.start();
 
-// })();
+})();
 
 </script>
 

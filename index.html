@@ -231,7 +231,6 @@ var BookFullView = Backbone.View.extend({
     // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
-        console.log($li);
         // Change URL and trigger route handler
         router.navigate($li.attr('data-url'), {
             trigger: true,

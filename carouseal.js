@@ -14,7 +14,6 @@ var carouSeal= (function () {
 		return Math.cos(deg*Math.PI/180);
 	}
 	
-
 	function panCarousel(xpos,velocity){
 
 		var panwidth = carouselmidpoint;
@@ -38,9 +37,10 @@ var carouSeal= (function () {
 			
 	}
 
+
 	function setActiveItem(){
 
-		//Set active cover - the cover that has degree ~ 0 (facing front)
+		//Set active cover - find the cover that has degree ~ 0 (facing front)
 		var mindist = Infinity; //We needed a somewhat high number, ok?
 		var	mindistkey = -1;
 		var currentcover = activeitem;
@@ -95,9 +95,9 @@ var carouSeal= (function () {
 					return false;
 				}
 			});
-
-			rotate=-items.deg[cover];
 			
+			rotate=-items.deg[cover];
+
 		}
 
 		else {
@@ -133,20 +133,20 @@ var carouSeal= (function () {
 		
 		lock = false;
 		screenwidth = $(window).width();
-		screenmid = round(screenwidth/2,1);
 		resolutionfactor = 1920/screenwidth;
 
 		carouselwidth = $myCarousel.width();
+		carouselheight = $myCarousel.height();
 		carouselmidpoint = round($myCarousel.position().left+($myCarousel.width()/2),1);
 		
 		activeitem=0;
 		if (initid !==undefined) activeitem=initid;
 		sensitivity= 350*(screenwidth/1920);
 		rotatetime = 600;
-		side = round($myCarousel.height()/1.3,2);
+		itemwidth = round($myCarousel.height()/1.3,2);
 		sector = 360/$imgs.length;
-		radius = side/2/degTan(sector/2);
-		circumference = side*$imgs.length;
+		radius = itemwidth/2/degTan(sector/2);
+		circumference = itemwidth*$imgs.length;
 		perspective = 14000/$imgs.length/resolutionfactor;
 		rotated = 0;
 
@@ -162,6 +162,7 @@ var carouSeal= (function () {
 		
 		//Add images back to div with new structure
 		var rotate = 0;
+		var balle = [];
 		$imgs.each(function(i){
 
 			items.deg.push(rotate);
@@ -170,16 +171,32 @@ var carouSeal= (function () {
 			
 			//Add transforms to elements, 
 
-			$myCarousel.find(".carouseal_carousel").append('<div class="carouseal_element" style="width:'+side+'px; transform: rotateY('+rotate+'deg) translateZ('+radius+'px); -webkit-transform: rotateY('+rotate+'deg) translateZ('+radius+'px);"></div>');
+			$myCarousel.find(".carouseal_carousel").append('<div class="carouseal_element" style="width:'+itemwidth+'px; transform: rotateY('+rotate+'deg) translateZ('+radius+'px); -webkit-transform: rotateY('+rotate+'deg) translateZ('+radius+'px);"></div>');
 	
 			//Add images
-			$img.css({"height":"100%"});
+			$img.addClass("carouseal_image");
 			$(".carouseal_element").eq(i).append($img);
-				
-			//If images have ids add them to carousel_element members
+
+			//If images have ids add them to carousel_element item div (the parent of the image)
 			$(".carouseal_element").eq(i).attr('id',$img.attr("id"));
 			items.imgid.push($img.attr("id"));
+
+
+			//This applies to images that are too wide (wider than itemwidth)
+			$img.one("load", function() {
+			 if ($(this).width()>itemwidth-10) {
+				 var oldheight = $(this).height();
+				 var oldwidth = $(this).height();
+				 var newwidth = itemwidth-20;
+				 var newheight = oldheight/(oldwidth/newwidth);
 			
+				$(this).css({
+					"width":newwidth,
+					"height":newheight
+				});
+			 }
+			});
+				
 			//Debug
 			$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'</div>');
 
@@ -190,7 +207,7 @@ var carouSeal= (function () {
 		$(".carouseal_carousel").css ({
 			"-webkit-transform":"translateZ("+(-radius)+"px)",
 			"transform":"translateZ("+(-radius)+"px)",
-			"width":side
+			"width":itemwidth
 		});
 
 		//Add perspective to carouseal_container
@@ -256,6 +273,14 @@ var carouSeal= (function () {
 	
 			}, 300, "blowfish");
 		});
+		console.log(balle);
+		
+	}
+
+
+	//This function is for the images that are to wide for the carousel
+	function resizeWideImages(){
+	
 
 	}
 

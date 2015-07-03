@@ -1,6 +1,5 @@
 /*Hammer.js*/
 #hammer_overlay{
-border: 1px red solid;
     position:absolute;
     z-index:1000;
     height:100%;
@@ -47,10 +46,18 @@ border: 1px red solid;
 
 .carouseal_element{
 	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	top:0;
 	height:100%; 
 	box-sizing: border-box;
 	-webkit-transform-style: preserve-3d;
 	transform-style: preserve-3d;
+}
+
+.carouseal_image{
+	height:100%;
+	border:1px #cccccc solid;
 }
 /*------------------*/

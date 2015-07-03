@@ -15,48 +15,27 @@ var carouSeal= (function () {
 	}
 	
 
-	function panCarousel(x,d,c){
+	function panCarousel(xpos,velocity){
 
-		var mid = Math.round($(window).width()/2);
+		var panwidth = carouselmidpoint;
+		var exp = 0.8;
+		var projectionfactor = (Math.pow(panwidth,exp)-Math.pow(Math.abs(xpos-panwidth),exp))/Math.pow(panwidth,exp);
+		var speedreducer = 0.34;
 
-		if (d==2) direction="left";
-		if (d==4) direction="right";
-
-		if (direction!=currentdirection) {
-			currentdirection = direction;
-			originX=x;
-			
-		}
-		
-		//console.log(currentdirection,x,originX,x-originX);
-		
-	
-		//var speedreducer = 0.05;
-		//var rotate = (180*(x-originX)*speedreducer)/(Math.PI*radius);
-		
-		
-		//console.log("center.x",c,"mid",mid,"x",x,"originx",originX,"c-mid",c-mid);
-
-		var edge = mid/2.25;
-		
-		projectedX = (Math.pow(edge,4)-Math.pow(Math.abs(c-mid),4))/Math.pow(edge,4);
-		
-		if (d==2) projectedX = projectedX*-1;
-
-		var rotate = 0.1;
-
-		console.log(projectedX,rotate);
+		var rotate = speedreducer*velocity*projectionfactor;
 
 		rotated=rotated+rotate;
 
-		console.log(rotated,rotate);
+		//console.log("velocity:",velocity,"projectionfactor",projectionfactor);
+
 
 		$(".carouseal_carousel").css({
-			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",	
+			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",
+			"-webkit-transition":"all 0ms ease-in-out",
 			"transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",
+			"transition":"all 0ms ease-in-out"
 		});
-
-		//updateCarouselDegrees(rotate);
+		updateCarouselDegrees(rotate);
 			
 	}
 
@@ -150,14 +129,24 @@ var carouSeal= (function () {
 
 	function createCarousel($myCarousel,$imgs) {
 
+		console.log('Carouseal honking!');
+		
+		lock = false;
+		screenwidth = $(window).width();
+		screenmid = round(screenwidth/2,1);
+		resolutionfactor = 1920/screenwidth;
+
+		carouselwidth = $myCarousel.width();
+		carouselmidpoint = round($myCarousel.position().left+($myCarousel.width()/2),1);
+
 		activecover=0;
-		sensitivity= 200;
+		sensitivity= 300*(screenwidth/1920);
 		rotatetime = 600;
 		side = round($myCarousel.height()/1.3,2);
 		sector = 360/$imgs.length;
 		radius = side/2/degTan(sector/2);
 		circumference = side*$imgs.length;
-		perspective = 8000/$imgs.length;
+		perspective = 14000/$imgs.length/resolutionfactor;
 		rotated = 0;
 
 		items = {};
@@ -213,39 +202,52 @@ var carouSeal= (function () {
 		//Register hammer.js events
 		// console.log('Hammer time!');
 
-		//Globals to be used with hammer pan
-		originX=0;
-		currentdirection="";
+		var hammer_options = {
+		  preventDefault: true
+		};
 
 		var hammerOverlay = document.getElementById('hammer_overlay');
-		var mc = new Hammer(hammerOverlay);
+		var mc = new Hammer(hammerOverlay,hammer_options);
 		
-		mc.on('swipeleft', function(ev) {
-			//console.log('swipeleft');
-			//rotateCarousel(ev.deltaX);
-		});
-		mc.on('swiperight', function(ev) {
-			//console.log('swiperight');
-			//rotateCarousel(ev.deltaX);
+		//Needed to prevent pan from interfering with swipe
+		mc.on('press',function(ev){
+			waitforswipe=true; setTimeout(function(){ waitforswipe = false;},200);
+			
 		});
 
-		mc.on('panstart',function(ev) {
-		 	originX=0;
-		 	//console.log('panstart',originX);
-		 });
+		mc.get('press').set({ time: 1});
 
-		 mc.on('pan',function(ev) {
-		 	//console.log('pan',ev);
-		 	panCarousel(ev.deltaX,ev.direction,ev.center.x);
-		 });
+		mc.on('swiperight swipeleft', function(ev) {
+			//Lock so pan can't be fired
+			lock = true; setTimeout(function(){lock=false;},rotatetime);
+			console.log('swipe');
+			rotateCarousel(ev.deltaX);
+		});
+
+		mc.on('panleft panright',function(ev) {
+		 	//Wait for swipe to finish and don't interfere with swipe
+			if (!lock && !waitforswipe) {
+				console.log('pan');
+		 		panCarousel(ev.center.x,(ev.velocityX*-1));
+			}
+		});
 	
-		 mc.on('panend',function(ev) {
-		 	//console.log('panend');
-		 	//setActiveCover();
-		 	//rotateCarousel(0,items.imgid[activecover]);
-		 });
-		//////////////////////////////////
+		mc.on('panend',function(ev) {
+			
+			if (!lock && !waitforswipe) {
+				console.log('panend');
+		 		setActiveCover();
+		 		rotateCarousel(0,items.imgid[activecover]);
+			}
+		});
+		//////////////////////////////////	
+				
+		//Call init on resize
+		$( window ).resize(function() {
 
+			carouSeal.initCarousel(); 
+	
+		});
 	}
 
 	function createSlider(){
@@ -274,8 +276,6 @@ var carouSeal= (function () {
 	};
 
 	obj.initCarousel = function() {
-
-		// console.log('Carouseal honking!');
 
 		// traverse all nodes
 		carouSeal.element.each(function() {

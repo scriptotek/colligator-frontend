@@ -1,5 +1,6 @@
 /*Hammer.js*/
 #hammer_overlay{
+border: 1px red solid;
     position:absolute;
     z-index:1000;
     height:100%;

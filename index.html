@@ -115,6 +115,8 @@ var Books = Backbone.Collection.extend({
         var data = _.map(response.documents, function(val, ind, all) {
             if (val.cover===null) {
                 delete val.cover;
+            } else {
+            	val.cover = val.cover.thumb.url;
             }
             return val;
         });

@@ -261,6 +261,14 @@ var AppRouter = Backbone.Router.extend({
             // Update url
             self.navigate('cat/' + books._emneord + '/' + bookId);
         });
+
+        // Add listener for key left/right
+        $("#books").on('keyLeft', function(e) {
+        	router.spinCarouselLeft();
+        });
+        $("#books").on('keyRight', function(e) {
+        	router.spinCarouselRight();
+        });
     },
     routes: {
         'cat/:emneord': 'viewEmneord',
@@ -296,6 +304,30 @@ var AppRouter = Backbone.Router.extend({
     spinCarousel: function(bookId) {
         carouSeal.rotateTo('b'+bookId);
         this.navigate('cat/' + books._emneord + '/' + bookId);
+    },
+    spinCarouselLeft: function() {
+    	var rotateTo;
+    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
+    	if (indexOfCurrentBook === 0) {
+    		// Back to the beginning
+    		rotateTo = this.books.length - 1;
+    	} else {
+    		rotateTo = indexOfCurrentBook - 1;
+    	}
+    	var rotateToBookId = this.books.at(rotateTo).get('id');
+    	this.spinCarousel(rotateToBookId);
+    },
+    spinCarouselRight: function() {
+    	var rotateTo;
+    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
+    	if (indexOfCurrentBook + 1 === this.books.length) {
+    		// Back to the beginning
+    		rotateTo = 0;
+    	} else {
+    		rotateTo = indexOfCurrentBook + 1;
+    	}
+    	var rotateToBookId = this.books.at(rotateTo).get('id');
+    	this.spinCarousel(rotateToBookId);
     },
     viewEmneord: function(emneord) {
         var self = this;
@@ -335,6 +367,21 @@ var AppRouter = Backbone.Router.extend({
 // ---------------------------------------- CREATE EVENT AGGREGATOR
 
 var eventAggregator = _.extend({}, Backbone.Events);
+
+// ---------------------------------------- LISTEN TO KEY LEFT/RIGHT
+
+$(document).keyup(function(e) {
+	switch(e.which) {
+		case 37: // left
+			$('#books').trigger('keyLeft');
+		break;
+
+		case 39: // right
+			$('#books').trigger('keyRight');
+		break;
+	}
+	e.preventDefault();
+});
 
 // ---------------------------------------- CREATE COLLECTION
 

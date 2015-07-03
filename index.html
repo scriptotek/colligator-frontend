@@ -248,7 +248,7 @@ var AppRouter = Backbone.Router.extend({
 
         // Add listener for the rotate-event
         var self = this;
-        $("#books").on('listenForActivecover', function (e, bookId) {
+        $("#books").on('listenForActiveItem', function (e, bookId) {
             // We gave the images ids like "b345". We just want the number:
             bookId = bookId.substr(1);
             // Get the bookModel with this bookId

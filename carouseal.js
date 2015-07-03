@@ -20,14 +20,13 @@ var carouSeal= (function () {
 		var panwidth = carouselmidpoint;
 		var exp = 0.8;
 		var projectionfactor = (Math.pow(panwidth,exp)-Math.pow(Math.abs(xpos-panwidth),exp))/Math.pow(panwidth,exp);
-		var speedreducer = 0.34;
+		var speedfactor= 0.34;
 
-		var rotate = speedreducer*velocity*projectionfactor;
+		var rotate = speedfactor*velocity*projectionfactor;
 
 		rotated=rotated+rotate;
 
 		//console.log("velocity:",velocity,"projectionfactor",projectionfactor);
-
 
 		$(".carouseal_carousel").css({
 			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+rotated+"deg)",
@@ -39,12 +38,12 @@ var carouSeal= (function () {
 			
 	}
 
-	function setActiveCover(){
+	function setActiveItem(){
 
 		//Set active cover - the cover that has degree ~ 0 (facing front)
 		var mindist = Infinity; //We needed a somewhat high number, ok?
 		var	mindistkey = -1;
-		var currentcover = activecover;
+		var currentcover = activeitem;
 
 		$.each(items.deg, function(key, val) {
 			
@@ -57,8 +56,8 @@ var carouSeal= (function () {
 		});
 
 		if (currentcover!=mindistkey) {
-			activecover = mindistkey;
-			carouSeal.element.trigger('listenForActivecover', items.imgid[mindistkey]);
+			activeitem = mindistkey;
+			carouSeal.element.trigger('listenForActiveItem', items.imgid[mindistkey]);
 			//console.log('Change in active cover: ' + mindistkey);
 		}
 	}
@@ -70,17 +69,19 @@ var carouSeal= (function () {
 			items.deg[key] = (items.deg[key] + rotate) % 360;
 		
 		});	
-		setActiveCover();
+		setActiveItem();
 	}
 
-	function rotateCarousel(x,id) {
-
+	function rotateCarousel(x,id,zerotime) {
 
 		//console.log("rotateCarousel",x,id);
 
 		var rotate = 0;
 		var rdur = 200;
+
+		if (zerotime !==undefined) rdur = 0;
 	
+		//Get cover from id
 		if (id!==undefined) {
 
 			$.each(items.imgid, function(key, val) {
@@ -91,17 +92,12 @@ var carouSeal= (function () {
 				}
 			});
 
-			//Get cover from id
-
-			//console.log(":::::",cover);
-
 			rotate=-items.deg[cover];
-			//console.log("XXXXXX",cover,-items.deg[cover]);
+			
 		}
 
-
 		else {
-			//Sensitivity is how many pixels it takes to move one image
+			//Sensitivity is how many pixels it takes to swipe one image
 			if (Math.abs(x)<sensitivity && x<0) x=-sensitivity;
 			else if (Math.abs(x)<sensitivity && x>0) x=sensitivity;
 
@@ -127,7 +123,7 @@ var carouSeal= (function () {
 
 	}
 
-	function createCarousel($myCarousel,$imgs) {
+	function createCarousel($myCarousel,$imgs,initid) {
 
 		console.log('Carouseal honking!');
 		
@@ -138,8 +134,9 @@ var carouSeal= (function () {
 
 		carouselwidth = $myCarousel.width();
 		carouselmidpoint = round($myCarousel.position().left+($myCarousel.width()/2),1);
-
-		activecover=0;
+		
+		activeitem=0;
+		if (initid !==undefined) activeitem=initid;
 		sensitivity= 300*(screenwidth/1920);
 		rotatetime = 600;
 		side = round($myCarousel.height()/1.3,2);
@@ -170,7 +167,6 @@ var carouSeal= (function () {
 			//Add transforms to elements, 
 
 			$myCarousel.find(".carouseal_carousel").append('<div class="carouseal_element" style="width:'+side+'px; transform: rotateY('+rotate+'deg) translateZ('+radius+'px); -webkit-transform: rotateY('+rotate+'deg) translateZ('+radius+'px);"></div>');
-			
 	
 			//Add images
 			$img.css({"height":"100%"});
@@ -236,18 +232,28 @@ var carouSeal= (function () {
 			
 			if (!lock && !waitforswipe) {
 				console.log('panend');
-		 		setActiveCover();
-		 		rotateCarousel(0,items.imgid[activecover]);
+		 		setActiveItem();
+		 		rotateCarousel(0,items.imgid[activeitem]);
 			}
 		});
-		//////////////////////////////////	
-				
-		//Call init on resize
-		$( window ).resize(function() {
 
-			carouSeal.initCarousel(); 
+		//If initid is defined spin carousel to that item
+		
+		if (initid!==undefined) {
+			console.log(initid,items.imgid[initid]);
+			rotateCarousel(0,items.imgid[initid],1);
+		}
+
+
+		//////////////////////////////////	
+
+		$(window).resize(function () {
+			waitForFinalEvent(function(){
+				carouSeal.initCarousel(activeitem);
 	
+			}, 300, "blowfish");
 		});
+
 	}
 
 	function createSlider(){
@@ -268,15 +274,15 @@ var carouSeal= (function () {
 	};
 
 
-	obj.getActiveCover = function() {
+	obj.getActiveitem = function() {
 
 		
-		return items.imgid[activecover];
+		return items.imgid[activeitem];
 		
 	};
 
-	obj.initCarousel = function() {
-
+	obj.initCarousel = function(initid) {
+	
 		// traverse all nodes
 		carouSeal.element.each(function() {
 
@@ -297,7 +303,7 @@ var carouSeal= (function () {
 			//Else make static row of 2-d images
 			//else createSlider($myCarousel,$imgs);
 
-			createCarousel($myCarousel,$imgs)
+			createCarousel($myCarousel,$imgs,initid);
 		});
 			
 		carouSeal.element.trigger('carouselDone');
@@ -306,4 +312,18 @@ var carouSeal= (function () {
 	
 	return obj;
 
+})();
+
+//Avoid resize loop madness with custom function (thank's stackoverflow)
+var waitForFinalEvent = (function () {
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
 })();

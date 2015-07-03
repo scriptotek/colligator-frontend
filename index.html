@@ -168,8 +168,6 @@ var BooksView = Backbone.View.extend({
     initialize: function(options) {
         // Store reference to subviews created in render(), as we need to remove them when rerendering
         this._views = [];
-        // Store reference to the event aggregator
-        this.eventAggregator = options.eventAggregator;
 
     },
     removeOldViews: function() {
@@ -243,8 +241,6 @@ var BookFullView = Backbone.View.extend({
 
 var AppRouter = Backbone.Router.extend({
     initialize: function(options) {
-        // Store reference to global event bus
-        this.eventAggregator = options.eventAggregator;
         // Store reference to book collection
         this.books = options.books;
 
@@ -364,10 +360,6 @@ var AppRouter = Backbone.Router.extend({
     }
 });
 
-// ---------------------------------------- CREATE EVENT AGGREGATOR
-
-var eventAggregator = _.extend({}, Backbone.Events);
-
 // ---------------------------------------- LISTEN TO KEY LEFT/RIGHT
 
 $(document).keyup(function(e) {
@@ -390,15 +382,13 @@ var books = new Books();
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
 
 var booksView = new BooksView({
-    model: books,
-    eventAggregator: eventAggregator
+    model: books
 });
 
 var bookFullView = new BookFullView();
 
 // Create an instance of the router
 var router = new AppRouter({
-    eventAggregator: eventAggregator,
     books: books
 });
 

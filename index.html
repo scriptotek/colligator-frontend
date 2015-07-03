@@ -86,6 +86,8 @@
 
 <script type="text/javascript">
 
+"use strict";
+
 // Extending String so that we can easily capitalize the first letter
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -131,6 +133,9 @@ var BookView = Backbone.View.extend({
     tagName: 'li',
     className: 'book',
     render: function() {
+
+        var template; // Will hold the compiled template
+        var html; // Will hold the result of template(data)
 
         // Create template function
         template = _.template($('#bookListTemplate').html());

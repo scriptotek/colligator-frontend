@@ -327,18 +327,23 @@ var AppRouter = Backbone.Router.extend({
     },
     viewEmneord: function(emneord) {
         var self = this;
-        // Load carousel
-        this.newCarousel(emneord);
-        // When that's done:
-        $("#books").one('carouselDone', function() {
-            // Render bookFullView
-            bookFullView.model = books.at(0);
-            bookFullView.render();
-            // Replace url
-            self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
-                replace: true
-            });
-        });
+        // Load carousel IF new emneord
+        if (books._emneord !== emneord) {
+        	this.newCarousel(emneord);
+        	// When that's done:
+        	$("#books").one('carouselDone', function() {
+        	    // Render bookFullView
+        	    bookFullView.model = books.at(0);
+        	    bookFullView.render();
+        	    // Replace url
+        	    self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
+        	        replace: true
+        	    });
+        	});
+        } else {
+        	// Else we just spin to the first book in the collection
+        	this.spinCarousel(this.books.at(0).get('id'));
+        }
     },
     viewBookById: function(emneord,bookId) {
         var self = this;

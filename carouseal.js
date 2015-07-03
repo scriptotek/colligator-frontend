@@ -230,11 +230,10 @@ var carouSeal= (function () {
 	
 		mc.on('panend',function(ev) {
 			
-			if (!lock && !waitforswipe) {
-				console.log('panend');
-		 		setActiveItem();
-		 		rotateCarousel(0,items.imgid[activeitem]);
-			}
+			console.log('panend');
+			setActiveItem();
+		 	rotateCarousel(0,items.imgid[activeitem]);
+			
 		});
 
 		//If initid is defined spin carousel to that item

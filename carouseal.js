@@ -57,8 +57,12 @@ var carouSeal= (function () {
 
 		if (currentcover!=mindistkey) {
 			activeitem = mindistkey;
-			carouSeal.element.trigger('listenForActiveItem', items.imgid[mindistkey]);
-			//console.log('Change in active cover: ' + mindistkey);
+
+			//Wait until rotate is finished to send activeitem update to dom
+			setTimeout(function(){
+				carouSeal.element.trigger('listenForActiveItem', items.imgid[mindistkey]);
+				//console.log('Change in active cover: ' + mindistkey);
+			},rotatetime/4);
 		}
 	}
 
@@ -137,7 +141,7 @@ var carouSeal= (function () {
 		
 		activeitem=0;
 		if (initid !==undefined) activeitem=initid;
-		sensitivity= 300*(screenwidth/1920);
+		sensitivity= 350*(screenwidth/1920);
 		rotatetime = 600;
 		side = round($myCarousel.height()/1.3,2);
 		sector = 360/$imgs.length;
@@ -230,11 +234,10 @@ var carouSeal= (function () {
 	
 		mc.on('panend',function(ev) {
 			
-			if (!lock && !waitforswipe) {
-				console.log('panend');
-		 		setActiveItem();
-		 		rotateCarousel(0,items.imgid[activeitem]);
-			}
+			console.log('panend');
+			setActiveItem();
+		 	rotateCarousel(0,items.imgid[activeitem]);
+			
 		});
 
 		//If initid is defined spin carousel to that item

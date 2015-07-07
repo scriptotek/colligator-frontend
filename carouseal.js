@@ -22,7 +22,7 @@ var carouSeal= (function () {
 		obj.css("-o-transform") ||
 		obj.css("transform");
 
-		console.log(matrix);
+		//console.log(matrix);
 
 		var values = matrix.split('(')[1].split(')')[0].split(',');
 		
@@ -30,30 +30,42 @@ var carouSeal= (function () {
 
 		while (angle < 0) angle +=360;
 
+		if (angle>=360) angle = 0;
+
 		return angle;
 
 	}
 
-
-	//Adjust covers so that front cover has excactly zero degrees and set activeitem
-	function adjustItems(){
-		var rotation = getRotation($("#carouseal_carousel"));
-		if (rotation > 0) rotation = Math.abs(rotation-360); 
+	function setActiveItem(){
 		
-		activeitem = Math.round(rotation/sector);
-
-		setTimeout(function(){
-			carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
-		},rotatetime/4);
-
-		var rotate = rotation-(activeitem*sector);
+		var deg= getRotation($("#carouseal_carousel"));
+		if (deg > 0) deg = Math.abs(deg-360); 
 		
-		$(".carouseal_carousel").css({
-			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"-webkit-transition":"all 100ms ease-in-out",
-			"transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"transition":"all 100ms ease-in-out"
-		});
+		activeitem = Math.abs(Math.round(deg/sector));
+		
+		//console.log("setting active item",activeitem);
+	
+		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
+	}
+
+
+	//Adjust covers so that front cover has excactly zero degrees - only used with panning
+	function adjustItems(duration){
+
+		//console.log("adjustitems");
+
+		var deg= getRotation($("#carouseal_carousel"));
+		if (deg > 0) deg = Math.abs(deg-360); 
+
+		var precisedeg = sector*activeitem; 
+		var rotate = deg-precisedeg;
+
+		//console.log("::::::",rotated,rotated%360);
+		//console.log(deg,precisedeg,rotate);
+		rotated = rotated+rotate;
+			
+		addTransforms(duration);
+	
 	}
 
 	function panCarousel(xpos,velocity){
@@ -64,104 +76,137 @@ var carouSeal= (function () {
 		var speedfactor= 0.34;
 
 		var rotate = speedfactor*velocity*projectionfactor;
+	
 
+		//console.log(rotated,"+",rotate,"==",rotated+rotate);
 
-		$(".carouseal_carousel").css({
-			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"-webkit-transition":"all 0ms ease-in-out",
-			"transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"transition":"all 0ms ease-in-out"
-		});
+		rotated = rotated + rotate;
+		
+		addTransforms(0);
 			
 	}
 
 	//Make sure that any rotation of the carousel from point a to b follows least degree (to rotate in the right direction)
-	function shortestRotation(id){
-		
-		var rotate = 0;
-		var destdeg = id*sector;
+	function shortestRotation(item){
 
-		var leftdeg = destdeg-360; 
-		var rightdeg = destdeg;
+		var leftdistance = activeitem+(carousellength-item);
+		var rightdistance = activeitem-item;
 
-		//Find shortest absolute distance 
-		if (Math.abs(leftdeg)<Math.abs(rightdeg)) rotate = leftdeg;
-		else rotate = rightdeg;
-			
-		console.log("shortestRotation",id,destdeg,leftdeg,rightdeg,rotate);
-		
-		return rotate*(-1);
+		//console.log(activeitem,item,leftdistance,rightdistance);
+
+		if (Math.abs(leftdistance)<Math.abs(rightdistance)) {
+
+			//console.log("LEFT",leftdistance,leftdistance*sector);
+
+			var rotate = leftdistance*sector; 
+
+			if (rotate<-180) rotate = rotate +360;
+		}
+		else {
+			//console.log("RIGHT",rightdistance,rightdistance*sector);
+
+			var rotate = rightdistance*sector; 
+			if (rotate>180) rotate = rotate -360;
+		}
+
+		return rotate;
+
 	}
 
-	function rotateCarousel(x,id,zerotime) {
-		rotating=true;
+	function swipeCarousel(x,duration){
 
-		console.log("rotateCarousel");
+		//console.log('swipe',x,duration);
 
-		var rotate = 0;
-		var rdur = 200;
+		//Swipe		
+		//Sensitivity is how many pixels it takes to swipe one image
+		if (Math.abs(x)<sensitivity && x<0) x=-sensitivity;
+		else if (Math.abs(x)<sensitivity && x>0) x=sensitivity;
 
-		if (zerotime !==undefined) rdur = 0;
-	
-		//Script-based rotation, not from gestures
-		if (id!==undefined) {
+		var numOfCoversToMove = Math.round(x/sensitivity);
 
-			console.log("::",id);
-			$.each(items.imgid, function(key, val) {
+		rotate=(sector*numOfCoversToMove);
 
-				if (val == id) {
-					newrotationkey = key;
-					return false;
-				}
-			});
+		rotated=rotated+rotate;
 
-			console.log("newrotationkey",newrotationkey);
+		addTransforms(duration);
 
-			rotate=shortestRotation(newrotationkey);
+		$("#carouseal_carousel").one('transitionend webkitTransitionEnd oTransitionEnd otransitionend',function() {
 
-			var checkRotationDone = setInterval(function(){
-
-				if (!rotating){
-					adjustItems();
-					clearInterval(checkRotationDone);
-					//console.log(activeitem);
-				}
-
-			},10);
-				
-		}
-
-		else {
+			//console.log('rotation finished in swipe');
 			
-			//Sensitivity is how many pixels it takes to swipe one image
-			if (Math.abs(x)<sensitivity && x<0) x=-sensitivity;
-			else if (Math.abs(x)<sensitivity && x>0) x=sensitivity;
+			setActiveItem();
+			
+			panlock = false;
 
-			var numOfCoversToMove = Math.round(x/sensitivity);
-
-			rdur=rotatetime;
-
-			rotate=(sector*numOfCoversToMove);
-		}
-
-		$(".carouseal_carousel").css({
-			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"-webkit-transition":"all "+rdur+"ms ease-in-out",
-			"transform":"translateZ("+(-radius)+"px) rotateY("+(getRotation($("#carouseal_carousel"))+rotate)+"deg)",
-			"transition":"all "+rdur+"ms ease-in-out"
+			
 		});
 
-		setTimeout(function(){
-			rotating=false;	
-		},rdur);
+	}
 
+	function addTransforms(duration){
+
+		//console.log('adding transforms');
+
+		$("#carouseal_carousel").css({
+			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(rotated)+"deg)",
+			"-webkit-transition":"all "+duration+"ms ease-in-out",
+			"transform":"translateZ("+(-radius)+"px) rotateY("+(rotated)+"deg)",
+			"transition":"all "+duration+"ms ease-in-out"
+		});
+	}
+
+	//Used by rotateTo from user added left/right-buttons, keybinds etc.
+	function rotateCarousel(id,duration) {
+
+		if (duration===undefined) duration=0;
+
+		//console.log("rotateCarousel",id);
+
+		$.each(items.imgid, function(key, val) {
+
+			if (val == id) {
+				item = key;
+				return false;
+			}	
+		});
+
+		//console.log("newrotationkey",item);
+
+		rotate=shortestRotation(item);
+	
+		rotated = rotated + rotate;
+
+		//Need timeout here to force processing of DOM first
+		setTimeout(function(){
+
+			if (duration){
+
+				addTransforms(duration);
+
+				$("#carouseal_carousel").one('transitionend webkitTransitionEnd oTransitionEnd otransitionend',function() {
+
+					//console.log('rotation finished in rotate');
+					
+					setActiveItem();
+				
+				});
+
+			}
+			else {
+
+				addTransforms(0);
+				setActiveItem();
+			}
+		});
+		////
 	}
 
 	function createCarousel($myCarousel,$imgs,initid) {
 
 		console.log('Carouseal honking!');
 		
-		lock = false;
+		panlock = false;
+		waitforpan = false;
 		screenwidth = $(window).width();
 		resolutionfactor = 1920/screenwidth;
 
@@ -170,16 +215,18 @@ var carouSeal= (function () {
 		carouselmidpoint = round($myCarousel.position().left+($myCarousel.width()/2),1);
 		
 		rotating=false;
-		
+		rotated=0;
+
 		activeitem=0;
 		if (initid !==undefined) activeitem=initid;
 		sensitivity= 350*(screenwidth/1920);
-		rotatetime = 600;
+		rotateslow = 500;
+		rotatefast= 200;
 		itemwidth = round($myCarousel.height()/1.3,2);
-		sector = 360/$imgs.length;
+		carousellength = $imgs.length;
+		sector = 360/carousellength;
 		radius = itemwidth/2/degTan(sector/2);
-		circumference = itemwidth*$imgs.length;
-		perspective = 14000/$imgs.length/resolutionfactor;
+		perspective = 14000/carousellength/resolutionfactor;
 
 		items = {};
 		items.imgid = [];
@@ -253,51 +300,54 @@ var carouSeal= (function () {
 		var hammerOverlay = document.getElementById('hammer_overlay');
 		var mc = new Hammer(hammerOverlay,hammer_options);
 		
-		//Needed to prevent pan from interfering with swipe
+		//This is to let swipe be prioritized to pan
 		mc.on('press',function(ev){
 			waitforswipe=true; setTimeout(function(){ waitforswipe = false;},200);
-			
+			//console.log("waitforswipe",waitforswipe);
 		});
+		//
 
 		mc.get('press').set({ time: 1});
-	
+		
 		mc.on('swiperight swipeleft', function(ev) {
-			//Lock so pan can't be fired
-			lock = true; setTimeout(function(){lock=false;},rotatetime);
-			console.log('swipe');
-			rotateCarousel(ev.deltaX);
+			
+			//console.log("swipe waitforpan",waitforpan);
+			
+			
+			if (!waitforpan) {
+				//Lock so pan can't be fired before swipe is finished
+				panlock = true;
+				swipeCarousel(ev.deltaX,rotateslow);
+			}
 		});
 	
 		mc.on('panleft panright',function(ev) {
-		 	//Wait for swipe to finish and don't interfere with swipe
-			if (!lock && !waitforswipe) {
-				console.log('pan');
+			
+			//console.log("pan waitforswipe",waitforswipe);
+			if (!panlock && !waitforswipe) {
+				waitforpan=true; 
 				panCarousel(ev.center.x,(ev.velocityX*-1));
 			}
 		});
 		
 		mc.on('panend',function(ev) {
-			
-			console.log('panend');
-			
-			var checkRotationDone = setInterval(function(){
+			//console.log('panend panlock',panlock);
+			//A little pause so a pan doesn't accidentally fire a swipe
+			setTimeout(function(){ waitforpan = false;},100);
+
+			if (!panlock) {
+				setActiveItem();
+				adjustItems(100);
+			}
 	
-				if (!rotating){
-
-					adjustItems();
-					clearInterval(checkRotationDone);
-					console.log("panend-->rotation finished");
-				}
-
-			},	10);
-			
 		});
-
+			
 		//If initid is defined spin carousel to that item
 		if (initid!==undefined) {
-			rotateCarousel(0,items.imgid[initid],1);
+			console.log('Rotating unpon init to',items.imgid[initid]);
+			rotateCarousel(items.imgid[initid]);
 		}
-
+		
 		//////////////////////////////////	
 	
 		$(window).resize(function () {
@@ -327,9 +377,7 @@ var carouSeal= (function () {
 
 
 	obj.rotateTo = function(id) {
-
-		 rotateCarousel(0,id);
-		
+		rotateCarousel(id,rotatefast);
 	};
 
 
@@ -373,7 +421,7 @@ var carouSeal= (function () {
 
 })();
 
-//Avoid resize loop madness with custom function (thank's stackoverflow)
+//Avoid resize loop madness with custom function (thanks stackoverflow)
 var waitForFinalEvent = (function () {
   var timers = {};
   return function (callback, ms, uniqueId) {

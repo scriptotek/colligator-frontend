@@ -75,7 +75,13 @@
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
         <p>
-            <small>Author(s): <%= authors %><br>Published by <%= publisher %> in <%= year %></small>
+        	<small>
+        		Forfatter(e): <%= authors %>
+        		<br>Utgitt av <%= publisher %> i <%= year %>
+        		        <% if (typeof(part_name) !== "undefined") { %>
+        					<br><%= part_no %> av <%= part_name %>.
+        		        <% } %>
+        	</small>
         </p>
         <p><%= desc %></p>
         <p class="text-center">
@@ -124,6 +130,8 @@ var Books = Backbone.Collection.extend({
             }
             return val;
         });
+
+        console.log(data);
 
         return data;
     }

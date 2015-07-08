@@ -85,9 +85,10 @@
         	<small>
         		Forfatter(e): <%= authors %>
         		<br>Utgitt av <%= publisher %> i <%= year %>
-        		        <% if (typeof(part_name) !== "undefined") { %>
-        					<br><%= part_no %> av <%= part_name %>.
-        		        <% } %>
+		        <% if (typeof(part_name) !== "undefined") { %>
+					<br><%= part_no %> av <%= part_name %>.
+		        <% } %>
+		        <br>Utlånsstatus: <%= holdings[0].circulation_status %>
         	</small>
         </p>
         <p><%= desc %></p>

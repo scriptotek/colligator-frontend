@@ -88,7 +88,17 @@
 		        <% if (typeof(part_name) !== "undefined") { %>
 					<br><%= part_no %> av <%= part_name %>.
 		        <% } %>
-		        <br>Utlånsstatus: <%= holdings[0].circulation_status %>
+		        <% if (holdings.length>0) { %>
+		        	<br>Eksemplarer:
+			        <ul>
+			        <% _.each(holdings, function(holding) { %>
+			        	<li>
+			        		Hylleplassering: <%= holding.callcode %>
+			        		<br>Utlånsstatus: <%= holding.circulation_status %>
+			        	</li>
+			        <% }); %>
+			        </ul>
+		        <% } %>
         	</small>
         </p>
         <p><%= desc %></p>

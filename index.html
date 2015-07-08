@@ -71,7 +71,9 @@
     <hr>
     <div class="container">
         <h1><%= mainTitle %></h1>
-        <h4><%= subTitle.capitalizeFirstLetter() %></h4>
+        <% if(typeof(subTitle) !== "undefined") { %>
+        	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
+        <% } %>
         <p>
             <small>Author(s): <%= authors %><br>Published by <%= publisher %> in <%= year %></small>
         </p>
@@ -204,10 +206,12 @@ var BookFullView = Backbone.View.extend({
             // Store in model
             this.model.set('authors', authors);
 
-            // The titles sometimes comes in as "Main title : subtitle : third title". We want that to display as mainTitle:"Main title" and the rest as restTitle:"subtitle : third title". In other words: Keep everything before the first " : " as the main title, and add the rest up as the subtitle.
+            // The titles sometimes comes in as "Main title : subtitle : third title". We want that to display as mainTitle:"Main title" and the rest as restTitle:"subtitle : third title". In other words: Keep everything before the first " : " as the main title, and add the rest up as the subtitle if there is anything else.
             var titles = this.model.get('title').split(' : ');
             this.model.set('mainTitle', titles[0]);
-            this.model.set('subTitle', titles.splice(1).join(' : '));
+            if (titles.length > 1) {
+            	this.model.set('subTitle', titles.splice(1).join(' : '));
+            }
 
             // Create template function
             template = _.template($('#bookFullTemplate').html());

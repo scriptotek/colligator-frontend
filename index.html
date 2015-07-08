@@ -123,8 +123,8 @@
         <% } %>
         <p>
         	<small>
-        		Forfatter(e): <%= authors %>
-        		<br>Utgitt av <%= publisher %> i <%= year %>
+        		Av: <%= authors %>
+        		<br><%= publisher %>, <%= year %>
 		        <% if (typeof(part_name) !== "undefined") { %>
 					<br><%= part_no %> av <%= part_name %>.
 		        <% } %>

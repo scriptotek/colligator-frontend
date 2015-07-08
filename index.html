@@ -141,7 +141,9 @@
 		        <% } %>
         	</small>
         </p>
-        <p><%= desc %></p>
+        <% if (typeof(description)!=="undefined") { %>
+        	<p><%= description.text %></p>
+        <% } %>
         <p class="text-center">
             <% _.each(subjects.noubomn, function(noubomnSubject) { %>
                 <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
@@ -169,8 +171,7 @@ var Book = Backbone.Model.extend({
         isbn: '',
         authors: '',
         publisher: '',
-        cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg',
-        desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita rem explicabo nihil, harum sint sunt aliquam, nemo iste impedit eos voluptatum sed. Excepturi eaque quod ullam culpa praesentium beatae distinctio, voluptatem, illum accusamus cum corporis, at perferendis amet? Voluptatem iste, architecto ut.'
+        cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg'
     }
 });
 
@@ -180,11 +181,15 @@ var Books = Backbone.Collection.extend({
     parse: function(response, options) {
 
         // In the Book model above we've set a default image for the cover. The API gives cover: null if it didn't find a cover. Backbone will replace our own placeholder if the API returns any value at all (including null) for the cover property. Hence, we delete the cover property if the value is null, so that our placeholder cover is kept.
+        // Also remove description if it's null
         var data = _.map(response.documents, function(val, ind, all) {
             if (val.cover===null) {
                 delete val.cover;
             } else {
             	val.cover = val.cover.thumb.url;
+            }
+            if (val.description===null) {
+            	delete val.description;
             }
             return val;
         });

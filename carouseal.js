@@ -44,6 +44,8 @@ var carouSeal= (function () {
 		activeitem = Math.abs(Math.round(deg/sector));
 		
 		//console.log("setting active item",activeitem);
+
+	//	console.log("HERRR:::",items.imgid[activeitem]);
 	
 		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
 	}
@@ -156,27 +158,56 @@ var carouSeal= (function () {
 	}
 
 	//Used by rotateTo from user added left/right-buttons, keybinds etc.
-	function rotateCarousel(id,duration) {
+	function rotateCarousel(id,duration,nextprev) {
+
+		console.log(id,nextprev);
 
 		if (duration===undefined) duration=0;
 
-		//console.log("rotateCarousel",id);
-
-		$.each(items.imgid, function(key, val) {
-
-			if (val == id) {
-				item = key;
-				return false;
-			}	
-		});
-
-		//console.log("newrotationkey",item);
-
-		rotate=shortestRotation(item);
+		//Next/prev
+		if (id===null && nextprev!==undefined) {
 	
+			
+			if (nextprev=="next") {
+				//At end
+				if (activeitem==carousellength-1) rotateCarousel(items.imgid[0],rotatefast);
+				//Normal
+				else rotateCarousel(items.imgid[(activeitem+1)],rotatefast);
+				return false;
+			}
+
+			if (nextprev=="prev"){
+
+				if (activeitem==0) rotateCarousel(items.imgid[(carousellength-1)],rotatefast);
+				//Normal
+				else rotateCarousel(items.imgid[(activeitem-1)],rotatefast);
+
+				return false;
+			}
+		}
+
+
+		//RotateTo
+		else {
+
+			//console.log("rotateCarousel",id);
+
+			$.each(items.imgid, function(key, val) {
+
+				if (val == id) {
+					item = key;
+					return false;
+				}	
+			});
+
+			//console.log("key from id",item);
+
+			rotate=shortestRotation(item);
+		}
+		
 		rotated = rotated + rotate;
 
-		//Need timeout here to force processing of DOM first
+		//Need timeout zero here because JAVASCRIPT REASONS
 		setTimeout(function(){
 
 			if (duration){
@@ -220,8 +251,8 @@ var carouSeal= (function () {
 		activeitem=0;
 		if (initid !==undefined) activeitem=initid;
 		sensitivity= 350*(screenwidth/1920);
-		rotateslow = 500;
-		rotatefast= 200;
+		rotateslow = 600;
+		rotatefast= 400;
 		itemwidth = round($myCarousel.height()/1.3,2);
 		carousellength = $imgs.length;
 		sector = 360/carousellength;
@@ -347,6 +378,20 @@ var carouSeal= (function () {
 			console.log('Rotating unpon init to',items.imgid[initid]);
 			rotateCarousel(items.imgid[initid]);
 		}
+		/*DEBUG PREV/NEXT
+		$(document).keyup(function(e) {
+			switch(e.which) {
+				case 13: // left
+					carouSeal.rotatePrev();
+				break;
+
+				case 27: // right
+					carouSeal.rotateNext();;
+				break;
+			}
+			e.preventDefault();
+		});
+		*/
 		
 		//////////////////////////////////	
 	
@@ -375,6 +420,16 @@ var carouSeal= (function () {
 
 	var obj = {};
 
+	obj.rotateNext = function(id) {
+		console.log('next');
+		rotateCarousel(null,rotatefast,"next");
+	};
+
+
+	obj.rotatePrev = function(id) {
+		rotateCarousel(null,rotatefast,"prev");
+		console.log('prev');
+	};
 
 	obj.rotateTo = function(id) {
 		rotateCarousel(id,rotatefast);

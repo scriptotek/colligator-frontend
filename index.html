@@ -117,6 +117,7 @@
 <script id="bookFullTemplate" type="text/template">
     <hr>
     <div class="container">
+        <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
         <h1><%= mainTitle %></h1>
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>

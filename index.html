@@ -27,6 +27,11 @@
 </head>
 <body>
 
+<div class="container">
+	<h1 class="text-center">Boksamling 42</h1>
+	<hr>
+</div>
+
 <div class="container-fluid">
 
     <div class="loader" title="0">
@@ -49,7 +54,9 @@
         </svg>
     </div>
 
-    <div id="books"></div>
+	<div id="books"></div>
+
+</div>
 
 <div class="container">
 
@@ -64,7 +71,7 @@
 <script src="carouseal.js"></script>
 
 <script id="bookListTemplate" type="text/template">
-<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
+	<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
 </script>
 
 <script id="bookFullTemplate" type="text/template">

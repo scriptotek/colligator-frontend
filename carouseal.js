@@ -41,13 +41,22 @@ var carouSeal= (function () {
 		var deg= getRotation($("#carouseal_carousel"));
 		if (deg > 0) deg = Math.abs(deg-360); 
 		
+		$(".carouseal_element img").eq(activeitem).removeClass("selected_image");
+		$(".carouseal_element img").eq(activeitem).addClass("deselected_image");
+
 		activeitem = Math.abs(Math.round(deg/sector));
 		
 		//console.log("setting active item",activeitem);
-
-	//	console.log("HERRR:::",items.imgid[activeitem]);
 	
 		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
+
+		//$(".carouseal_element img").eq(activeitem).addClass("carousel_image_center");
+	
+		$(".carouseal_element img").eq(activeitem).removeClass("deselected_image");
+		$(".carouseal_element img").eq(activeitem).addClass("selected_image");
+	
+
+		console.log($(".carouseal_element img").eq(activeitem));
 	}
 
 
@@ -160,7 +169,7 @@ var carouSeal= (function () {
 	//Used by rotateTo from user added left/right-buttons, keybinds etc.
 	function rotateCarousel(id,duration,nextprev) {
 
-		console.log(id,nextprev);
+		//console.log(id,nextprev);
 
 		if (duration===undefined) duration=0;
 
@@ -414,21 +423,17 @@ var carouSeal= (function () {
 
 
 
-
 	}
 
 
 	var obj = {};
 
-	obj.rotateNext = function(id) {
-		console.log('next');
+	obj.rotateNext = function() {
 		rotateCarousel(null,rotatefast,"next");
 	};
 
-
-	obj.rotatePrev = function(id) {
+	obj.rotatePrev = function() {
 		rotateCarousel(null,rotatefast,"prev");
-		console.log('prev');
 	};
 
 	obj.rotateTo = function(id) {

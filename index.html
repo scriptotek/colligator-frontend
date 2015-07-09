@@ -134,19 +134,11 @@
 		        <% if (typeof(part_name) !== "undefined") { %>
 					<br><%= part_no %> av <%= part_name %>.
 		        <% } %>
-		        <% if (holdings.length>0) { %>
-		        	<br>Eksemplarer:
-			        <ul>
-			        <% _.each(holdings, function(holding) { %>
-			        	<li>
-			        		Hylleplassering: <%= holding.callcode %>
-			        		<br>Utlånsstatus: <%= holding.circulation_status %>
-			        	</li>
-			        <% }); %>
-			        </ul>
-		        <% } %>
         	</small>
         </p>
+        <% if (holdings.length>0) { %>
+            <div class="alert alert-success"><%= availableText %></div>
+        <% } %>
         <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>
         <% } %>
@@ -304,6 +296,38 @@ var BookFullView = Backbone.View.extend({
             if (titles.length > 1) {
             	this.model.set('subTitle', titles.splice(1).join(' : '));
             }
+
+            // Decide what the availability-text will be. Four possible cases:
+            // 1. Book is in 42-collection and available.
+            // 2. Book is at UREAL and available.
+            // 3. Book is at UBO and available.
+            // 4. Book is not available.
+            var availableText = '';
+            // Check for case 1
+            var available42 = _.findWhere(this.model.get('holdings'), {
+                shelvinglocation: 'UREAL Samling 42',
+                circulation_status: 'Available'
+            });
+            // Check for case 2
+            var availableUREAL = _.findWhere(this.model.get('holdings'), {
+                sublocation: 'UREAL',
+                circulation_status: 'Available'
+            });
+            // Check for case 3
+            var availableUBO = _.findWhere(this.model.get('holdings'), {
+                location: 'UBO',
+                circulation_status: 'Available'
+            });
+            if (available42) {
+                availableText = 'Boken er tilgjengelig i 42-samlingen.';
+            } else if (availableUREAL) {
+                availableText = 'Boken er tilgjengelig hos Realfagsbiblioteket.';
+            } else if (availableUBO) {
+                availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket';
+            } else {
+                availableText = 'Boken er ikke tilgjengelig';
+            }
+            this.model.set('availableText', availableText);
 
             // Create template function
             template = _.template($('#bookFullTemplate').html());

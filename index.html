@@ -431,9 +431,9 @@ var AppRouter = Backbone.Router.extend({
         books.fetch({
             data: {
                 collection: 1,
-                real: emneord,
+                // real: emneord,
                 limit: 100,
-                q: '_exists_:subjects.noubomn'
+                q: '(subjects.noubomn.prefLabel:' + emneord + ' OR subjects.keywords.prefLabel:' + emneord + ')'
             },
             success: function() {
                 // Hide the loading icon
@@ -455,28 +455,10 @@ var AppRouter = Backbone.Router.extend({
         this.navigate('cat/' + books._emneord + '/' + bookId);
     },
     spinCarouselLeft: function() {
-    	var rotateTo;
-    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
-    	if (indexOfCurrentBook === 0) {
-    		// Back to the beginning
-    		rotateTo = this.books.length - 1;
-    	} else {
-    		rotateTo = indexOfCurrentBook - 1;
-    	}
-    	var rotateToBookId = this.books.at(rotateTo).get('id');
-    	this.spinCarousel(rotateToBookId);
+    	carouSeal.rotatePrev();
     },
     spinCarouselRight: function() {
-    	var rotateTo;
-    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
-    	if (indexOfCurrentBook + 1 === this.books.length) {
-    		// Back to the beginning
-    		rotateTo = 0;
-    	} else {
-    		rotateTo = indexOfCurrentBook + 1;
-    	}
-    	var rotateToBookId = this.books.at(rotateTo).get('id');
-    	this.spinCarousel(rotateToBookId);
+    	carouSeal.rotateNext();
     },
     viewEmneord: function(emneord) {
         var self = this;

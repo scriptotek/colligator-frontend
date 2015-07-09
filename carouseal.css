@@ -23,7 +23,7 @@
 /*------------------------*/
 
 
-/*Carouseal classes*/
+/*Carousel classes*/
 .carouseal_container{
 	overflow:hidden;
 	width:100%;
@@ -55,13 +55,33 @@
 	-webkit-transform-style: preserve-3d;
 	transform-style: preserve-3d;
 }
+/*picture row classes*/
+.carouseal_row{
+	height:70%;
+	width:100%;
+	box-sizing: border-box;
+	position: absolute;
+	margin: auto; 
+	top: 0; left: 0; bottom: 0; right: 0;
+	text-align: center;
+}
 
+.carouseal_row_element{
+	float:left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height:100%; 
+	box-sizing: border-box;
+}
+
+/*Generic classes */
 .carouseal_image{
 	height:90%;
 	border:1px #cccccc solid;
 }
 
-.selected_image{
+.carouseal_selected_image{
 	border: 1px solid #0099ff;
 	-moz-box-shadow: 0px 0px 35px #0099ff;
 	-webkit-box-shadow: 0px 0px 35px #0099ff;
@@ -70,13 +90,13 @@
 	-webkit-transition: box-shadow 0.2s ease-in-out;
 }
 
-.deselected_image {
+.carouseal_deselected_image {
    	border:1px #cccccc solid;
 	-moz-box-shadow: 0px 0px 0px;
 	-webkit-box-shadow: 0px 0px 0px;
 	box-shadow: 0px 0px 0px;
-	transition: box-shadow 0.15s ease-in-out;
-	-webkit-transition: box-shadow 0.15s ease-in-out;
+	transition: box-shadow 0.05s ease-in-out;
+	-webkit-transition: box-shadow 0.05s ease-in-out;
 }
 
 /*------------------*/

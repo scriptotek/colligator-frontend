@@ -41,22 +41,23 @@ var carouSeal= (function () {
 		var deg= getRotation($("#carouseal_carousel"));
 		if (deg > 0) deg = Math.abs(deg-360); 
 		
-		$(".carouseal_element img").eq(activeitem).removeClass("selected_image");
-		$(".carouseal_element img").eq(activeitem).addClass("deselected_image");
+		//Remove glow on previous center image
+		$(".carouseal_element img").eq(activeitem).removeClass("carouseal_selected_image");
+		$(".carouseal_element img").eq(activeitem).addClass("carouseal_deselected_image");
 
 		activeitem = Math.abs(Math.round(deg/sector));
 		
-		//console.log("setting active item",activeitem);
+		
+		//$(".carouseal_element img").eq(activeitem).addClass("carousel_image_center");
+		
+		//Add glow on center image
+		$(".carouseal_element img").eq(activeitem).removeClass("carouseal_deselected_image");
+		$(".carouseal_element img").eq(activeitem).addClass("carouseal_selected_image");
+	
+		console.log("setting active item",activeitem);
 	
 		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
 
-		//$(".carouseal_element img").eq(activeitem).addClass("carousel_image_center");
-	
-		$(".carouseal_element img").eq(activeitem).removeClass("deselected_image");
-		$(".carouseal_element img").eq(activeitem).addClass("selected_image");
-	
-
-		console.log($(".carouseal_element img").eq(activeitem));
 	}
 
 
@@ -169,7 +170,7 @@ var carouSeal= (function () {
 	//Used by rotateTo from user added left/right-buttons, keybinds etc.
 	function rotateCarousel(id,duration,nextprev) {
 
-		//console.log(id,nextprev);
+		console.log("rotateCarousel",id);
 
 		if (duration===undefined) duration=0;
 
@@ -209,7 +210,7 @@ var carouSeal= (function () {
 				}	
 			});
 
-			//console.log("key from id",item);
+			console.log("key from id",item);
 
 			rotate=shortestRotation(item);
 		}
@@ -217,16 +218,17 @@ var carouSeal= (function () {
 		rotated = rotated + rotate;
 
 		//Need timeout zero here because JAVASCRIPT REASONS
+		
 		setTimeout(function(){
-
+		
 			if (duration){
 
 				addTransforms(duration);
 
-				$("#carouseal_carousel").one('transitionend webkitTransitionEnd oTransitionEnd otransitionend',function() {
 
-					//console.log('rotation finished in rotate');
+				$("#carouseal_carousel").one('transitionend',function(e) {
 					
+					//console.log('rotation finished in rotate with duration');
 					setActiveItem();
 				
 				});
@@ -236,10 +238,53 @@ var carouSeal= (function () {
 
 				addTransforms(0);
 				setActiveItem();
-			}
+
+				//console.log('rotation finished in rotate with NO duration');
+			}	
 		});
 		////
 	}
+
+	function createRow($myCarousel,$imgs,initid){
+
+		console.log('createRow');
+
+		carouselwidth = $myCarousel.width();
+		carouselheight = $myCarousel.height();
+		carousellength = $imgs.length;
+
+		activeitem=0;
+		
+		if (initid !==undefined) activeitem=initid;
+
+		//Empty element
+		$myCarousel.empty();
+
+		//Add carousel structure to element
+		$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div id="carouseal_row" class="carouseal_row"></div></div>');
+
+		items = {};
+		items.imgid = [];
+		
+		//Add images back to div with new structure
+		$imgs.each(function(i){
+			
+			$img = $(this);
+			
+			$myCarousel.find(".carouseal_row").append('<div class="carouseal_row_element"></div>');
+
+			//Add images
+			$img.addClass("carouseal_image");
+			$(".carouseal_row_element").eq(i).append($img);
+
+			//If images have ids add them to carousel_element item div (the parent of the image)
+			$(".carouseal_row_element").eq(i).attr('id',$img.attr("id"));
+			items.imgid.push($img.attr("id"));
+
+		});
+		
+	}
+	
 
 	function createCarousel($myCarousel,$imgs,initid) {
 
@@ -387,7 +432,8 @@ var carouSeal= (function () {
 			console.log('Rotating unpon init to',items.imgid[initid]);
 			rotateCarousel(items.imgid[initid]);
 		}
-		/*DEBUG PREV/NEXT
+		//DEBUG PREV/NEXT
+		/*
 		$(document).keyup(function(e) {
 			switch(e.which) {
 				case 13: // left
@@ -406,49 +452,36 @@ var carouSeal= (function () {
 	
 		$(window).resize(function () {
 			waitForFinalEvent(function(){
-				carouSeal.initCarousel(activeitem);
+		
+				carouSeal.initCarousel(items.imgid[activeitem]);
 	
 			}, 300, "blowfish");
 		});
 	}
 
 
-	//This function is for the images that are to wide for the carousel
-	function resizeWideImages(){
-	
-
-	}
-
-	function createSlider(){
-
-
-
-	}
-
-
 	var obj = {};
 
 	obj.rotateNext = function() {
-		rotateCarousel(null,rotatefast,"next");
+		if (carousellength>mincarousellength) rotateCarousel(null,rotatefast,"next");
 	};
 
 	obj.rotatePrev = function() {
-		rotateCarousel(null,rotatefast,"prev");
+		if (carousellength>mincarousellength) rotateCarousel(null,rotatefast,"prev");
 	};
 
 	obj.rotateTo = function(id) {
-		rotateCarousel(id,rotatefast);
+		if (carousellength>mincarousellength) rotateCarousel(id,rotatefast);
 	};
 
 
 	obj.getActiveitem = function() {
-
-		
 		return items.imgid[activeitem];
-		
 	};
 
 	obj.initCarousel = function(initid) {
+
+		mincarousellength = 5;
 	
 		// traverse all nodes
 		carouSeal.element.each(function() {
@@ -465,12 +498,12 @@ var carouSeal= (function () {
 			}
 
 			//Create carouseal if there are more than four images
-			//if ($imgs.length>4) createCarousel($myCarousel,$imgs);
-
+			if ($imgs.length>mincarousellength) createCarousel($myCarousel,$imgs,initid);
+			
 			//Else make static row of 2-d images
-			//else createSlider($myCarousel,$imgs);
+			else createRow($myCarousel,$imgs,initid);
 
-			createCarousel($myCarousel,$imgs,initid);
+			//createCarousel($myCarousel,$imgs,initid);
 		});
 			
 		carouSeal.element.trigger('carouselDone');

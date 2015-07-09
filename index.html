@@ -142,7 +142,7 @@
 		        <% } %>
         	</small>
         </p>
-        <% if (holdings.length>0) { %>
+        <% if (available) { %>
             <div class="alert alert-success"><%= availableText %></div>
         <% } else { %>
             <div class="alert alert-danger"><%= availableText %></div>
@@ -318,6 +318,7 @@ var BookFullView = Backbone.View.extend({
             // 3. Book is at UBO and available.
             // 4. Book is not available.
             var availableText = '';
+            var available = true;
             // Check for case 1
             var available42 = _.findWhere(this.model.get('holdings'), {
                 shelvinglocation: 'UREAL Samling 42',
@@ -340,8 +341,10 @@ var BookFullView = Backbone.View.extend({
             } else if (availableUBO) {
                 availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket. Hylleplassering: ' + availableUBO.callcode;
             } else {
+                available = false;
                 availableText = 'Boken er ikke tilgjengelig.';
             }
+            this.model.set('available', available);
             this.model.set('availableText', availableText);
 
             // Create template function

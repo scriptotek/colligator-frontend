@@ -14,8 +14,10 @@
         z-index: 42;
     }
     #books{
-        margin-top: 3em;
-        height: 350px;
+        margin-top: 1em;
+		/*viewport-height rules!*/
+        height: 25vh;
+		min-height:250px;
     }
     .emneord{
         margin: 1em;
@@ -34,6 +36,7 @@
         html {
           position: relative;
           min-height: 100%;
+		  overflow:hidden;
         }
         body {
           /* Margin bottom by footer height */
@@ -431,9 +434,9 @@ var AppRouter = Backbone.Router.extend({
         books.fetch({
             data: {
                 collection: 1,
-                // real: emneord,
+                real: emneord,
                 limit: 100,
-                q: '(subjects.noubomn.prefLabel:' + emneord + ' OR subjects.keywords.prefLabel:' + emneord + ')'
+                q: '_exists_:subjects.noubomn'
             },
             success: function() {
                 // Hide the loading icon
@@ -455,10 +458,28 @@ var AppRouter = Backbone.Router.extend({
         this.navigate('cat/' + books._emneord + '/' + bookId);
     },
     spinCarouselLeft: function() {
-    	carouSeal.rotatePrev();
+    	var rotateTo;
+    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
+    	if (indexOfCurrentBook === 0) {
+    		// Back to the beginning
+    		rotateTo = this.books.length - 1;
+    	} else {
+    		rotateTo = indexOfCurrentBook - 1;
+    	}
+    	var rotateToBookId = this.books.at(rotateTo).get('id');
+    	this.spinCarousel(rotateToBookId);
     },
     spinCarouselRight: function() {
-    	carouSeal.rotateNext();
+    	var rotateTo;
+    	var indexOfCurrentBook = this.books.indexOf(bookFullView.model);
+    	if (indexOfCurrentBook + 1 === this.books.length) {
+    		// Back to the beginning
+    		rotateTo = 0;
+    	} else {
+    		rotateTo = indexOfCurrentBook + 1;
+    	}
+    	var rotateToBookId = this.books.at(rotateTo).get('id');
+    	this.spinCarousel(rotateToBookId);
     },
     viewEmneord: function(emneord) {
         var self = this;

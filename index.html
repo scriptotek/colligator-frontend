@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Boksamling 42</title>
+    <title>Samling 42</title>
     <style>
     .loader{
         width: 100%;
@@ -36,7 +36,7 @@
         html {
           position: relative;
           min-height: 100%;
-		  overflow:hidden;
+		  /*overflow:hidden;*/
         }
         body {
           /* Margin bottom by footer height */
@@ -60,17 +60,17 @@
 
 <div class="container">
     <div class="row">
-    	<h1 class="text-center" id="pageTitle">Boksamling 42</h1>
+    	<h1 class="text-center" id="pageTitle" style="font-size:6em;">Samling 42</h1>
 	   <hr>
     </div>
     <div class="row">
-        <div class="col-sm-4 text-left">
+        <div class="col-sm-2 text-left">
             <button type="button" class="btn btn-md btn-info" id="previousEmneord"></button>
         </div>
-        <div class="col-sm-4 text-center">
-            <button type="button" class="btn btn-md btn-info" id="currentEmneord"></button>
+        <div class="col-sm-8 text-center">
+            <span id="currentEmneord" style="padding-top:1em;font-size:4em;"></span>
         </div>
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-2 text-right">
             <button type="button" class="btn btn-md btn-info" id="nextEmneord"></button>
         </div>
     </div>
@@ -442,12 +442,6 @@ var AppRouter = Backbone.Router.extend({
             self.emneordHistoryIndex++;
             self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
         });
-
-        // Add listener for title change
-        $("#books").on('domTitleChange', function(e, title) {
-            $(document).attr('title', 'Boksamling 42: '+title);
-            $('#pageTitle').text('Boksamling 42: '+title);
-        });
     },
     routes: {
         'cat/:emneord': 'viewEmneord',
@@ -457,7 +451,27 @@ var AppRouter = Backbone.Router.extend({
     defaultView: function() {
         this.viewEmneord('Forskning');
     },
+    updateEmneordNavigation: function(emneord) {
+        // Update current emneord in header
+        $('#currentEmneord').text(emneord);
+        // Only show previous emneord if there is one
+        if (this.emneordHistoryIndex>0) {
+            $('#previousEmneord').text('« '+this.emneordHistory[this.emneordHistoryIndex-1]);
+            $('#previousEmneord').show();
+        } else {
+            $('#previousEmneord').hide();
+        }
+        // Only show next emneord if there is one
+        if (this.emneordHistoryIndex<this.emneordHistory.length-1) {
+            $('#nextEmneord').text(this.emneordHistory[this.emneordHistoryIndex+1]+' »');
+            $('#nextEmneord').show();
+        } else {
+            $('#nextEmneord').hide();
+        }
+    },
     newCarousel: function(emneord, callback) {
+        var self = this;
+
         // fetch books
         $('.loader').toggle();
         books.fetch({
@@ -474,8 +488,8 @@ var AppRouter = Backbone.Router.extend({
                 books._emneord = emneord;
                 // Render booksView
                 booksView.render();
-                // Update DOM title
-                $('#books').trigger('domTitleChange', emneord);
+
+                self.updateEmneordNavigation(emneord);
             },
             error: function(){
                 console.log('error in fetch');
@@ -516,22 +530,8 @@ var AppRouter = Backbone.Router.extend({
             this.emneordHistory.push(emneord);
             this.emneordHistoryIndex++;
         }
-        // Update current emneord in header
-        $('#currentEmneord').text(emneord);
-        // Only show previous emneord if there is one
-        if (this.emneordHistoryIndex>0) {
-            $('#previousEmneord').text('« '+this.emneordHistory[this.emneordHistoryIndex-1]);
-            $('#previousEmneord').show();
-        } else {
-            $('#previousEmneord').hide();
-        }
-        // Only show next emneord if there is one
-        if (this.emneordHistoryIndex<this.emneordHistory.length-1) {
-            $('#nextEmneord').text(this.emneordHistory[this.emneordHistoryIndex+1]+' »');
-            $('#nextEmneord').show();
-        } else {
-            $('#nextEmneord').hide();
-        }
+
+        this.updateEmneordNavigation(emneord);
 
         var self = this;
         // Load carousel IF new emneord

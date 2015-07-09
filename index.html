@@ -326,11 +326,11 @@ var BookFullView = Backbone.View.extend({
                 circulation_status: 'Available'
             });
             if (available42) {
-                availableText = 'Boken er tilgjengelig i 42-samlingen.';
+                availableText = 'Boken er tilgjengelig i 42-samlingen. Hylleplassering: ' + available42.callcode;
             } else if (availableUREAL) {
-                availableText = 'Boken er tilgjengelig hos Realfagsbiblioteket.';
+                availableText = 'Boken er tilgjengelig hos Realfagsbiblioteket. Hylleplassering: ' + availableUREAL.callcode;
             } else if (availableUBO) {
-                availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket';
+                availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket. Hylleplassering: ' + availableUBO.callcode;
             } else {
                 availableText = 'Boken er ikke tilgjengelig';
             }

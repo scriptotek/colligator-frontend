@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>42</title>
+    <title>Boksamling 42</title>
     <style>
     .loader{
         width: 100%;
@@ -20,9 +20,14 @@
     .emneord{
         margin: 1em;
     }
+    #touchHand {
+        margin-top: 2em;
+    }
     </style>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="carouseal.css">
+    <link rel="stylesheet" href="backbone.modal.css">
+    <link rel="stylesheet" href="backbone.modal.theme.css">
     <meta name="viewport" content="width=device-width, initial-scale=0.35, maximum-scale=0.35, user-scalable=no">
     <style>
     	/* Sticky footer CSS */
@@ -51,7 +56,7 @@
 <body>
 
 <div class="container">
-	<h1 class="text-center">Boksamling 42</h1>
+	<h1 class="text-center" id="pageTitle">Boksamling 42</h1>
 	<hr>
 </div>
 
@@ -79,6 +84,8 @@
 
 	<div id="books"></div>
 
+    <div id="help"></div>
+
 </div>
 
 <div class="container">
@@ -93,11 +100,14 @@
 					<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				</p>
 			</div>
-			<div class="col-sm-3"></div>
-			<div class="col-sm-3"></div>
+			<div class="col-sm-6">
+                <p class="text-center">             
+                    <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
+                </p>      
+            </div>
 			<div class="col-sm-3">
 				<p class="text-center">
-					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
+					<span id="helpIcon" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
 				</p>
 			</div>
 		</div>
@@ -109,6 +119,7 @@
 <script src="bower_components/backbone/backbone.js"></script>
 <script src="bower_components/hammerjs/hammer.js"></script>
 <script src="carouseal.js"></script>
+<script src="backbone.modal.js"></script>
 
 <script id="bookListTemplate" type="text/template">
 	<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
@@ -129,19 +140,11 @@
 		        <% if (typeof(part_name) !== "undefined") { %>
 					<br><%= part_no %> av <%= part_name %>.
 		        <% } %>
-		        <% if (holdings.length>0) { %>
-		        	<br>Eksemplarer:
-			        <ul>
-			        <% _.each(holdings, function(holding) { %>
-			        	<li>
-			        		Hylleplassering: <%= holding.callcode %>
-			        		<br>Utlånsstatus: <%= holding.circulation_status %>
-			        	</li>
-			        <% }); %>
-			        </ul>
-		        <% } %>
         	</small>
         </p>
+        <% if (holdings.length>0) { %>
+            <div class="alert alert-success"><%= availableText %></div>
+        <% } %>
         <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>
         <% } %>
@@ -152,6 +155,23 @@
         </p>
     </div>
 </script>
+
+<script type="text/template" id="helpModal">
+    <div class="bbm-modal__topbar">
+      <h3 class="bbm-modal__title">Hjelp</h3>
+    </div>
+    <div class="bbm-modal__section">
+      <p>Her kan du se igjennom bøkene som finnes i vår 42-samling.</p>
+      <p>Noen tips:</p>
+      <ul>
+        <li>Swipe til høyre eller venstre for å komme til en ny bok.</li>
+        <li>Klikk på emneordene under den aktive boka for å gå til en ny kategori.</li>
+      </ul>
+    </div>
+    <div class="bbm-modal__bottombar">
+      <a href="#" class="bbm-button">lukk</a>
+    </div>
+  </script>
 
 <script type="text/javascript">
 
@@ -181,21 +201,26 @@ var Books = Backbone.Collection.extend({
     url: 'http://colligator.biblionaut.net/api/documents',
     parse: function(response, options) {
 
+        // Remove (reject) books that has no holdings
+        var data = _.reject(response.documents, function(element) {
+            return element.holdings.length === 0;
+        });
+
         // In the Book model above we've set a default image for the cover. The API gives cover: null if it didn't find a cover. Backbone will replace our own placeholder if the API returns any value at all (including null) for the cover property. Hence, we delete the cover property if the value is null, so that our placeholder cover is kept.
         // Also remove description if it's null
-        var data = _.map(response.documents, function(val, ind, all) {
+        // Also remove books with holdings===0
+        data = _.map(data, function(val, ind, all) {
             if (val.cover===null) {
                 delete val.cover;
             } else {
             	val.cover = val.cover.thumb.url;
             }
+
             if (val.description===null) {
             	delete val.description;
             }
             return val;
         });
-
-        console.log(data);
 
         return data;
     }
@@ -285,6 +310,38 @@ var BookFullView = Backbone.View.extend({
             	this.model.set('subTitle', titles.splice(1).join(' : '));
             }
 
+            // Decide what the availability-text will be. Four possible cases:
+            // 1. Book is in 42-collection and available.
+            // 2. Book is at UREAL and available.
+            // 3. Book is at UBO and available.
+            // 4. Book is not available.
+            var availableText = '';
+            // Check for case 1
+            var available42 = _.findWhere(this.model.get('holdings'), {
+                shelvinglocation: 'UREAL Samling 42',
+                circulation_status: 'Available'
+            });
+            // Check for case 2
+            var availableUREAL = _.findWhere(this.model.get('holdings'), {
+                sublocation: 'UREAL',
+                circulation_status: 'Available'
+            });
+            // Check for case 3
+            var availableUBO = _.findWhere(this.model.get('holdings'), {
+                location: 'UBO',
+                circulation_status: 'Available'
+            });
+            if (available42) {
+                availableText = 'Boken er tilgjengelig i 42-samlingen. Hylleplassering: ' + available42.callcode;
+            } else if (availableUREAL) {
+                availableText = 'Boken er tilgjengelig hos Realfagsbiblioteket. Hylleplassering: ' + availableUREAL.callcode;
+            } else if (availableUBO) {
+                availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket. Hylleplassering: ' + availableUBO.callcode;
+            } else {
+                availableText = 'Boken er ikke tilgjengelig.';
+            }
+            this.model.set('availableText', availableText);
+
             // Create template function
             template = _.template($('#bookFullTemplate').html());
             // Give data to template function and produce html
@@ -348,6 +405,12 @@ var AppRouter = Backbone.Router.extend({
         $("#books").on('keyRight', function(e) {
         	router.spinCarouselRight();
         });
+
+        // Add listener for title change
+        $("#books").on('domTitleChange', function(e, title) {
+            $(document).attr('title', 'Boksamling 42: '+title);
+            $('#pageTitle').text('Boksamling 42: '+title);
+        });
     },
     routes: {
         'cat/:emneord': 'viewEmneord',
@@ -374,6 +437,8 @@ var AppRouter = Backbone.Router.extend({
                 books._emneord = emneord;
                 // Render booksView
                 booksView.render();
+                // Update DOM title
+                $('#books').trigger('domTitleChange', emneord);
             },
             error: function(){
                 console.log('error in fetch');
@@ -466,6 +531,17 @@ $(document).keyup(function(e) {
 // ---------------------------------------- CREATE COLLECTION
 
 var books = new Books();
+
+// ---------------------------------------- CREATE HELP MODAL
+
+var Modal = Backbone.Modal.extend({
+    template: '#helpModal',
+    cancelEl: '.bbm-button'
+});
+$('#helpIcon').on('click', function() {
+    var modalView = new Modal();
+    $('#help').html(modalView.render().el);
+});
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
 

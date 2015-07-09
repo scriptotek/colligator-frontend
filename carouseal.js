@@ -57,7 +57,6 @@ var carouSeal= (function () {
 		console.log("setting active item",activeitem);
 	
 		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
-
 	}
 
 
@@ -288,7 +287,7 @@ var carouSeal= (function () {
 
 	function createCarousel($myCarousel,$imgs,initid) {
 
-		console.log('Carouseal honking!');
+		// console.log('Carouseal honking!');
 		
 		panlock = false;
 		waitforpan = false;

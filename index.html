@@ -59,8 +59,21 @@
 <body>
 
 <div class="container">
-	<h1 class="text-center" id="pageTitle">Boksamling 42</h1>
-	<hr>
+    <div class="row">
+    	<h1 class="text-center" id="pageTitle">Boksamling 42</h1>
+	   <hr>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 text-left">
+            <button type="button" class="btn btn-md btn-info" id="previousEmneord"></button>
+        </div>
+        <div class="col-sm-4 text-center">
+            <button type="button" class="btn btn-md btn-info" id="currentEmneord"></button>
+        </div>
+        <div class="col-sm-4 text-right">
+            <button type="button" class="btn btn-md btn-info" id="nextEmneord"></button>
+        </div>
+    </div>
 </div>
 
 <div class="container-fluid">
@@ -99,7 +112,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-3">
-				<p class="text-center">				
+				<p class="text-left">				
 					<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
 				</p>
 			</div>
@@ -109,7 +122,7 @@
                 </p>      
             </div>
 			<div class="col-sm-3">
-				<p class="text-center">
+				<p class="text-right">
 					<span id="helpIcon" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
 				</p>
 			</div>
@@ -376,6 +389,9 @@ var BookFullView = Backbone.View.extend({
     },
     // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
+        // Since we've clicked an "entirely new" emneord, get rid of any old history
+        router.emneordHistory = router.emneordHistory.slice(0, router.emneordHistoryIndex + 1);
+
         var $li = $(e.target);
         // Change URL and trigger route handler
         router.navigate($li.attr('data-url'), {
@@ -391,6 +407,9 @@ var AppRouter = Backbone.Router.extend({
     initialize: function(options) {
         // Store reference to book collection
         this.books = options.books;
+
+        this.emneordHistory = [];
+        this.emneordHistoryIndex = -1;
 
         // Add listener for the rotate-event
         var self = this;
@@ -412,6 +431,16 @@ var AppRouter = Backbone.Router.extend({
         });
         $("#books").on('keyRight', function(e) {
         	router.spinCarouselRight();
+        });
+
+        // Handlers for next/prev emneord
+        $('#previousEmneord').on('click', function() {
+            self.emneordHistoryIndex--;
+            self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
+        });
+        $('#nextEmneord').on('click', function() {
+            self.emneordHistoryIndex++;
+            self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
         });
 
         // Add listener for title change
@@ -482,6 +511,28 @@ var AppRouter = Backbone.Router.extend({
     	this.spinCarousel(rotateToBookId);
     },
     viewEmneord: function(emneord) {
+        // Only push to emneordHistory if we're going to a new emneord
+        if (emneord!==this.emneordHistory[this.emneordHistoryIndex] || this.emneordHistoryIndex===-1) {
+            this.emneordHistory.push(emneord);
+            this.emneordHistoryIndex++;
+        }
+        // Update current emneord in header
+        $('#currentEmneord').text(emneord);
+        // Only show previous emneord if there is one
+        if (this.emneordHistoryIndex>0) {
+            $('#previousEmneord').text('« '+this.emneordHistory[this.emneordHistoryIndex-1]);
+            $('#previousEmneord').show();
+        } else {
+            $('#previousEmneord').hide();
+        }
+        // Only show next emneord if there is one
+        if (this.emneordHistoryIndex<this.emneordHistory.length-1) {
+            $('#nextEmneord').text(this.emneordHistory[this.emneordHistoryIndex+1]+' »');
+            $('#nextEmneord').show();
+        } else {
+            $('#nextEmneord').hide();
+        }
+
         var self = this;
         // Load carousel IF new emneord
         if (books._emneord !== emneord) {

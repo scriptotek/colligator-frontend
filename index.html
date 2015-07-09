@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>42</title>
+    <title>Boksamling 42</title>
     <style>
     .loader{
         width: 100%;
@@ -51,7 +51,7 @@
 <body>
 
 <div class="container">
-	<h1 class="text-center">Boksamling 42</h1>
+	<h1 class="text-center" id="pageTitle">Boksamling 42</h1>
 	<hr>
 </div>
 
@@ -348,6 +348,12 @@ var AppRouter = Backbone.Router.extend({
         $("#books").on('keyRight', function(e) {
         	router.spinCarouselRight();
         });
+
+        // Add listener for title change
+        $("#books").on('domTitleChange', function(e, title) {
+            $(document).attr('title', 'Boksamling 42: '+title);
+            $('#pageTitle').text('Boksamling 42: '+title);
+        });
     },
     routes: {
         'cat/:emneord': 'viewEmneord',
@@ -374,6 +380,8 @@ var AppRouter = Backbone.Router.extend({
                 books._emneord = emneord;
                 // Render booksView
                 booksView.render();
+                // Update DOM title
+                $('#books').trigger('domTitleChange', emneord);
             },
             error: function(){
                 console.log('error in fetch');

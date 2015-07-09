@@ -144,6 +144,8 @@
         </p>
         <% if (holdings.length>0) { %>
             <div class="alert alert-success"><%= availableText %></div>
+        <% } else { %>
+            <div class="alert alert-danger"><%= availableText %></div>
         <% } %>
         <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>

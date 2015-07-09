@@ -46,6 +46,9 @@ var carouSeal= (function () {
 		$(".carouseal_element img").eq(activeitem).addClass("carouseal_deselected_image");
 
 		activeitem = Math.abs(Math.round(deg/sector));
+		if (activeitem==carousellength) activeitem=0;
+		
+		console.log(activeitem,deg,sector,deg/sector);
 		
 		
 		//$(".carouseal_element img").eq(activeitem).addClass("carousel_image_center");

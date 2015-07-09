@@ -332,7 +332,7 @@ var BookFullView = Backbone.View.extend({
             } else if (availableUBO) {
                 availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket. Hylleplassering: ' + availableUBO.callcode;
             } else {
-                availableText = 'Boken er ikke tilgjengelig';
+                availableText = 'Boken er ikke tilgjengelig.';
             }
             this.model.set('availableText', availableText);
 

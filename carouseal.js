@@ -56,7 +56,7 @@ var carouSeal= (function () {
 		$(".carouseal_element img").eq(activeitem).addClass("selected_image");
 	
 
-		console.log($(".carouseal_element img").eq(activeitem));
+		// console.log($(".carouseal_element img").eq(activeitem));
 	}
 
 
@@ -243,7 +243,7 @@ var carouSeal= (function () {
 
 	function createCarousel($myCarousel,$imgs,initid) {
 
-		console.log('Carouseal honking!');
+		// console.log('Carouseal honking!');
 		
 		panlock = false;
 		waitforpan = false;

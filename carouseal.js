@@ -36,30 +36,66 @@ var carouSeal= (function () {
 
 	}
 
-	function setActiveItem(){
-		
-		var deg= getRotation($("#carouseal_carousel"));
-		if (deg > 0) deg = Math.abs(deg-360); 
-		
-		//Remove glow on previous center image
-		$(".carouseal_element img").eq(activeitem).removeClass("carouseal_selected_image");
-		$(".carouseal_element img").eq(activeitem).addClass("carouseal_deselected_image");
+	function getItemFromId(id){
 
-		activeitem = Math.abs(Math.round(deg/sector));
-		if (activeitem==carousellength) activeitem=0;
-		
-		console.log(activeitem,deg,sector,deg/sector);
-		
-		
-		//$(".carouseal_element img").eq(activeitem).addClass("carousel_image_center");
-		
-		//Add glow on center image
-		$(".carouseal_element img").eq(activeitem).removeClass("carouseal_deselected_image");
-		$(".carouseal_element img").eq(activeitem).addClass("carouseal_selected_image");
+		$.each(items.imgid, function(key, val) {
+
+			if (val == id) {
+				item = key;
+				return false;
+			}	
+		});
+
+
+		return item;
+		console.log("key from id",item);
+
+	}
+
+	function setActiveItem(id){
+
+		//This is only for row view (4 or less images) 
+		if (id!==undefined) {
+
+			//Remove glow on previous center image
+			$(".carouseal_row_element img").eq(activeitem).removeClass("carouseal_selected_image");
+			$(".carouseal_row_element img").eq(activeitem).addClass("carouseal_deselected_image");
+
+			activeitem = getItemFromId(id);
+
+			
+			$(".carouseal_row_element img").eq(activeitem).removeClass("carouseal_deselected_image");
+			$(".carouseal_row_element img").eq(activeitem).addClass("carouseal_selected_image");
+
+		}
+		//Carousel
+		else {
+			
+					
+			//Remove glow on previous center image
+			$(".carouseal_element img").eq(activeitem).removeClass("carouseal_selected_image");
+			$(".carouseal_element img").eq(activeitem).addClass("carouseal_deselected_image");
+
+
+			var deg= getRotation($("#carouseal_carousel"));
+			if (deg > 0) deg = Math.abs(deg-360); 
+
+			activeitem = Math.abs(Math.round(deg/sector));
+			if (activeitem==carousellength) activeitem=0;
+
+			var id = items.imgid[activeitem];
+			
+			//console.log(activeitem,deg,sector,deg/sector);
+			//Add glow on center image
+			
+			$(".carouseal_element img").eq(activeitem).removeClass("carouseal_deselected_image");
+			$(".carouseal_element img").eq(activeitem).addClass("carouseal_selected_image");
+
+		}			
+			
+		//console.log("setting active item",activeitem);
 	
-		console.log("setting active item",activeitem);
-	
-		carouSeal.element.trigger('listenForActiveItem', items.imgid[activeitem]);
+		carouSeal.element.trigger('listenForActiveItem', id);
 	}
 
 
@@ -204,15 +240,7 @@ var carouSeal= (function () {
 
 			//console.log("rotateCarousel",id);
 
-			$.each(items.imgid, function(key, val) {
-
-				if (val == id) {
-					item = key;
-					return false;
-				}	
-			});
-
-			console.log("key from id",item);
+			var item = getItemFromId(id);
 
 			rotate=shortestRotation(item);
 		}
@@ -263,7 +291,7 @@ var carouSeal= (function () {
 		$myCarousel.empty();
 
 		//Add carousel structure to element
-		$myCarousel.append('<div class="carouseal_container"><div id="hammer_overlay"></div><div id="carouseal_row" class="carouseal_row"></div></div>');
+		$myCarousel.append('<div class="carouseal_container"><div id="carouseal_row" class="carouseal_row carouseal_flex_parent"></div></div>');
 
 		items = {};
 		items.imgid = [];
@@ -273,7 +301,7 @@ var carouSeal= (function () {
 			
 			$img = $(this);
 			
-			$myCarousel.find(".carouseal_row").append('<div class="carouseal_row_element"></div>');
+			$myCarousel.find(".carouseal_row").append('<div class="carouseal_row_element carouseal_flex_child"></div>');
 
 			//Add images
 			$img.addClass("carouseal_image");
@@ -282,12 +310,22 @@ var carouSeal= (function () {
 			//If images have ids add them to carousel_element item div (the parent of the image)
 			$(".carouseal_row_element").eq(i).attr('id',$img.attr("id"));
 			items.imgid.push($img.attr("id"));
+	
+			var mc = new Hammer($img[0],{preventDefault: true});
+
+			mc.on('tap',function(ev){
+				
+				//To prevent misfiring, check that the tap is the first
+				if (ev.tapCount==1) {
+					setActiveItem(ev.target.id);
+				}
+			});	
 
 		});
-		
+		$(".carouseal_row_element img").eq(activeitem).addClass("carouseal_selected_image");
+
 	}
 	
-
 	function createCarousel($myCarousel,$imgs,initid) {
 
 		// console.log('Carouseal honking!');
@@ -376,17 +414,55 @@ var carouSeal= (function () {
 			"-webkit-perspective":perspective,
 			"perspective": perspective
 		});
+
 		
-		//Register hammer.js events
+		//DEBUG PREV/NEXT
+		/*
+		
+		Escape/Enter to move
+
+		$(document).keyup(function(e) {
+			switch(e.which) {
+				case 13: // left
+					carouSeal.rotatePrev();
+				break;
+
+				case 27: // right
+					carouSeal.rotateNext();;
+				break;
+			}
+			e.preventDefault();
+		});
+		*/
+		
+		//////////////////////////////////	
+		
+		//If initid is defined spin carousel to that item
+		if (initid!==undefined) {
+			console.log('Rotating unpon init to',items.imgid[initid]);
+			rotateCarousel(items.imgid[initid]);
+		}
+	
+		$(window).resize(function () {
+			waitForFinalEvent(function(){
+		
+				carouSeal.initCarousel(items.imgid[activeitem]);
+	
+			}, 300, "blowfish");
+		});
+		
+		
+		carousealHammer();
+	}
+
+	function carousealHammer(){
+		//Init hammer.js
 		// console.log('Hammer time!');
 
-		var hammer_options = {
-		  preventDefault: true
-		};
+		var mc = new Hammer($('#hammer_overlay')[0],{preventDefault: true});
 
-		var hammerOverlay = document.getElementById('hammer_overlay');
-		var mc = new Hammer(hammerOverlay,hammer_options);
-		
+		//Register hammer.js events
+
 		//This is to let swipe be prioritized to pan
 		mc.on('press',function(ev){
 			waitforswipe=true; setTimeout(function(){ waitforswipe = false;},200);
@@ -399,7 +475,6 @@ var carouSeal= (function () {
 		mc.on('swiperight swipeleft', function(ev) {
 			
 			//console.log("swipe waitforpan",waitforpan);
-			
 			
 			if (!waitforpan) {
 				//Lock so pan can't be fired before swipe is finished
@@ -428,37 +503,7 @@ var carouSeal= (function () {
 			}
 	
 		});
-			
-		//If initid is defined spin carousel to that item
-		if (initid!==undefined) {
-			console.log('Rotating unpon init to',items.imgid[initid]);
-			rotateCarousel(items.imgid[initid]);
-		}
-		//DEBUG PREV/NEXT
-		/*
-		$(document).keyup(function(e) {
-			switch(e.which) {
-				case 13: // left
-					carouSeal.rotatePrev();
-				break;
 
-				case 27: // right
-					carouSeal.rotateNext();;
-				break;
-			}
-			e.preventDefault();
-		});
-		*/
-		
-		//////////////////////////////////	
-	
-		$(window).resize(function () {
-			waitForFinalEvent(function(){
-		
-				carouSeal.initCarousel(items.imgid[activeitem]);
-	
-			}, 300, "blowfish");
-		});
 	}
 
 
@@ -483,7 +528,7 @@ var carouSeal= (function () {
 
 	obj.initCarousel = function(initid) {
 
-		mincarousellength = 5;
+		mincarousellength = 4;
 	
 		// traverse all nodes
 		carouSeal.element.each(function() {

@@ -121,12 +121,13 @@ var carouSeal= (function () {
 	function panCarousel(xpos,velocity){
 		
 		var panwidth = carouselmidpoint;
-		var exp = 0.8;
+		var exp = 100;
 		var projectionfactor = (Math.pow(panwidth,exp)-Math.pow(Math.abs(xpos-panwidth),exp))/Math.pow(panwidth,exp);
-		var speedfactor= 0.34;
+		var speedfactor= 0.6;
 
-		var rotate = speedfactor*velocity*projectionfactor;
-	
+		var rotate = (speedfactor*velocity*projectionfactor*heightfactor)/perspective;
+		
+		console.log(heightfactor,perspective);
 
 		//console.log(rotated,"+",rotate,"==",rotated+rotate);
 
@@ -138,32 +139,36 @@ var carouSeal= (function () {
 
 	//Make sure that any rotation of the carousel from point a to b follows least degree (to rotate in the right direction)
 	function shortestRotation(item){
-
+	
 		var leftdistance = activeitem+(carousellength-item);
 		var rightdistance = activeitem-item;
 
-		//console.log(activeitem,item,leftdistance,rightdistance);
+		console.log("bæææææææ",activeitem,item,leftdistance,rightdistance);
 
 		if (Math.abs(leftdistance)<Math.abs(rightdistance)) {
 
-			//console.log("LEFT",leftdistance,leftdistance*sector);
+			console.log("LEFT",leftdistance,leftdistance*sector);
 
 			var rotate = leftdistance*sector; 
 
 			if (rotate<-180) rotate = rotate +360;
 		}
 		else {
-			//console.log("RIGHT",rightdistance,rightdistance*sector);
+			console.log("RIGHT",rightdistance,rightdistance*sector);
 
 			var rotate = rightdistance*sector; 
 			if (rotate>180) rotate = rotate -360;
 		}
 
+		console.log("::::::::::::",rotate);
+
 		return rotate;
 
 	}
 
-	function swipeCarousel(x,duration){
+	function swipeCarousel(x,duration,velocity){
+
+		velocity = Math.abs(velocity);
 
 		//console.log('swipe',x,duration);
 
@@ -171,8 +176,15 @@ var carouSeal= (function () {
 		//Sensitivity is how many pixels it takes to swipe one image
 		if (Math.abs(x)<sensitivity && x<0) x=-sensitivity;
 		else if (Math.abs(x)<sensitivity && x>0) x=sensitivity;
+		
+		var velocityfactor = Math.pow(1.005,Math.pow(velocity,3));
+		var xbefore = x;
+
+		x = x*velocityfactor;
 
 		var numOfCoversToMove = Math.round(x/sensitivity);
+
+		console.log(xbefore,x,sensitivity,velocity,velocityfactor,numOfCoversToMove);
 
 		rotate=(sector*numOfCoversToMove);
 
@@ -238,9 +250,11 @@ var carouSeal= (function () {
 		//RotateTo
 		else {
 
-			//console.log("rotateCarousel",id);
+			console.log("rotateTo",id);
 
 			var item = getItemFromId(id);
+
+			console.log("xxxxx",item,id);
 
 			rotate=shortestRotation(item);
 		}
@@ -285,7 +299,7 @@ var carouSeal= (function () {
 
 		activeitem=0;
 		
-		if (initid !==undefined) activeitem=initid;
+		if (initid !==undefined) activeitem=getItemFromId(initid);
 
 		//Empty element
 		$myCarousel.empty();
@@ -328,30 +342,33 @@ var carouSeal= (function () {
 	
 	function createCarousel($myCarousel,$imgs,initid) {
 
-		// console.log('Carouseal honking!');
+		console.log($myCarousel.width());
+
+		resolutionfactor = 1920/$(window).width();
 		
 		panlock = false;
 		waitforpan = false;
-		screenwidth = $(window).width();
-		resolutionfactor = 1920/screenwidth;
+		
 
 		carouselwidth = $myCarousel.width();
 		carouselheight = $myCarousel.height();
-		carouselmidpoint = round($myCarousel.position().left+($myCarousel.width()/2),1);
-		
+		carouselmidpoint = round($myCarousel.position().left+(carouselwidth/2),1);
+		widthfactor = 1900/carouselwidth;
+		heightfactor = 450/carouselheight;
+
 		rotating=false;
 		rotated=0;
 
 		activeitem=0;
-		if (initid !==undefined) activeitem=initid;
-		sensitivity= 350*(screenwidth/1920);
+		//How many pixels it takes to swipe one cover at "normal" speed
+		sensitivity= 150*resolutionfactor;
 		rotateslow = 600;
 		rotatefast= 400;
-		itemwidth = round($myCarousel.height()/1.3,2);
+		itemwidth = round($myCarousel.height()/1.4,2);
 		carousellength = $imgs.length;
 		sector = 360/carousellength;
 		radius = itemwidth/2/degTan(sector/2);
-		perspective = 14000/carousellength/resolutionfactor;
+		perspective = (18600/carousellength)/widthfactor;
 
 		items = {};
 		items.imgid = [];
@@ -414,7 +431,8 @@ var carouSeal= (function () {
 			"-webkit-perspective":perspective,
 			"perspective": perspective
 		});
-
+		
+	
 		
 		//DEBUG PREV/NEXT
 		/*
@@ -436,17 +454,28 @@ var carouSeal= (function () {
 		*/
 		
 		//////////////////////////////////	
-		
+	
 		//If initid is defined spin carousel to that item
 		if (initid!==undefined) {
-			console.log('Rotating unpon init to',items.imgid[initid]);
-			rotateCarousel(items.imgid[initid]);
+			
+			console.log(initid,items);
+			
+			console.log('Rotating unpon init to',initid);
+			
+			rotateCarousel(initid);
+			setActiveItem(initid);
+
 		}
 	
 		$(window).resize(function () {
 			waitForFinalEvent(function(){
-		
-				carouSeal.initCarousel(items.imgid[activeitem]);
+
+				var item = activeitem;
+				activeitem = 0;
+
+				console.log(item,items.imgid[item]);
+
+				carouSeal.initCarousel(items.imgid[item]);
 	
 			}, 300, "blowfish");
 		});
@@ -479,7 +508,8 @@ var carouSeal= (function () {
 			if (!waitforpan) {
 				//Lock so pan can't be fired before swipe is finished
 				panlock = true;
-				swipeCarousel(ev.deltaX,rotateslow);
+				console.log(ev.velocityX*-1);
+				swipeCarousel(ev.deltaX,rotateslow,ev.velocityX*-1);
 			}
 		});
 	
@@ -527,6 +557,8 @@ var carouSeal= (function () {
 	};
 
 	obj.initCarousel = function(initid) {
+
+		if (typeof activeitem!=="undefined") console.log("start::",initid,activeitem);
 
 		mincarousellength = 4;
 	

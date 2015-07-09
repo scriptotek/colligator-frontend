@@ -23,6 +23,8 @@
     </style>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="carouseal.css">
+    <link rel="stylesheet" href="backbone.modal.css">
+    <link rel="stylesheet" href="backbone.modal.theme.css">
     <meta name="viewport" content="width=device-width, initial-scale=0.35, maximum-scale=0.35, user-scalable=no">
     <style>
     	/* Sticky footer CSS */
@@ -79,6 +81,8 @@
 
 	<div id="books"></div>
 
+    <div id="help"></div>
+
 </div>
 
 <div class="container">
@@ -97,7 +101,7 @@
 			<div class="col-sm-3"></div>
 			<div class="col-sm-3">
 				<p class="text-center">
-					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
+					<span id="helpIcon" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
 				</p>
 			</div>
 		</div>
@@ -109,6 +113,7 @@
 <script src="bower_components/backbone/backbone.js"></script>
 <script src="bower_components/hammerjs/hammer.js"></script>
 <script src="carouseal.js"></script>
+<script src="backbone.modal.js"></script>
 
 <script id="bookListTemplate" type="text/template">
 	<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
@@ -152,6 +157,23 @@
         </p>
     </div>
 </script>
+
+<script type="text/template" id="helpModal">
+    <div class="bbm-modal__topbar">
+      <h3 class="bbm-modal__title">Hjelp</h3>
+    </div>
+    <div class="bbm-modal__section">
+      <p>Her kan du se igjennom bøkene som finnes i vår 42-samling.</p>
+      <p>Noen tips:</p>
+      <ul>
+        <li>Swipe til høyre eller venstre for å komme til en ny bok.</li>
+        <li>Klikk på emneordene under den aktive boka for å gå til en ny kategori.</li>
+      </ul>
+    </div>
+    <div class="bbm-modal__bottombar">
+      <a href="#" class="bbm-button">lukk</a>
+    </div>
+  </script>
 
 <script type="text/javascript">
 
@@ -474,6 +496,18 @@ $(document).keyup(function(e) {
 // ---------------------------------------- CREATE COLLECTION
 
 var books = new Books();
+
+// ---------------------------------------- CREATE HELP MODAL
+
+var Modal = Backbone.Modal.extend({
+    template: '#helpModal',
+    cancelEl: '.bbm-button'
+});
+$('#helpIcon').on('click', function() {
+    console.log(42);
+    var modalView = new Modal();
+    $('#help').html(modalView.render().el);
+});
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
 

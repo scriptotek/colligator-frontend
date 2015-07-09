@@ -431,9 +431,9 @@ var AppRouter = Backbone.Router.extend({
         books.fetch({
             data: {
                 collection: 1,
-                real: emneord,
+                // real: emneord,
                 limit: 100,
-                q: '_exists_:subjects.noubomn'
+                q: '(subjects.noubomn.prefLabel:' + emneord + ' OR subjects.keywords.prefLabel:' + emneord + ')'
             },
             success: function() {
                 // Hide the loading icon

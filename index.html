@@ -452,6 +452,7 @@ var AppRouter = Backbone.Router.extend({
         this.viewEmneord('Forskning');
     },
     updateEmneordNavigation: function(emneord) {
+        console.log(this.emneordHistory);
         // Update current emneord in header
         $('#currentEmneord').text(emneord);
         // Only show previous emneord if there is one
@@ -524,14 +525,17 @@ var AppRouter = Backbone.Router.extend({
     	var rotateToBookId = this.books.at(rotateTo).get('id');
     	this.spinCarousel(rotateToBookId);
     },
-    viewEmneord: function(emneord) {
-        // Only push to emneordHistory if we're going to a new emneord
-        if (emneord!==this.emneordHistory[this.emneordHistoryIndex] || this.emneordHistoryIndex===-1) {
-            this.emneordHistory.push(emneord);
-            this.emneordHistoryIndex++;
+    addEmneordToHistory: function(emneord) {
+        // Don't add to history if coming from the previousEmneord/nextEmneord buttons
+        if (emneord===this.emneordHistory[this.emneordHistoryIndex]) {
+            return;
         }
-
-        this.updateEmneordNavigation(emneord);
+        this.emneordHistory.push(emneord);
+        this.emneordHistoryIndex++;
+        // this.updateEmneordNavigation(emneord);
+    },
+    viewEmneord: function(emneord) {
+        this.addEmneordToHistory(emneord);
 
         var self = this;
         // Load carousel IF new emneord
@@ -553,6 +557,8 @@ var AppRouter = Backbone.Router.extend({
         }
     },
     viewBookById: function(emneord,bookId) {
+        this.addEmneordToHistory(emneord);
+
         var self = this;
         // new carousel IF new emneord
         if (books._emneord !== emneord) {

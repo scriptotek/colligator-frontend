@@ -113,32 +113,34 @@
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
-        <p>
-        	<small>
-        		Av: <%= authors %>
-        		<br><%= publisher %>, <%= year %>
-		        <% if (typeof(part_name) !== "undefined") { %>
-					<br><%= part_no %> av <%= part_name %>.
-		        <% } %>
-        	</small>
-        </p>
-        <% if (available) { %>
-            <p class="alert alert-success"><%= availableText %></p>
-        <% } else { %>
-            <p class="alert alert-danger"><%= availableText %></p>
-        <% } %>
-        <% if (ebook) { %>
-            <p class="alert alert-success"><%= ebookText %></p>
-        <% }%>
-        <% if (typeof(description)!=="undefined") { %>
-        	<p><%= description.text %></p>
-        <% } %>
-        <div class="text-center">
-            <% _.each(subjects.noubomn, function(noubomnSubject) { %>
-                <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
-            <% }); %>
+        <div id="bookInfoExtended">
+            <p>
+            	<small>
+            		Av: <%= authors %>
+            		<br><%= publisher %>, <%= year %>
+    		        <% if (typeof(part_name) !== "undefined") { %>
+    					<br><%= part_no %> av <%= part_name %>.
+    		        <% } %>
+            	</small>
+            </p>
+            <% if (available) { %>
+                <p class="alert alert-success"><%= availableText %></p>
+            <% } else { %>
+                <p class="alert alert-danger"><%= availableText %></p>
+            <% } %>
+            <% if (ebook) { %>
+                <p class="alert alert-success"><%= ebookText %></p>
+            <% }%>
+            <% if (typeof(description)!=="undefined") { %>
+            	<p><%= description.text %></p>
+            <% } %>
+            <div class="text-center">
+                <% _.each(subjects.noubomn, function(noubomnSubject) { %>
+                    <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+                <% }); %>
+            </div>
+            <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
         </div>
-        <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
     </div>
 </script>
 
@@ -288,6 +290,7 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
+        carouSeal.autoRotate();
 
         return this;
     },
@@ -306,6 +309,10 @@ var BooksView = Backbone.View.extend({
 
 var BookFullView = Backbone.View.extend({
     el: '#bookFull',
+    initialize: function() {
+        // This variable decides if #bookInfoExtended is showed or not in this.render()
+        this._hideExtended = false;
+    },
     render: function() {
 
         var template; // Will hold the compiled template
@@ -380,6 +387,11 @@ var BookFullView = Backbone.View.extend({
             // Insert produced html into the view element
             this.$el.html(html);
 
+            // If we are currently autorotating, hide extended bookinfo
+            if (this._hideExtended) {
+                $('#bookInfoExtended').hide();
+            }
+
             // Give the element an id
             this.$el.attr('id', 'bookFull'+this.model.get('id'));
             // Give each emneord element a data-url and a data-emneord attribute
@@ -442,6 +454,18 @@ var AppRouter = Backbone.Router.extend({
         });
         $("#books").on('keyRight', function(e) {
             carouSeal.rotateNext();
+        });
+
+        // Handler for autoRotate
+        $('#books').on('autoRotateStart', function(e) {
+            console.log('trigger start');
+            $('#bookInfoExtended').hide();
+            bookFullView._hideExtended = true;
+        });
+        $('#books').on('autoRotateStop', function(e) {
+            console.log('trigger stop');
+            $('#bookInfoExtended').show();
+            bookFullView._hideExtended = false;
         });
 
         // Handlers for next/prev emneord
@@ -553,10 +577,10 @@ var AppRouter = Backbone.Router.extend({
             this.newCarousel(emneord, 'b'+bookId);
             // Spin when it's done
             $("#books").one('carouselDone', function() {
-                // self.spinCarousel(bookId);
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
+
             });
         } else {
             // Else just spin to position at once

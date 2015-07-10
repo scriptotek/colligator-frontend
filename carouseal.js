@@ -48,7 +48,7 @@ var carouSeal= (function () {
 
 
 		return item;
-		console.log("key from id",item);
+		// console.log("key from id",item);
 
 	}
 
@@ -92,7 +92,7 @@ var carouSeal= (function () {
 
 		}			
 			
-		console.log("setting active item",activeitem);
+		// console.log("setting active item",activeitem);
 	
 		carouSeal.element.trigger('listenForActiveItem', id);
 	}
@@ -191,7 +191,7 @@ var carouSeal= (function () {
 
 	function addTransforms(duration){
 
-		console.log('adding transforms');
+		// console.log('adding transforms');
 
 		$("#carouseal_carousel").css({
 			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(rotated)+"deg)",
@@ -202,7 +202,7 @@ var carouSeal= (function () {
 	}
 
 	function suspendAutoRotate(){
-		console.log('suspendAutoRotate');
+		// console.log('suspendAutoRotate');
 		if (typeof autoRotatingCarousel!=="undefined") {
 			clearInterval(autoRotatingCarousel);
 
@@ -331,7 +331,7 @@ var carouSeal= (function () {
 
 	function createRow($myCarousel,$imgs,initid){
 
-		console.log('createRow');
+		// console.log('createRow');
 
 		carouselwidth = $myCarousel.width();
 		carouselheight = $myCarousel.height();
@@ -497,7 +497,7 @@ var carouSeal= (function () {
 		//If initid is defined spin carousel to that item
 		if (initid!==undefined) {
 			
-			console.log('Rotating unpon init to',initid);
+			// console.log('Rotating unpon init to',initid);
 			
 			rotateCarousel(initid);
 		}
@@ -637,7 +637,7 @@ var carouSeal= (function () {
 			var $imgs = $myCarousel.find("img");
 
 			if (!$imgs.length) {
-				console.log('No images in element!');
+				// console.log('No images in element!');
 				return this;
 			}
 

@@ -15,7 +15,6 @@
 <div class="container">
     <div class="row">
         <h1 class="text-center" id="pageTitle">Samling 42</h1>
-        <hr>
     </div>
 </div>
 
@@ -27,7 +26,7 @@
             <button type="button" class="btn btn-md btn-info" id="previousEmneord"></button>
         </div>
         <div class="col-sm-4 text-center">
-            <span id="currentEmneord"></span>
+            <h2 id="currentEmneord"></h2>
         </div>
         <div class="col-sm-4 text-right">
             <button type="button" class="btn btn-md btn-info" id="nextEmneord"></button>
@@ -110,7 +109,7 @@
 <script id="bookFullTemplate" type="text/template">
     <hr>
     <div class="container text-center">
-        <h1 id="bookTitle"><%= mainTitle %></h1>
+        <h3 id="bookTitle"><%= mainTitle %></h3>
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
@@ -124,21 +123,21 @@
         	</small>
         </p>
         <% if (available) { %>
-            <div class="alert alert-success"><%= availableText %></div>
+            <p class="alert alert-success"><%= availableText %></p>
         <% } else { %>
-            <div class="alert alert-danger"><%= availableText %></div>
+            <p class="alert alert-danger"><%= availableText %></p>
         <% } %>
         <% if (ebook) { %>
-            <div class="alert alert-success"><%= ebookText %></div>
+            <p class="alert alert-success"><%= ebookText %></p>
         <% }%>
         <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>
         <% } %>
-        <p class="text-center">
+        <div class="text-center">
             <% _.each(subjects.noubomn, function(noubomnSubject) { %>
                 <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
             <% }); %>
-        </p>
+        </div>
         <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
     </div>
 </script>

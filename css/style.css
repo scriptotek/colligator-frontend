@@ -1,4 +1,8 @@
 /* Sticky footer CSS */
+*{
+cursor:none;
+}
+
 html {
   position: relative;
   min-height: 100%;

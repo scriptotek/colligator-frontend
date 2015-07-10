@@ -206,11 +206,21 @@ String.prototype.capitalizeFirstLetter = function() {
 
 (function() {
 
-window.oncontextmenu = function(event) {
+  // ------ BEGIN LAST MINUTE FIXES FOR KIOSK MODE ---------
+  window.oncontextmenu = function(event) {
     event.preventDefault();
     event.stopPropagation();
     return false;
-};
+  };
+  // Multitap on header to reload
+  (new Hammer($('h1')[0],{preventDefault: true}))
+  .on('tap',function(ev){
+        if (ev.tapCount === 6) {
+            window.location.reload();
+        }
+  });
+  // ------- END LAST MINUTE FIXES FOR KIOSK MODE -----------
+
 
 // ---------------------------------------- DEFINE MODEL + COLLECTION
 

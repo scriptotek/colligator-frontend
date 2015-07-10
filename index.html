@@ -141,7 +141,11 @@
             <% } %>
             <div class="text-center">
                 <% _.each(subjects.noubomn, function(noubomnSubject) { %>
-                    <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+                    <% if (noubomnSubject.prefLabel === currentEmneord) { %>
+                        <button type="button" class="emneord btn btn-lg btn-default"><%= noubomnSubject.prefLabel %></button>
+                    <% } else { %>
+                        <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+                    <% } %>
                 <% }); %>
             </div>
             <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
@@ -348,6 +352,9 @@ var BookFullView = Backbone.View.extend({
             	this.model.set('subTitle', titles.splice(1).join(' : '));
             }
 
+            // Store the current emneord in the model so that it's retrievable from the template
+            this.model.set('currentEmneord', bookFullView.currentEmneord);
+
             // Decide what the availability-text will be. Four possible cases:
             // 1. Book is in 42-collection and available.
             // 2. Book is at UREAL and available.
@@ -458,6 +465,7 @@ var AppRouter = Backbone.Router.extend({
             // Update the model and render
             bookFullView.model = book;
             bookFullView.render();
+            bookFullView.currentEmneord = books._emneord;
             // Update url
             self.navigate('cat/' + books._emneord + '/' + bookId);
         });
@@ -576,6 +584,7 @@ var AppRouter = Backbone.Router.extend({
         	    // Render bookFullView
         	    bookFullView.model = books.at(0);
         	    bookFullView.render();
+                bookFullView.currentEmneord = books._emneord;
         	    // Replace url
         	    self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
         	        replace: true
@@ -599,6 +608,7 @@ var AppRouter = Backbone.Router.extend({
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
+                bookFullView.currentEmneord = books._emneord;
             });
         } else {
             // Else just spin to position at once

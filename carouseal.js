@@ -128,7 +128,7 @@ var carouSeal= (function () {
 
 		var rotate = (speedfactor*velocity*projectionfactor*heightfactor)/carousellength;
 
-		console.log(speedfactor,velocity,projectionfactor,heightfactor,carousellength,rotate);
+		//console.log(speedfactor,velocity,projectionfactor,heightfactor,carousellength,rotate);
 
 		rotated = rotated + rotate;
 		
@@ -207,18 +207,18 @@ var carouSeal= (function () {
 
 	function suspendAutoRotate(){
 
-		//console.log('suspendAutoRotate');
+		console.log('suspendAutoRotate');
 
 		if (typeof autoRotatingCarousel!=="undefined") {
 			clearInterval(autoRotatingCarousel);
-
-			if (typeof waitingForIdleUser!=="undefined") {
-				clearInterval(waitingForIdleUser);
-			}
-
-			autoRotateCarousel();
 		}
+
+		if (typeof waitingForIdleUser!=="undefined") {
+			
+			clearTimeout(waitingForIdleUser);
+			autoRotateCarousel("on");
 		
+		}
 
 		carouSeal.element.trigger('autoRotateStop');
 	
@@ -229,37 +229,28 @@ var carouSeal= (function () {
 		//Wait = time to wait before autorotating (if no activity from user after this time)
 		//autorotatespeed = Rotation autorotatespeed in milliseconds
 		//Onoff start/stop the listener
-		if (autorotateonoff=="on") { 
-			idleTime = 0;
-			autoRotateinprogress=false;
-		
-			waitingForIdleUser = setInterval(function(){
-				idleTime = idleTime+1000;
+		if (autorotateonoff=="on") {
+			if (typeof waitingForIdleUser!=="undefined") {
+				clearTimeout(waitingForIdleUser);
+			}
+			waitingForIdleUser = setTimeout(function(){
 			
-				if (idleTime>=idleuserwait) {
-					//console.log('user is idle',idleuserwait);
+				console.log('user is idle');
+			
+				autoRotatingCarousel = setInterval(function(){
 					
-					if (!autoRotateinprogress) {
-						
-						autoRotatingCarousel = setInterval(function(){
-							
-							//console.log('autoroating carousel');
-							rotateCarousel(null,autorotatespeed,"next");
-							
-						},autorotatespeed*3);
-
-						autoRotateinprogress=true;
-						clearInterval(waitingForIdleUser);
-						
-						carouSeal.element.trigger('autoRotateStart');
-					}
-				}
-			},1000);
+					//console.log('autoroating carousel');
+					rotateCarousel(null,autorotatespeed,"next");
+					
+				},autorotatespeed);
+			
+			
+			},idleuserwait);
 		}
 		else if (onoff=="off") {
-			idleTime = 0;
+		
 			if (waitingForIdleUser!==undefined) {
-				clearInterval(waitingForIdleUser);
+				clearTimeout(waitingForIdleUser);
 			}
 			if (autoRotatingCarousel!==undefined) {
 				clearInterval(autoRotatingCarousel);

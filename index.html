@@ -158,7 +158,8 @@
                     <% } %>
                 <% }); %>
             </div>
-            <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
+<!--            <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a> for debugging -->
+
         </div>
     </div>
 </script>
@@ -335,7 +336,7 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
-        carouSeal.autoRotate();
+        carouSeal.autoRotate(null,3000,500);
 
         return this;
     },

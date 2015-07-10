@@ -296,10 +296,7 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
-        $("#books").one('carouselDone', function() {
-            // carouSeal.autoRotate(null,1000,2000);
-            carouSeal.autoRotate();
-        });
+        carouSeal.autoRotate();
 
         return this;
     },
@@ -470,6 +467,7 @@ var AppRouter = Backbone.Router.extend({
 
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
+            console.log('start');
             $('#touchHand').show();
             $('#helpIcon').hide();
             $('#bookInfoExtended').hide();
@@ -594,7 +592,6 @@ var AppRouter = Backbone.Router.extend({
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
-
             });
         } else {
             // Else just spin to position at once

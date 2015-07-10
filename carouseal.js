@@ -54,6 +54,8 @@ var carouSeal= (function () {
 
 	function setActiveItem(id){
 
+		console.log('setActiveItem');
+
 		//This is only for row view (4 or less images) 
 		if (id!==undefined) {
 
@@ -266,7 +268,7 @@ var carouSeal= (function () {
 	//Used by rotateTo from user added left/right-buttons, keybinds etc.
 	function rotateCarousel(id,duration,nextprev) {
 
-		//console.log("rotateCarousel",id);
+		console.log("rotateCarousel",id);
 
 		if (duration===undefined) duration=0;
 
@@ -333,15 +335,14 @@ var carouSeal= (function () {
 
 	function createRow($myCarousel,$imgs,initid){
 
-		// console.log('createRow');
+
+		console.log('createRow',$imgs.length);
 
 		carouselwidth = $myCarousel.width();
 		carouselheight = $myCarousel.height();
 		carousellength = $imgs.length;
 
 		activeitem=0;
-		
-		if (initid !==undefined) activeitem=getItemFromId(initid);
 
 		//Empty element
 		$myCarousel.empty();
@@ -351,7 +352,7 @@ var carouSeal= (function () {
 
 		items = {};
 		items.imgid = [];
-		
+
 		//Add images back to div with new structure
 		$imgs.each(function(i){
 			
@@ -370,7 +371,7 @@ var carouSeal= (function () {
 			var mc = new Hammer($img[0],{preventDefault: true});
 
 			mc.on('tap',function(ev){
-				suspendAutoRotate()
+
 				//To prevent misfiring, check that the tap is the first
 				if (ev.tapCount==1) {
 					
@@ -379,11 +380,17 @@ var carouSeal= (function () {
 			});	
 
 		});
+
+		if (initid !==undefined) activeitem=getItemFromId(initid);
+		
 		$(".carouseal_row_element img").eq(activeitem).addClass("carouseal_selected_image");
+
 
 	}
 	
 	function createCarousel($myCarousel,$imgs,initid) {
+
+		console.log('createCarousel');
 	
 	
 		resolutionfactor = 1920/$(window).width();
@@ -499,7 +506,7 @@ var carouSeal= (function () {
 		//If initid is defined spin carousel to that item
 		if (initid!==undefined) {
 			
-			// console.log('Rotating unpon init to',initid);
+			console.log('Rotating unpon init to',initid);
 			
 			rotateCarousel(initid);
 		}
@@ -611,6 +618,7 @@ var carouSeal= (function () {
 			autoRotateCarousel();
 
 		}
+	
 	};
 	
 	obj.getActiveitem = function() {

@@ -215,12 +215,11 @@ var carouSeal= (function () {
 
 		if (typeof waitingForIdleUser!=="undefined") {
 			
+			carouSeal.element.trigger('autoRotateStop');
 			clearTimeout(waitingForIdleUser);
 			autoRotateCarousel("on");
 		
 		}
-
-		carouSeal.element.trigger('autoRotateStop');
 	
 	}
 
@@ -236,13 +235,15 @@ var carouSeal= (function () {
 			waitingForIdleUser = setTimeout(function(){
 			
 				console.log('user is idle');
+
+				carouSeal.element.trigger('autoRotateStart');
 			
 				autoRotatingCarousel = setInterval(function(){
 					
 					//console.log('autoroating carousel');
 					rotateCarousel(null,autorotatespeed,"next");
 					
-				},autorotatespeed);
+				},autorotatespeed*3);
 			
 			
 			},idleuserwait);
@@ -533,16 +534,21 @@ var carouSeal= (function () {
 
 		//This is to let swipe be prioritized to pan
 		mc.on('press',function(ev){
-			suspendAutoRotate();
 			waitforswipe=true; setTimeout(function(){ waitforswipe = false;},200);
 			//console.log("waitforswipe",waitforswipe);
 		});
 		//
 
 		mc.get('press').set({ time: 1});
+
+		$(document).on('touchstart', function(event) {
+			suspendAutoRotate();
+			console.log('touchdown!!');
+		});
+
 		
 		mc.on('swiperight swipeleft', function(ev) {
-			suspendAutoRotate();
+			
 			//console.log("swipe waitforpan",waitforpan);
 			
 			if (!waitforpan) {
@@ -553,7 +559,7 @@ var carouSeal= (function () {
 		});
 	
 		mc.on('panleft panright',function(ev) {
-			suspendAutoRotate();
+		
 			//console.log("pan waitforswipe",waitforswipe);
 			if (!panlock && !waitforswipe) {
 				waitforpan=true; 
@@ -619,7 +625,7 @@ var carouSeal= (function () {
 	};
 
 	obj.initCarousel = function(initid) {
-
+/*
 		$(window).mousemove(function(e){
 			suspendAutoRotate();
 		});
@@ -627,7 +633,7 @@ var carouSeal= (function () {
 		$(window).keydown(function(e){
 			suspendAutoRotate();
 		});
-
+*/
 		mincarousellength = 4;
 	
 		// traverse all nodes

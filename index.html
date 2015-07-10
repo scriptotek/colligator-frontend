@@ -168,17 +168,6 @@ String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-// Listen to key input in order to register student cards
-var ltid = '';
-$(document).keypress(function(e) {
-    ltid += String.fromCharCode(e.which);
-    if(e.which == 13) {
-        console.log(ltid);
-        ltid="";
-        return false;
-    }
-});
-
 (function() {
 
 // ---------------------------------------- DEFINE MODEL + COLLECTION
@@ -622,6 +611,18 @@ var router = new AppRouter({
 
 // Tell backbone to start listening
 Backbone.history.start();
+
+// Listen to key input in order to register student cards
+var ltid = '';
+$(document).keypress(function(e) {
+    ltid += String.fromCharCode(e.which);
+    if(e.which == 13) {
+        console.log(ltid);
+        console.log(bookFullView.model.get('title'));
+        ltid="";
+        return false;
+    }
+});
 
 })();
 

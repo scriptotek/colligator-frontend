@@ -70,13 +70,13 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-3">
-                <p class="text-left">
+<!--                 <p class="text-left">
                     <img src="strekkodeleser.jpg" height="150" alt="">
-                </p>
+                </p> -->
             </div>
 			<div class="col-sm-6">
                 <p class="text-center">             
-                    <span class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
+                    <span id="touchHand" class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
                 </p>
             </div>
 			<div class="col-sm-3">
@@ -113,32 +113,34 @@
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
-        <p>
-        	<small>
-        		Av: <%= authors %>
-        		<br><%= publisher %>, <%= year %>
-		        <% if (typeof(part_name) !== "undefined") { %>
-					<br><%= part_no %> av <%= part_name %>.
-		        <% } %>
-        	</small>
-        </p>
-        <% if (available) { %>
-            <p class="alert alert-success"><%= availableText %></p>
-        <% } else { %>
-            <p class="alert alert-danger"><%= availableText %></p>
-        <% } %>
-        <% if (ebook) { %>
-            <p class="alert alert-success"><%= ebookText %></p>
-        <% }%>
-        <% if (typeof(description)!=="undefined") { %>
-        	<p><%= description.text %></p>
-        <% } %>
-        <div class="text-center">
-            <% _.each(subjects.noubomn, function(noubomnSubject) { %>
-                <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
-            <% }); %>
+        <div id="bookInfoExtended">
+            <p>
+            	<small>
+            		Av: <%= authors %>
+            		<br><%= publisher %>, <%= year %>
+    		        <% if (typeof(part_name) !== "undefined" && typeof(part_no) !== "undefined") { %>
+    					<br><%= part_no %> av <%= part_name %>.
+    		        <% } %>
+            	</small>
+            </p>
+            <% if (available) { %>
+                <p class="alert alert-success"><%= availableText %></p>
+            <% } else { %>
+                <p class="alert alert-danger"><%= availableText %></p>
+            <% } %>
+            <% if (ebook) { %>
+                <p class="alert alert-success"><%= ebookText %></p>
+            <% }%>
+            <% if (typeof(description)!=="undefined") { %>
+            	<p id="bookDescription"><%= description.text %></p>
+            <% } %>
+            <div class="text-center">
+                <% _.each(subjects.noubomn, function(noubomnSubject) { %>
+                    <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+                <% }); %>
+            </div>
+            <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
         </div>
-        <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
     </div>
 </script>
 
@@ -288,6 +290,8 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
+        // carouSeal.autoRotate(null,1000,2000);
+        carouSeal.autoRotate();
 
         return this;
     },
@@ -306,6 +310,10 @@ var BooksView = Backbone.View.extend({
 
 var BookFullView = Backbone.View.extend({
     el: '#bookFull',
+    initialize: function() {
+        // This variable decides if #bookInfoExtended is showed or not in this.render()
+        this._hideExtended = false;
+    },
     render: function() {
 
         var template; // Will hold the compiled template
@@ -365,6 +373,9 @@ var BookFullView = Backbone.View.extend({
             this.model.set('available', available);
             this.model.set('availableText', availableText);
 
+            // Limit emneord to 10
+            this.model.set('subjects.noubomn', this.model.get('subjects').noubomn.slice(0,12));
+
             // Is the book available as an ebook? If so we create a text for it
             if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
                 this.model.set('ebook', true);
@@ -379,6 +390,11 @@ var BookFullView = Backbone.View.extend({
             html = template(this.model.toJSON());
             // Insert produced html into the view element
             this.$el.html(html);
+
+            // If we are currently autorotating, hide extended bookinfo
+            if (this._hideExtended) {
+                $('#bookInfoExtended').hide();
+            }
 
             // Give the element an id
             this.$el.attr('id', 'bookFull'+this.model.get('id'));
@@ -442,6 +458,20 @@ var AppRouter = Backbone.Router.extend({
         });
         $("#books").on('keyRight', function(e) {
             carouSeal.rotateNext();
+        });
+
+        // Handlers for autoRotate
+        $('#books').on('autoRotateStart', function(e) {
+            $('#touchHand').show();
+            $('#helpIcon').hide();
+            $('#bookInfoExtended').hide();
+            bookFullView._hideExtended = true;
+        });
+        $('#books').on('autoRotateStop', function(e) {
+            $('#touchHand').hide();
+            $('#helpIcon').show();
+            $('#bookInfoExtended').show();
+            bookFullView._hideExtended = false;
         });
 
         // Handlers for next/prev emneord
@@ -553,10 +583,10 @@ var AppRouter = Backbone.Router.extend({
             this.newCarousel(emneord, 'b'+bookId);
             // Spin when it's done
             $("#books").one('carouselDone', function() {
-                // self.spinCarousel(bookId);
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
+
             });
         } else {
             // Else just spin to position at once

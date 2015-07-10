@@ -102,3 +102,12 @@ span.glyphicon {
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
+
+#touchHand {
+  display: none;
+}
+
+#bookDescription {
+  height: 450px;
+  overflow-y: auto;
+}

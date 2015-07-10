@@ -7,10 +7,9 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 200px;
-  font-size: 1vw;
 }
 p {
-  font-size: 25;
+  font-size: 25px;
 }
 
 h1, h2, h3, h4 {

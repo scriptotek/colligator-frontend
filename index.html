@@ -613,13 +613,25 @@ var router = new AppRouter({
 // Tell backbone to start listening
 Backbone.history.start();
 
+// Function used to send email to student
+var sendEmail = function(studentid, bookId) {
+    $.ajax({
+        type: "POST",
+        url: '*****',
+        data: {
+            studentid: studentid,
+            bookId: bookId
+        }
+    });
+};
 // Listen to key input in order to register student cards
 var ltid = '';
 $(document).keypress(function(e) {
     ltid += String.fromCharCode(e.which);
     if(e.which == 13) {
         console.log(ltid);
-        console.log(bookFullView.model.get('title'));
+        console.log(bookFullView.model.get('isbn'));
+        // sendEmail(ltid, bookFullView.model.get('id'));
         ltid="";
         return false;
     }

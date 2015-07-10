@@ -124,11 +124,11 @@ var carouSeal= (function () {
 		var panwidth = carouselmidpoint;
 		var exp = 100;
 		var projectionfactor = (Math.pow(panwidth,exp)-Math.pow(Math.abs(xpos-panwidth),exp))/Math.pow(panwidth,exp);
-		var speedfactor= 1000;
+		var speedfactor= 5;
 
-		var rotate = (speedfactor*velocity*projectionfactor*heightfactor)/perspective;
+		var rotate = (speedfactor*velocity*projectionfactor*heightfactor)/carousellength;
 
-		console.log(speedfactor,velocity,projectionfactor,heightfactor,perspective,rotate);
+		console.log(speedfactor,velocity,projectionfactor,heightfactor,carousellength,rotate);
 
 		rotated = rotated + rotate;
 		
@@ -578,7 +578,7 @@ var carouSeal= (function () {
 			if (!panlock) {
 			
 				setActiveItem();
-				adjustItems(100);
+				adjustItems(300);
 			}
 		});
 	}

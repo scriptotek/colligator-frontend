@@ -116,6 +116,6 @@ span.glyphicon:hover {
 }
 
 /* Do keep the home icon from becoming blue */
-a span {
-  color: black;
+#homeIcon,#helpIcon {
+  color: #31b0d5;
 }

@@ -77,6 +77,9 @@ small {
 span.glyphicon {
   font-size: 100px;
 }
+span.glyphicon:hover {
+  cursor: pointer;
+}
 
 #previousEmneord,#nextEmneord {
   display: none;
@@ -110,4 +113,9 @@ span.glyphicon {
 #bookDescription {
   max-height: 450px;
   overflow-y: auto;
+}
+
+/* Do keep the home icon from becoming blue */
+a span {
+  color: black;
 }

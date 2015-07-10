@@ -64,9 +64,14 @@
 
 <div class="container">
     <div class="row">
-    	<h1 class="text-center" id="pageTitle">Samling 42</h1>
-	   <hr>
+        <h1 class="text-center" id="pageTitle">Samling 42</h1>
+        <hr>
     </div>
+</div>
+
+<div class="container" id="startView"></div>
+
+<div class="container">
     <div class="row">
         <div class="col-sm-4 text-left">
             <button type="button" class="btn btn-md btn-info" id="previousEmneord"></button>
@@ -137,8 +142,15 @@
 <script src="carouseal.js"></script>
 <script src="backbone.modal.js"></script>
 
+<script id="startTemplate" type="text/template">
+    <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med:</p>
+    <button type="button" data-url="Forskning" class="emneord btn btn-lg btn-info">Forskning</button>
+    <button type="button" data-url="Vitenskap" class="emneord btn btn-lg btn-info">Vitenskap</button>
+    <button type="button" data-url="Miljø" class="emneord btn btn-lg btn-info">Miljø</button>
+</script>
+
 <script id="bookListTemplate" type="text/template">
-	<img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
+    <img src="<%= cover %>" data-url="<%= id %>" id="b<%= id %>" alt="">
 </script>
 
 <script id="bookFullTemplate" type="text/template">
@@ -248,6 +260,39 @@ var Books = Backbone.Collection.extend({
 });
 
 // ---------------------------------------- DEFINE VIEWS
+
+var StartView = Backbone.View.extend({
+    el: '#startView',
+    render: function() {
+
+        var template; // Will hold the compiled template
+        var html; // Will hold the result of template(data)
+
+        // Create template function
+        template = _.template($('#startTemplate').html());
+        // Give data to template function and produce html
+        html = template();
+        // Insert produced html into the view element
+        this.$el.append(html);
+
+        return this;
+    },
+    events: {
+        'click .emneord': 'onEmneOrdClick'
+    },
+    // This is for when a new emneord has been selected
+    onEmneOrdClick: function(e) {
+        var $li = $(e.target);
+        // Change URL and trigger route handler
+        router.navigate('cat/'+$li.attr('data-url'), {
+            trigger: true,
+            emneord: $li.attr('data-emneord')
+        });
+
+        this.remove();
+        this.unbind();
+    }
+});
 
 var BookView = Backbone.View.extend({
     tagName: 'li',
@@ -380,6 +425,7 @@ var BookFullView = Backbone.View.extend({
             html = template(this.model.toJSON());
             // Insert produced html into the view element
             this.$el.html(html);
+
             // Give the element an id
             this.$el.attr('id', 'bookFull'+this.model.get('id'));
             // Give each emneord element a data-url and a data-emneord attribute
@@ -460,7 +506,9 @@ var AppRouter = Backbone.Router.extend({
         '*other': 'defaultView'
     },
     defaultView: function() {
-        this.viewEmneord('Forskning');
+        startView.render();
+
+        // this.viewEmneord('Forskning');
     },
     updateEmneordNavigation: function(emneord) {
         // Update current emneord in header
@@ -594,6 +642,8 @@ $('#helpIcon').on('click', function() {
 });
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE
+
+var startView = new StartView();
 
 var booksView = new BooksView({
     model: books

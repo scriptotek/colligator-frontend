@@ -118,7 +118,7 @@
             	<small>
             		Av: <%= authors %>
             		<br><%= publisher %>, <%= year %>
-    		        <% if (typeof(part_name) !== "undefined") { %>
+    		        <% if (typeof(part_name) !== "undefined" && typeof(part_no) !== "undefined") { %>
     					<br><%= part_no %> av <%= part_name %>.
     		        <% } %>
             	</small>

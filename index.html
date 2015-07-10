@@ -373,6 +373,9 @@ var BookFullView = Backbone.View.extend({
             this.model.set('available', available);
             this.model.set('availableText', availableText);
 
+            // Limit emneord to 10
+            this.model.set('subjects.noubomn', this.model.get('subjects').noubomn.slice(0,12));
+
             // Is the book available as an ebook? If so we create a text for it
             if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
                 this.model.set('ebook', true);

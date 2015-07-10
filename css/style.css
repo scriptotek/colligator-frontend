@@ -7,6 +7,11 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 200px;
+  -webkit-touch-callout: none;
+   -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */
 }
 p {
   font-size: 25px;

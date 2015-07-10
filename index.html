@@ -181,6 +181,12 @@ String.prototype.capitalizeFirstLetter = function() {
 
 (function() {
 
+window.oncontextmenu = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+};
+
 // ---------------------------------------- DEFINE MODEL + COLLECTION
 
 var Book = Backbone.Model.extend({

@@ -271,7 +271,7 @@ var BookView = Backbone.View.extend({
 var BooksView = Backbone.View.extend({
     el: '#books',
     className: 'books',
-    render: function() {
+    render: function(rotateTo) {
 
         // Remove old views
         this.removeOldViews();
@@ -288,7 +288,7 @@ var BooksView = Backbone.View.extend({
 
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
-        carouSeal.initCarousel();
+        carouSeal.initCarousel(rotateTo);
 
         return this;
     },
@@ -480,7 +480,7 @@ var AppRouter = Backbone.Router.extend({
             $('#nextEmneord').hide();
         }
     },
-    newCarousel: function(emneord, callback) {
+    newCarousel: function(emneord, rotateTo) {
         var self = this;
 
         // fetch books
@@ -498,7 +498,7 @@ var AppRouter = Backbone.Router.extend({
                 // Store emneord in booksView
                 books._emneord = emneord;
                 // Render booksView
-                booksView.render();
+                booksView.render(rotateTo);
 
                 self.updateEmneordNavigation(emneord);
             },
@@ -518,7 +518,6 @@ var AppRouter = Backbone.Router.extend({
         }
         this.emneordHistory.push(emneord);
         this.emneordHistoryIndex++;
-        // this.updateEmneordNavigation(emneord);
     },
     viewEmneord: function(emneord) {
         this.addEmneordToHistory(emneord);
@@ -548,11 +547,11 @@ var AppRouter = Backbone.Router.extend({
         var self = this;
         // new carousel IF new emneord
         if (books._emneord !== emneord) {
-            // Create the carousel
-            this.newCarousel(emneord);
+            // Create the carousel and rotateTo position
+            this.newCarousel(emneord, 'b'+bookId);
             // Spin when it's done
             $("#books").one('carouselDone', function() {
-                self.spinCarousel(bookId);
+                // self.spinCarousel(bookId);
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();

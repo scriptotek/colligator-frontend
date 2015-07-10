@@ -205,19 +205,21 @@ var carouSeal= (function () {
 		console.log('suspendAutoRotate');
 		if (typeof autoRotatingCarousel!=="undefined") {
 			clearInterval(autoRotatingCarousel);
+
+			if (typeof waitingForIdleUser!=="undefined") {
+				clearInterval(waitingForIdleUser);
+			}
+
+			autoRotateCarousel();
 		}
 		
-		if (typeof waitingForIdleUser!=="undefined") {
-			clearInterval(waitingForIdleUser);
-		}
-		
-		autoRotateCarousel();
+
+		carouSeal.element.trigger('autoRotateStop');
 	
 	}
 
 	function autoRotateCarousel(){
 
-		console.log('inne');
 		//Wait = time to wait before autorotating (if no activity from user after this time)
 		//autorotatespeed = Rotation autorotatespeed in milliseconds
 		//Onoff start/stop the listener
@@ -229,24 +231,24 @@ var carouSeal= (function () {
 				idleTime = idleTime+1000;
 			
 				if (idleTime>=idleuserwait) {
-					console.log('user is idle',idleuserwait);
+					//console.log('user is idle',idleuserwait);
 					
 					if (!autoRotateinprogress) {
 						
 						autoRotatingCarousel = setInterval(function(){
 							
-							console.log('autoroating carousel');
+							//console.log('autoroating carousel');
 							rotateCarousel(null,autorotatespeed,"next");
 							
 						},autorotatespeed*3);
 
 						autoRotateinprogress=true;
 						clearInterval(waitingForIdleUser);
+						
+						carouSeal.element.trigger('autoRotateStart');
 					}
 				}
 			},1000);
-
-			carouSeal.element.trigger('autoRotateStart');
 		}
 		else if (onoff=="off") {
 			idleTime = 0;
@@ -256,7 +258,6 @@ var carouSeal= (function () {
 			if (autoRotatingCarousel!==undefined) {
 				clearInterval(autoRotatingCarousel);
 			}
-			carouSeal.element.trigger('autoRotateStop');
 		}
 	}
 
@@ -591,6 +592,8 @@ var carouSeal= (function () {
 
 			//Default on
 			if (onoff===undefined) autorotateonoff="on";
+			else if (onoff===null) autorotateonoff="on";
+			else if (!onoff) autorotateonoff="on";
 			else autorotateonoff = onoff;
 
 			//Default wait 2 mins

@@ -126,3 +126,13 @@ span.glyphicon:hover {
 #homeIcon,#helpIcon {
   color: #31b0d5;
 }
+
+#help h3 {
+  font-size: 28px;
+}
+#help p, #help li {
+  font-size: 22px;
+}
+#help .bbm-button {
+  font-size: 22px;
+}

@@ -70,13 +70,13 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-3">
-                <p class="text-left">
+<!--                 <p class="text-left">
                     <img src="strekkodeleser.jpg" height="150" alt="">
-                </p>
+                </p> -->
             </div>
 			<div class="col-sm-6">
                 <p class="text-center">             
-                    <span class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
+                    <span id="touchHand" class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
                 </p>
             </div>
 			<div class="col-sm-3">
@@ -290,6 +290,7 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
+        // carouSeal.autoRotate(null,1000,2000);
         carouSeal.autoRotate();
 
         return this;
@@ -456,14 +457,16 @@ var AppRouter = Backbone.Router.extend({
             carouSeal.rotateNext();
         });
 
-        // Handler for autoRotate
+        // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
-            console.log('trigger start');
+            $('#touchHand').show();
+            $('#helpIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
         });
         $('#books').on('autoRotateStop', function(e) {
-            console.log('trigger stop');
+            $('#touchHand').hide();
+            $('#helpIcon').show();
             $('#bookInfoExtended').show();
             bookFullView._hideExtended = false;
         });

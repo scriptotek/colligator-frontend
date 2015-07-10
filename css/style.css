@@ -102,3 +102,7 @@ span.glyphicon {
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
+
+.touch-hand {
+  display: none;
+}

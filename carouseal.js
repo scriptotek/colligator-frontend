@@ -201,25 +201,62 @@ var carouSeal= (function () {
 		});
 	}
 
-	function autoRotateCarousel(onoff,wait,speed){
+	function suspendAutoRotate(){
+		console.log('suspendAutoRotate');
+		if (typeof autoRotatingCarousel!=="undefined") {
+			clearInterval(autoRotatingCarousel);
+		}
+		
+		if (typeof waitingForIdleUser!=="undefined") {
+			clearInterval(waitingForIdleUser);
+		}
+		
+		autoRotateCarousel();
+	
+	}
+
+	function autoRotateCarousel(){
 
 		console.log('inne');
 		//Wait = time to wait before autorotating (if no activity from user after this time)
-		//Speed = Rotation speed in milliseconds
+		//autorotatespeed = Rotation autorotatespeed in milliseconds
 		//Onoff start/stop the listener
-		if (onoff=="on") { 
+		if (autorotateonoff=="on") { 
 			idleTime = 0;
+			autoRotateinprogress=false;
+		
 			waitingForIdleUser = setInterval(function(){
-				idleTime++;
-				console.log(idleTime);
-				if (idleTime>=wait) addTransforms(speed);	
+				idleTime = idleTime+1000;
+			
+				if (idleTime>=idleuserwait) {
+					console.log('user is idle',idleuserwait);
+					
+					if (!autoRotateinprogress) {
+						
+						autoRotatingCarousel = setInterval(function(){
+							
+							console.log('autoroating carousel');
+							rotateCarousel(null,autorotatespeed,"next");
+							
+						},autorotatespeed*3);
+
+						autoRotateinprogress=true;
+						clearInterval(waitingForIdleUser);
+					}
+				}
 			},1000);
+
+			carouSeal.element.trigger('autoRotateStart');
 		}
 		else if (onoff=="off") {
 			idleTime = 0;
 			if (waitingForIdleUser!==undefined) {
 				clearInterval(waitingForIdleUser);
 			}
+			if (autoRotatingCarousel!==undefined) {
+				clearInterval(autoRotatingCarousel);
+			}
+			carouSeal.element.trigger('autoRotateStop');
 		}
 	}
 
@@ -330,7 +367,7 @@ var carouSeal= (function () {
 			var mc = new Hammer($img[0],{preventDefault: true});
 
 			mc.on('tap',function(ev){
-				idleTime = 0;
+				suspendAutoRotate()
 				//To prevent misfiring, check that the tap is the first
 				if (ev.tapCount==1) {
 					
@@ -345,9 +382,7 @@ var carouSeal= (function () {
 	
 	function createCarousel($myCarousel,$imgs,initid) {
 	
-		//wait,speed
-		//autoRotateCarousel("on",2000,700);
-
+	
 		resolutionfactor = 1920/$(window).width();
 		
 		panlock = false;
@@ -483,6 +518,12 @@ var carouSeal= (function () {
 		
 		
 		carousealHammer();
+
+		autorotatespeed=rotateslow;
+		autorotateonoff="on";
+		idleuserwait=3000;
+
+		autoRotateCarousel();
 	}
 
 	function carousealHammer(){
@@ -495,7 +536,7 @@ var carouSeal= (function () {
 
 		//This is to let swipe be prioritized to pan
 		mc.on('press',function(ev){
-			idleTime = 0;
+			suspendAutoRotate();
 			waitforswipe=true; setTimeout(function(){ waitforswipe = false;},200);
 			//console.log("waitforswipe",waitforswipe);
 		});
@@ -504,7 +545,7 @@ var carouSeal= (function () {
 		mc.get('press').set({ time: 1});
 		
 		mc.on('swiperight swipeleft', function(ev) {
-			idleTime = 0;
+			suspendAutoRotate();
 			//console.log("swipe waitforpan",waitforpan);
 			
 			if (!waitforpan) {
@@ -515,7 +556,7 @@ var carouSeal= (function () {
 		});
 	
 		mc.on('panleft panright',function(ev) {
-			idleTime = 0;
+			suspendAutoRotate();
 			//console.log("pan waitforswipe",waitforswipe);
 			if (!panlock && !waitforswipe) {
 				waitforpan=true; 
@@ -555,17 +596,20 @@ var carouSeal= (function () {
 		if (carousellength>mincarousellength) {
 
 			//Default on
-			if (onoff===undefined) onoff="on";
+			if (onoff===undefined) autorotateonoff="on";
+			else autorotateonoff = onoff;
 
 			//Default wait 2 mins
-			if (wait==undefined) wait=120000;
-			else if (!wait) wait==120000;
+			if (wait==undefined) idleuserwait=120000;
+			else if (!wait) idleuserwait==120000;
+			else idleuserwait=wait;
 			
 			//Default speed = rotateslow
-			if (speed==undefined) speed=rotateslow;
-			else if (!wait) speed==rotateslow;
+			if (speed==undefined) autorotatespeed=rotateslow;
+			else if (!wait) autorotatespeed==rotateslow;
+			else autorotatespeed=wait;
 
-			autoRotateCarousel(onoff,wait,speed);
+			autoRotateCarousel();
 
 		}
 	};
@@ -577,11 +621,11 @@ var carouSeal= (function () {
 	obj.initCarousel = function(initid) {
 
 		$(window).mousemove(function(e){
-			idleTime = 0;
+			suspendAutoRotate();
 		});
 
-		$(window).keypress(function(e){
-			idleTime = 0;
+		$(window).keydown(function(e){
+			suspendAutoRotate();
 		});
 
 		mincarousellength = 4;

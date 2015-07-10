@@ -64,20 +64,25 @@
 
 <div class="container">
     <div id="bookFull"></div>
+    <div class="row">
+        <p class="text-center">
+            <span id="touchHand" class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
+        </p>
+    </div>
 </div>
 
 <footer class="footer">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-3">
+                <p class="text-left">
+                    <a href="index.html"><span id="homeIcon" class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+                </p>
+            </div>
+			<div class="col-sm-6">
 <!--                 <p class="text-left">
                     <img src="strekkodeleser.jpg" height="150" alt="">
                 </p> -->
-            </div>
-			<div class="col-sm-6">
-                <p class="text-center">             
-                    <span id="touchHand" class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
-                </p>
             </div>
 			<div class="col-sm-3">
 				<p class="text-right">
@@ -296,10 +301,7 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
-        $("#books").one('carouselDone', function() {
-            // carouSeal.autoRotate(null,1000,2000);
-            carouSeal.autoRotate();
-        });
+        carouSeal.autoRotate();
 
         return this;
     },
@@ -470,14 +472,17 @@ var AppRouter = Backbone.Router.extend({
 
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
+            console.log('start');
             $('#touchHand').show();
             $('#helpIcon').hide();
+            $('#homeIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
         });
         $('#books').on('autoRotateStop', function(e) {
             $('#touchHand').hide();
             $('#helpIcon').show();
+            $('#homeIcon').show();
             $('#bookInfoExtended').show();
             bookFullView._hideExtended = false;
         });
@@ -594,7 +599,6 @@ var AppRouter = Backbone.Router.extend({
                 // Render bookFullView
                 bookFullView.model = books.findWhere({ id: Number(bookId) });
                 bookFullView.render();
-
             });
         } else {
             // Else just spin to position at once

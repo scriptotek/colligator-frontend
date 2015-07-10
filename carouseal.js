@@ -202,7 +202,7 @@ var carouSeal= (function () {
 	}
 
 	function suspendAutoRotate(){
-		console.log('suspendAutoRotate');
+		//console.log('suspendAutoRotate');
 		if (typeof autoRotatingCarousel!=="undefined") {
 			clearInterval(autoRotatingCarousel);
 

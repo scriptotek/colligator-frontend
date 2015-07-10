@@ -109,5 +109,5 @@ span.glyphicon {
 
 #bookDescription {
   height: 600px;
-  overflow-y: hidden;
+  overflow-y: auto;
 }

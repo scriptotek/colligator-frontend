@@ -475,12 +475,14 @@ var AppRouter = Backbone.Router.extend({
             console.log('start');
             $('#touchHand').show();
             $('#helpIcon').hide();
+            $('#homeIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
         });
         $('#books').on('autoRotateStop', function(e) {
             $('#touchHand').hide();
             $('#helpIcon').show();
+            $('#homeIcon').show();
             $('#bookInfoExtended').show();
             bookFullView._hideExtended = false;
         });

@@ -46,3 +46,7 @@ span.glyphicon {
 #previousEmneord,#nextEmneord {
   display: none;
 }
+
+#currentEmneord {
+  font-size: 2em;
+}

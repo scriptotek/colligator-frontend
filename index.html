@@ -105,8 +105,8 @@
 
 <script id="bookFullTemplate" type="text/template">
     <hr>
-    <div class="container">
-        <h1><%= mainTitle %></h1>
+    <div class="container text-center">
+        <h1 id="bookTitle"><%= mainTitle %></h1>
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>

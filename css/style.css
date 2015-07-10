@@ -1,3 +1,43 @@
+/* Sticky footer CSS */
+html {
+  position: relative;
+  min-height: 100%;
+  /*overflow:hidden;*/
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 150px;
+  font-size: 1vw;
+}
+p {
+  font-size: 1.8em;
+}
+
+h1, h2, h3, h4 {
+  margin: 0; /* reset */
+}
+h1 {
+  margin-top: 1em;
+  letter-spacing: .1em;
+}
+
+h2 {
+  font-size: 2em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+h3 {
+  margin-bottom: .6em;
+}
+h4 {
+  margin-bottom: 1em;
+}
+small {
+  font-size: 80%;
+}
+
+
 .loader{
   width: 100%;
   text-align: center;
@@ -14,22 +54,12 @@
   min-height:250px;
 }
 .emneord{
-  margin: 1em;
+  margin: .4em;
 }
 #touchHand {
   margin-top: 2em;
 }
 
-/* Sticky footer CSS */
-html {
-  position: relative;
-  min-height: 100%;
-  /*overflow:hidden;*/
-}
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 150px;
-}
 .footer {
   position: absolute;
   bottom: 0;
@@ -47,14 +77,6 @@ span.glyphicon {
   display: none;
 }
 
-#currentEmneord {
-  font-size: 2em;
-}
-
-h1 {
-  margin-top: 1em;
-}
-
-#bookTitle {
-  margin-top: 0;
+.alert {
+  margin-bottom: 1em;
 }

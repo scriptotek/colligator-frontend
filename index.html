@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Samling 42</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/carouseal.css">
-    <link rel="stylesheet" href="css/backbone.modal.css">
-    <link rel="stylesheet" href="css/backbone.modal.theme.css">
+    <link rel="stylesheet" href="bower_components/backbone-modal/backbone.modal.css">
+    <link rel="stylesheet" href="bower_components/backbone-modal/backbone.modal.theme.css">
     <link rel="stylesheet" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=0.35, maximum-scale=0.35, user-scalable=no">
 </head>
@@ -15,7 +15,6 @@
 <div class="container">
     <div class="row">
         <h1 class="text-center" id="pageTitle">Samling 42</h1>
-        <hr>
     </div>
 </div>
 
@@ -24,13 +23,13 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-4 text-left">
-            <button type="button" class="btn btn-md btn-info" id="previousEmneord"></button>
+            <button type="button" class="btn btn-lg btn-info" id="previousEmneord"></button>
         </div>
         <div class="col-sm-4 text-center">
-            <span id="currentEmneord"></span>
+            <h2 id="currentEmneord"></h2>
         </div>
         <div class="col-sm-4 text-right">
-            <button type="button" class="btn btn-md btn-info" id="nextEmneord"></button>
+            <button type="button" class="btn btn-lg btn-info" id="nextEmneord"></button>
         </div>
     </div>
 </div>
@@ -70,11 +69,15 @@
 <footer class="footer">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-3"></div>
+			<div class="col-sm-3">
+                <p class="text-left">
+                    <img src="strekkodeleser.jpg" height="150" alt="">
+                </p>
+            </div>
 			<div class="col-sm-6">
                 <p class="text-center">             
-                    <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
-                </p>      
+                    <span class="pulse glyphicon glyphicon-hand-up" aria-hidden="true"></span><br>
+                </p>
             </div>
 			<div class="col-sm-3">
 				<p class="text-right">
@@ -89,8 +92,8 @@
 <script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/backbone/backbone.js"></script>
 <script src="bower_components/hammerjs/hammer.js"></script>
+<script src="bower_components/backbone-modal/backbone.modal.js"></script>
 <script src="carouseal.js"></script>
-<script src="backbone.modal.js"></script>
 
 <script id="startTemplate" type="text/template">
     <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med:</p>
@@ -106,7 +109,7 @@
 <script id="bookFullTemplate" type="text/template">
     <hr>
     <div class="container text-center">
-        <h1 id="bookTitle"><%= mainTitle %></h1>
+        <h3 id="bookTitle"><%= mainTitle %></h3>
         <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
@@ -120,21 +123,21 @@
         	</small>
         </p>
         <% if (available) { %>
-            <div class="alert alert-success"><%= availableText %></div>
+            <p class="alert alert-success"><%= availableText %></p>
         <% } else { %>
-            <div class="alert alert-danger"><%= availableText %></div>
+            <p class="alert alert-danger"><%= availableText %></p>
         <% } %>
         <% if (ebook) { %>
-            <div class="alert alert-success"><%= ebookText %></div>
+            <p class="alert alert-success"><%= ebookText %></p>
         <% }%>
         <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>
         <% } %>
-        <p class="text-center">
+        <div class="text-center">
             <% _.each(subjects.noubomn, function(noubomnSubject) { %>
                 <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
             <% }); %>
-        </p>
+        </div>
         <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
     </div>
 </script>
@@ -174,8 +177,8 @@ var Book = Backbone.Model.extend({
         title: '',
         isbn: '',
         authors: '',
-        publisher: '',
-        cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg'
+        publisher: ''
+        // cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg'
     }
 });
 
@@ -185,8 +188,9 @@ var Books = Backbone.Collection.extend({
     parse: function(response, options) {
 
         // Remove (reject) books that has no holdings
+        // Also remove books with no cover
         var data = _.reject(response.documents, function(element) {
-            return element.holdings.length === 0;
+            return element.holdings.length === 0 || element.cover===null;
         });
 
         // In the Book model above we've set a default image for the cover. The API gives cover: null if it didn't find a cover. Backbone will replace our own placeholder if the API returns any value at all (including null) for the cover property. Hence, we delete the cover property if the value is null, so that our placeholder cover is kept.
@@ -608,6 +612,30 @@ var router = new AppRouter({
 
 // Tell backbone to start listening
 Backbone.history.start();
+
+// Function used to send email to student
+var sendEmail = function(studentid, bookId) {
+    $.ajax({
+        type: "POST",
+        url: '*****',
+        data: {
+            studentid: studentid,
+            bookId: bookId
+        }
+    });
+};
+// Listen to key input in order to register student cards
+var ltid = '';
+$(document).keypress(function(e) {
+    ltid += String.fromCharCode(e.which);
+    if(e.which == 13) {
+        console.log(ltid);
+        console.log(bookFullView.model.get('isbn'));
+        // sendEmail(ltid, bookFullView.model.get('id'));
+        ltid="";
+        return false;
+    }
+});
 
 })();
 

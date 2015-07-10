@@ -109,6 +109,9 @@ span.glyphicon:hover {
 #touchHand {
   display: none;
 }
+.handParagraph {
+  margin-top:30px;
+}
 
 #bookDescription {
   max-height: 450px;

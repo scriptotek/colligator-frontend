@@ -89,29 +89,33 @@ span.glyphicon:hover {
   margin-bottom: 14px;
 }
 
-@-webkit-keyframes pulse_animation {
-  0% { -webkit-transform: scale(1); }
-  10% { -webkit-transform: scale(1); }
-  25% { -webkit-transform: scale(1.3); }
-  50% { -webkit-transform: scale(1); }
-  75% { -webkit-transform: scale(1.2); }
-  90% { -webkit-transform: scale(1); }
-  100% { -webkit-transform: scale(1); }
+/* Styles for animating handIcon */
+@-webkit-keyframes move_animation {
+  0% { left: 0px; }
+  20% { left: 50px; }
+  40% { left: 50px; }
+  60% { left: 50px; }
+  80% { left: 0px; }
+  100% { left: 0px; }
 }
-.pulse {
-  -webkit-animation-name: 'pulse_animation';
+.animateHand {
+  -webkit-animation-name: 'move_animation';
   -webkit-animation-duration: 5000ms;
   -webkit-transform-origin:70% 70%;
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
 }
-
 #touchHand {
   display: none;
+  position: relative;
 }
 .handParagraph {
-  margin-top:30px;
+  position: absolute;
+  margin: auto;
+  top: 60%; left: 0; bottom: 0; right: 0;
+  text-align: center;
 }
+/* end styles for animating handIcon */
 
 #bookDescription {
   max-height: 450px;

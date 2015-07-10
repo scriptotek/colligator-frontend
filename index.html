@@ -146,7 +146,7 @@
     <div class="container">
         <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a><!-- for debugging -->
         <h1><%= mainTitle %></h1>
-        <% if(subTitle !== "undefined") { %>
+        <% if(typeof(subTitle) !== "undefined") { %>
         	<h4><%= subTitle.capitalizeFirstLetter() %></h4>
         <% } %>
         <p>
@@ -166,7 +166,7 @@
         <% if (ebook) { %>
             <div class="alert alert-success"><%= ebookText %></div>
         <% }%>
-        <% if (description!=="undefined") { %>
+        <% if (typeof(description)!=="undefined") { %>
         	<p><%= description.text %></p>
         <% } %>
         <p class="text-center">
@@ -367,7 +367,7 @@ var BookFullView = Backbone.View.extend({
             this.model.set('availableText', availableText);
 
             // Is the book available as an ebook? If so we create a text for it
-            if (this.model.get('other_form')!=="undefined" && this.model.get('other_form').fulltext.access===true) {
+            if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
                 this.model.set('ebook', true);
                 this.model.set('ebookText', 'Boken er tilgjengelig som ebok fra ' + this.model.get('other_form').fulltext.linktext);
             } else {

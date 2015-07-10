@@ -103,6 +103,6 @@ span.glyphicon {
   -webkit-animation-timing-function: linear;
 }
 
-.touch-hand {
+#touchHand {
   display: none;
 }

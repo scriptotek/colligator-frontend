@@ -473,14 +473,14 @@ var AppRouter = Backbone.Router.extend({
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
             console.log('start');
-            $('#touchHand').show();
+            $('.handParagraph').show();
             $('#helpIcon').hide();
             $('#homeIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
         });
         $('#books').on('autoRotateStop', function(e) {
-            $('#touchHand').hide();
+            $('.handParagraph').hide();
             $('#helpIcon').show();
             $('#homeIcon').show();
             $('#bookInfoExtended').show();

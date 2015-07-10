@@ -106,10 +106,10 @@ span.glyphicon:hover {
   -webkit-animation-timing-function: linear;
 }
 #touchHand {
-  display: none;
   position: relative;
 }
 .handParagraph {
+  display: none;
   position: absolute;
   margin: auto;
   top: 60%; left: 0; bottom: 0; right: 0;

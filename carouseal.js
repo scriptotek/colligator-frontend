@@ -518,12 +518,6 @@ var carouSeal= (function () {
 		
 		
 		carousealHammer();
-
-		autorotatespeed=rotateslow;
-		autorotateonoff="on";
-		idleuserwait=3000;
-
-		autoRotateCarousel();
 	}
 
 	function carousealHammer(){

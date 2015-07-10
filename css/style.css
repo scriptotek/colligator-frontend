@@ -106,3 +106,8 @@ span.glyphicon {
 #touchHand {
   display: none;
 }
+
+#bookDescription {
+  height: 600px;
+  overflow-y: hidden;
+}

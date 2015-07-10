@@ -132,7 +132,7 @@
                 <p class="alert alert-success"><%= ebookText %></p>
             <% }%>
             <% if (typeof(description)!=="undefined") { %>
-            	<p><%= description.text %></p>
+            	<p id="bookDescription"><%= description.text %></p>
             <% } %>
             <div class="text-center">
                 <% _.each(subjects.noubomn, function(noubomnSubject) { %>

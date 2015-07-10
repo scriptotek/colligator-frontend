@@ -296,8 +296,10 @@ var BooksView = Backbone.View.extend({
         // Now that we have the images in the div, convert them to a carousel
         carouSeal.element = $("#books");
         carouSeal.initCarousel(rotateTo);
-        // carouSeal.autoRotate(null,1000,2000);
-        carouSeal.autoRotate();
+        $("#books").one('carouselDone', function() {
+            // carouSeal.autoRotate(null,1000,2000);
+            carouSeal.autoRotate();
+        });
 
         return this;
     },

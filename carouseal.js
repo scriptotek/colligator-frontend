@@ -191,7 +191,7 @@ var carouSeal= (function () {
 
 	function addTransforms(duration){
 
-		//console.log('adding transforms');
+		console.log('adding transforms');
 
 		$("#carouseal_carousel").css({
 			"-webkit-transform":"translateZ("+(-radius)+"px) rotateY("+(rotated)+"deg)",
@@ -203,15 +203,17 @@ var carouSeal= (function () {
 
 	function autoRotateCarousel(onoff,wait,speed){
 
+		console.log('inne');
 		//Wait = time to wait before autorotating (if no activity from user after this time)
 		//Speed = Rotation speed in milliseconds
 		//Onoff start/stop the listener
 		if (onoff=="on") { 
 			idleTime = 0;
 			waitingForIdleUser = setInterval(function(){
-				idleTime++
+				idleTime++;
+				console.log(idleTime);
 				if (idleTime>=wait) addTransforms(speed);	
-			},speed);
+			},1000);
 		}
 		else if (onoff=="off") {
 			idleTime = 0;
@@ -342,8 +344,9 @@ var carouSeal= (function () {
 	}
 	
 	function createCarousel($myCarousel,$imgs,initid) {
-
-		//autoRotateCarousel("on",700,700);
+	
+		//wait,speed
+		//autoRotateCarousel("on",2000,700);
 
 		resolutionfactor = 1920/$(window).width();
 		
@@ -414,7 +417,7 @@ var carouSeal= (function () {
 			});
 				
 			//Debug
-			$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'<br>'+$img.attr("id")+'</div>');
+			//$(".carouseal_element").eq(i).prepend('<div class="debug">'+i+'<br>'+$img.attr("id")+'</div>');
 
 			rotate = rotate + sector;
 		});

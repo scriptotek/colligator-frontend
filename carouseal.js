@@ -124,7 +124,7 @@ var carouSeal= (function () {
 		var panwidth = carouselmidpoint;
 		var exp = 100;
 		var projectionfactor = (Math.pow(panwidth,exp)-Math.pow(Math.abs(xpos-panwidth),exp))/Math.pow(panwidth,exp);
-		var speedfactor= 1000;
+		var speedfactor= 120;
 
 		var rotate = (speedfactor*velocity*projectionfactor*heightfactor)/perspective;
 

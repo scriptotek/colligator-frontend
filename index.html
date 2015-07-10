@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="container" id="startView"></div>
+<div class="container text-center" id="startView"></div>
 
 <div class="container">
     <div class="row">
@@ -66,7 +66,7 @@
     <div id="bookFull"></div>
     <div class="row">
         <p class="handParagraph">
-            <img id="touchHand" height="350px" class="animateHand" src="swipeIcon.png" alt="">
+            <img id="touchHand" height="450px" class="animateHand" src="swipeIcon.png" alt="">
         </p>
     </div>
 </div>
@@ -101,10 +101,20 @@
 <script src="carouseal.js"></script>
 
 <script id="startTemplate" type="text/template">
-    <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med:</p>
-    <button type="button" data-url="Forskning" class="emneord btn btn-lg btn-info">Forskning</button>
-    <button type="button" data-url="Vitenskap" class="emneord btn btn-lg btn-info">Vitenskap</button>
+    <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med.</p>
+    <button type="button" data-url="Fysikk" class="emneord btn btn-lg btn-info">Fysikk</button>
+    <button type="button" data-url="Astronomi" class="emneord btn btn-lg btn-info">Astronomi</button>
+    <button type="button" data-url="Kjemi" class="emneord btn btn-lg btn-info">Kjemi</button>
+    <button type="button" data-url="Biologi" class="emneord btn btn-lg btn-info">Biologi</button>
+    <button type="button" data-url="Matematikk" class="emneord btn btn-lg btn-info">Matematikk</button>
+    <button type="button" data-url="Informatikk" class="emneord btn btn-lg btn-info">Informatikk</button>
+    <button type="button" data-url="Geologi" class="emneord btn btn-lg btn-info">Geologi</button>
+    <button type="button" data-url="Medisin" class="emneord btn btn-lg btn-info">Medisin</button>
     <button type="button" data-url="Miljø" class="emneord btn btn-lg btn-info">Miljø</button>
+    <button type="button" data-url="Vitenskapshistorie" class="emneord btn btn-lg btn-info">Vitenskapshistorie</button>
+    <button type="button" data-url="Energi" class="emneord btn btn-lg btn-info">Energi</button>
+    <button type="button" data-url="Formidling" class="emneord btn btn-lg btn-info">Formidling</button>
+    <button type="button" data-url="Politikk" class="emneord btn btn-lg btn-info">Politikk</button>
 </script>
 
 <script id="bookListTemplate" type="text/template">
@@ -140,7 +150,7 @@
             	<p id="bookDescription"><%= description.text %></p>
             <% } %>
             <div class="text-center">
-                <% _.each(subjects.noubomn, function(noubomnSubject) { %>
+                <% _.each(emneord, function(noubomnSubject) { %>
                     <% if (noubomnSubject.prefLabel === currentEmneord) { %>
                         <button type="button" class="emneord btn btn-lg btn-default"><%= noubomnSubject.prefLabel %></button>
                     <% } else { %>
@@ -396,8 +406,8 @@ var BookFullView = Backbone.View.extend({
             this.model.set('available', available);
             this.model.set('availableText', availableText);
 
-            // Limit emneord to 10
-            this.model.set('subjects.noubomn', this.model.get('subjects').noubomn.slice(0,12));
+            // Limit emneord to 12
+            this.model.set('emneord', this.model.get('subjects').noubomn.slice(0,12));
 
             // Is the book available as an ebook? If so we create a text for it
             if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
@@ -486,7 +496,6 @@ var AppRouter = Backbone.Router.extend({
 
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
-            console.log('start');
             $('.handParagraph').show();
             $('#helpIcon').hide();
             $('#homeIcon').hide();

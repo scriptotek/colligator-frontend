@@ -453,14 +453,14 @@ var BookFullView = Backbone.View.extend({
                 circulation_status: 'Available'
             });
             if (available42) {
-                availableText = 'Boken er tilgjengelig i 42-samlingen. Hylleplassering: ' + available42.callcode;
+                availableText = 'Boka skal stå på hylla. Se etter ' + available42.callcode;
             } else if (availableUREAL) {
-                availableText = 'Boken er tilgjengelig hos Realfagsbiblioteket. Hylleplassering: ' + availableUREAL.callcode;
+                availableText = 'Utlånt, men boka skal finnes et annet sted i biblioteket. Se (eller spør) etter ' + availableUREAL.shelvinglocation + ' ' + availableUREAL.callcode;
             } else if (availableUBO) {
-                availableText = 'Boken er tilgjengelig hos Universitetsbiblioteket. Hylleplassering: ' + availableUBO.callcode;
+                availableText = 'Utlånt, men boka skal finnes et annet sted på Universitetsbiblioteket, nærmere bestemt ' + availableUBO.shelvinglocation + ' ' + availableUBO.callcode;
             } else {
                 available = false;
-                availableText = 'Boken er ikke tilgjengelig.';
+                availableText = 'Boka er utlånt. Ta kontakt med skranken om du vil reservere den.';
             }
             this.model.set('available', available);
             this.model.set('availableText', availableText);
@@ -471,7 +471,7 @@ var BookFullView = Backbone.View.extend({
             // Is the book available as an ebook? If so we create a text for it
             if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
                 this.model.set('ebook', true);
-                this.model.set('ebookText', 'Boken er tilgjengelig som ebok fra ' + this.model.get('other_form').fulltext.linktext);
+                this.model.set('ebookText', 'Denne boka finnes også som ebok fra ' + this.model.get('other_form').fulltext.linktext);
             } else {
                 this.model.set('ebook', false);
             }

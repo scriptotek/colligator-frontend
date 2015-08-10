@@ -76,7 +76,7 @@
 		<div class="row">
 			<div class="col-sm-3">
                 <p class="text-left">
-                    <a href="index.html"><span id="homeIcon" class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+                    <a href="index.html" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
                 </p>
             </div>
 			<div class="col-sm-6">
@@ -195,6 +195,31 @@
     </div>
   </script>
 
+
+<!-- Piwik -->
+<script type="text/javascript">
+
+  function generatePiwikUserId() {
+    var current_date = (new Date()).valueOf().toString();
+    var random = Math.random().toString();
+    return current_date + random;
+  }
+
+  var _paq = _paq || [];
+  _paq.push(['setUserId', generatePiwikUserId()]);
+  // _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://analytics.biblionaut.net/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 2]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->
+
+
 <script type="text/javascript">
 
 "use strict";
@@ -300,6 +325,8 @@ var StartView = Backbone.View.extend({
             trigger: true,
             emneord: $li.attr('data-emneord')
         });
+
+        _paq.push(['trackEvent', 'StartView', 'TapSubject', $li.attr('data-emneord')]);
 
         this.remove();
         this.unbind();
@@ -483,6 +510,8 @@ var BookFullView = Backbone.View.extend({
             trigger: true,
             emneord: $li.attr('data-emneord')
         });
+
+        _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
     }
 });
 
@@ -495,6 +524,8 @@ var AppRouter = Backbone.Router.extend({
 
         this.emneordHistory = [];
         this.emneordHistoryIndex = -1;
+
+        this.idle = false;
 
         // Add listener for the rotate-event
         var self = this;
@@ -509,6 +540,10 @@ var AppRouter = Backbone.Router.extend({
             bookFullView.currentEmneord = books._emneord;
             // Update url
             self.navigate('cat/' + books._emneord + '/' + bookId);
+
+            if (!self.idle) {
+                _paq.push(['trackEvent', 'BookView', 'SwipeToBook', 'Book: ' + bookId]);
+            }
         });
 
         // Add listener for key left/right
@@ -521,17 +556,22 @@ var AppRouter = Backbone.Router.extend({
 
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
+            self.idle = true;
             $('.handParagraph').show();
             $('#helpIcon').hide();
             $('#homeIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
+            _paq.push(['trackEvent', 'BookView', 'Idle']);
         });
         $('#books').on('autoRotateStop', function(e) {
+            self.idle = false;
             $('.handParagraph').hide();
             $('#helpIcon').show();
             $('#homeIcon').show();
             $('#bookInfoExtended').show();
+            _paq.push(['setUserId', generatePiwikUserId()]);
+            _paq.push(['trackEvent', 'BookView', 'WakeUp']);
             bookFullView._hideExtended = false;
         });
 
@@ -539,10 +579,12 @@ var AppRouter = Backbone.Router.extend({
         $('#previousEmneord').on('click', function() {
             self.emneordHistoryIndex--;
             self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
+            _paq.push(['trackEvent', 'BookView', 'TapPreviousSubject', self.emneordHistory[self.emneordHistoryIndex]]);
         });
         $('#nextEmneord').on('click', function() {
             self.emneordHistoryIndex++;
             self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
+            _paq.push(['trackEvent', 'BookView', 'TapNextSubject', self.emneordHistory[self.emneordHistoryIndex]]);
         });
     },
     routes: {
@@ -614,6 +656,11 @@ var AppRouter = Backbone.Router.extend({
     viewEmneord: function(emneord) {
         this.addEmneordToHistory(emneord);
 
+        // TODO: Backbone-routeren har sikkert støtte for å endre tittel?
+        document.title = 'Samling 42 - Emne: ' + emneord;
+        _paq.push(['setDocumentTitle', document.title]);
+        _paq.push(['trackPageView']);
+
         var self = this;
         // Load carousel IF new emneord
         if (books._emneord !== emneord) {
@@ -684,6 +731,8 @@ var Modal = Backbone.Modal.extend({
 $('#helpIcon').on('click', function() {
     var modalView = new Modal();
     $('#help').html(modalView.render().el);
+
+    _paq.push(['trackEvent', 'BookView', 'TapHelpIcon']);
 });
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE

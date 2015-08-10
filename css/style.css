@@ -141,3 +141,6 @@ span.glyphicon:hover {
 #help .bbm-button {
   font-size: 22px;
 }
+#help .bbm-modal {
+  max-width: 700px; /* Increase from default 550px */
+}

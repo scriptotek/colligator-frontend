@@ -320,13 +320,14 @@ var StartView = Backbone.View.extend({
     // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
+
+        _paq.push(['trackEvent', 'StartView', 'TapSubject', $li.attr('data-emneord')]);
+
         // Change URL and trigger route handler
         router.navigate('cat/'+$li.attr('data-emneord'), {
             trigger: true,
             emneord: $li.attr('data-emneord')
         });
-
-        _paq.push(['trackEvent', 'StartView', 'TapSubject', $li.attr('data-emneord')]);
 
         this.remove();
         this.unbind();
@@ -505,13 +506,15 @@ var BookFullView = Backbone.View.extend({
         router.emneordHistory = router.emneordHistory.slice(0, router.emneordHistoryIndex + 1);
 
         var $li = $(e.target);
+
+        _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
+
         // Change URL and trigger route handler
         router.navigate($li.attr('data-url'), {
             trigger: true,
             emneord: $li.attr('data-emneord')
         });
 
-        _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
     }
 });
 
@@ -527,6 +530,12 @@ var AppRouter = Backbone.Router.extend({
 
         this.idle = false;
 
+        // TODO: The initial 'listenForActiveItem' event is not triggered
+        // [#48] by a user swipe, so we ignore that for analytics. It should
+        //       probably be the responsibility of Carouseal to indicate 
+        //       whether an event is triggered by a swipe or not though.
+        this.initialActiveItemEvent = true;
+
         // Add listener for the rotate-event
         var self = this;
         $("#books").on('listenForActiveItem', function (e, bookId) {
@@ -538,12 +547,18 @@ var AppRouter = Backbone.Router.extend({
             bookFullView.model = book;
             bookFullView.render();
             bookFullView.currentEmneord = books._emneord;
+
+            // TODO: Simplify
+            if (!self.idle) {
+                if (this.initialActiveItemEvent) {
+                    this.initialActiveItemEvent = false;
+                } else {
+                    _paq.push(['trackEvent', 'BookView', 'SwipeToBook', 'Book: ' + bookId]);
+                }
+            }
+
             // Update url
             self.navigate('cat/' + books._emneord + '/' + bookId);
-
-            if (!self.idle) {
-                _paq.push(['trackEvent', 'BookView', 'SwipeToBook', 'Book: ' + bookId]);
-            }
         });
 
         // Add listener for key left/right

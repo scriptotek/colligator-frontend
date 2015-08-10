@@ -102,19 +102,19 @@
 
 <script id="startTemplate" type="text/template">
     <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med.</p>
-    <button type="button" data-url="Fysikk" class="emneord btn btn-lg btn-info">Fysikk</button>
-    <button type="button" data-url="Astronomi" class="emneord btn btn-lg btn-info">Astronomi</button>
-    <button type="button" data-url="Kjemi" class="emneord btn btn-lg btn-info">Kjemi</button>
-    <button type="button" data-url="Biologi" class="emneord btn btn-lg btn-info">Biologi</button>
-    <button type="button" data-url="Matematikk" class="emneord btn btn-lg btn-info">Matematikk</button>
-    <button type="button" data-url="Informatikk" class="emneord btn btn-lg btn-info">Informatikk</button>
-    <button type="button" data-url="Geologi" class="emneord btn btn-lg btn-info">Geologi</button>
-    <button type="button" data-url="Medisin" class="emneord btn btn-lg btn-info">Medisin</button>
-    <button type="button" data-url="Miljø" class="emneord btn btn-lg btn-info">Miljø</button>
-    <button type="button" data-url="Vitenskapshistorie" class="emneord btn btn-lg btn-info">Vitenskapshistorie</button>
-    <button type="button" data-url="Energi" class="emneord btn btn-lg btn-info">Energi</button>
-    <button type="button" data-url="Formidling" class="emneord btn btn-lg btn-info">Formidling</button>
-    <button type="button" data-url="Politikk" class="emneord btn btn-lg btn-info">Politikk</button>
+    <button type="button" data-emneord="Fysikk" class="emneord btn btn-lg btn-info">Fysikk</button>
+    <button type="button" data-emneord="Astronomi" class="emneord btn btn-lg btn-info">Astronomi</button>
+    <button type="button" data-emneord="Kjemi" class="emneord btn btn-lg btn-info">Kjemi</button>
+    <button type="button" data-emneord="Biologi" class="emneord btn btn-lg btn-info">Biologi</button>
+    <button type="button" data-emneord="Matematikk" class="emneord btn btn-lg btn-info">Matematikk</button>
+    <button type="button" data-emneord="Informatikk" class="emneord btn btn-lg btn-info">Informatikk</button>
+    <button type="button" data-emneord="Geologi" class="emneord btn btn-lg btn-info">Geologi</button>
+    <button type="button" data-emneord="Medisin" class="emneord btn btn-lg btn-info">Medisin</button>
+    <button type="button" data-emneord="Miljø" class="emneord btn btn-lg btn-info">Miljø</button>
+    <button type="button" data-emneord="Vitenskapshistorie" class="emneord btn btn-lg btn-info">Vitenskapshistorie</button>
+    <button type="button" data-emneord="Energi" class="emneord btn btn-lg btn-info">Energi</button>
+    <button type="button" data-emneord="Formidling" class="emneord btn btn-lg btn-info">Formidling</button>
+    <button type="button" data-emneord="Politikk" class="emneord btn btn-lg btn-info">Politikk</button>
 </script>
 
 <script id="bookListTemplate" type="text/template">
@@ -321,7 +321,7 @@ var StartView = Backbone.View.extend({
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
         // Change URL and trigger route handler
-        router.navigate('cat/'+$li.attr('data-url'), {
+        router.navigate('cat/'+$li.attr('data-emneord'), {
             trigger: true,
             emneord: $li.attr('data-emneord')
         });

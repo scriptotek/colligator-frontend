@@ -66,6 +66,43 @@ small {
 .emneord{
   margin: 8px;
 }
+
+/* TODO: This is just copy-paste from Bootstrap! Once we have Gulp up-and-running, we should inherit from the .glyphicon class instead */
+.emneord em{
+box-sizing: border-box;
+display: inline-block;
+font-family: 'Glyphicons Halflings';
+height: 25px;
+line-height: 25px;
+position: relative;
+top: 3px;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+white-space: nowrap;
+width: 25px;
+word-spacing: 0px;
+margin-right:8px;
+}
+.emneord em:before {
+    content: "\e041";
+}
+.emneord-person em:before {
+    content: "\e008";
+}
+.emneord-corporation em:before {
+    content: "\e139";
+}
+.emneord-geographic em:before {
+    content: "\e135";
+}
+.emneord-chronologic em:before {
+    content: "\e141";
+}
+.emneord-form em:before {
+    content: "\e022";
+}
+
 #touchHand {
   margin-top: 32px;
 }

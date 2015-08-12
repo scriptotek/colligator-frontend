@@ -150,11 +150,11 @@
             	<p id="bookDescription"><%= description.text %></p>
             <% } %>
             <div class="text-center">
-                <% _.each(emneord, function(noubomnSubject) { %>
-                    <% if (noubomnSubject.prefLabel === currentEmneord) { %>
-                        <button type="button" class="emneord btn btn-lg btn-default"><%= noubomnSubject.prefLabel %></button>
+                <% _.each(emneord, function(subject) { %>
+                    <% if (subject.prefLabel === currentEmneord) { %>
+                        <button type="button" class="emneord emneord-<%= subject.type %> btn btn-lg btn-default"><em></em><%= subject.prefLabel %></button>
                     <% } else { %>
-                        <button type="button" class="emneord btn btn-lg btn-info"><%= noubomnSubject.prefLabel %></button>
+                        <button type="button" class="emneord emneord-<%= subject.type %> btn btn-lg btn-info"><em></em><%= subject.prefLabel %></button>
                     <% } %>
                 <% }); %>
             </div>
@@ -403,6 +403,16 @@ var BookFullView = Backbone.View.extend({
         // This variable decides if #bookInfoExtended is showed or not in this.render()
         this._hideExtended = false;
     },
+    getSubjects: function (model) {
+        // Max 12 of each type
+        var s1 = (model.get('subjects').noubomn || []).slice(0,12);
+        var s2 = (model.get('genres').noubomn || []).slice(0,12).map(function(sub) {
+            sub['type'] = 'form';
+            return sub;
+        });
+        var s3 = (model.get('subjects').NOTrBIB || []).slice(0,12);
+        return s1.concat(s2).concat(s3);
+    },
     render: function() {
 
         var template; // Will hold the compiled template
@@ -429,6 +439,9 @@ var BookFullView = Backbone.View.extend({
 
             // Store the current emneord in the model so that it's retrievable from the template
             this.model.set('currentEmneord', bookFullView.currentEmneord);
+
+            // TODO: 'availability'-koden under er såpass lang at det er ryddigere om den skilles ut
+            //       i en egen funksjon
 
             // Decide what the availability-text will be. Four possible cases:
             // 1. Book is in 42-collection and available.
@@ -465,8 +478,7 @@ var BookFullView = Backbone.View.extend({
             this.model.set('available', available);
             this.model.set('availableText', availableText);
 
-            // Limit emneord to 12
-            this.model.set('emneord', this.model.get('subjects').noubomn.slice(0,12));
+            this.model.set('emneord', this.getSubjects(this.model));
 
             // Is the book available as an ebook? If so we create a text for it
             if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
@@ -683,6 +695,7 @@ var AppRouter = Backbone.Router.extend({
         _paq.push(['trackPageView']);
 
         var self = this;
+
         // Load carousel IF new emneord
         if (books._emneord !== emneord) {
         	this.newCarousel(emneord);

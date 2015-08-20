@@ -316,7 +316,7 @@ var StartView = Backbone.View.extend({
 
         // Create template function
         template = _.template($('#startTemplate').html());
-        // Give data to template function and produce html
+        // Give data to template function and produce html. No input data for the template here for now
         html = template();
         // Insert produced html into the view element
         this.$el.append(html);
@@ -338,6 +338,7 @@ var StartView = Backbone.View.extend({
             emneord: $li.attr('data-emneord')
         });
 
+        // Remove this view
         this.remove();
         this.unbind();
     }
@@ -376,6 +377,7 @@ var BooksView = Backbone.View.extend({
         var self = this;
         this.model.each(function(book) {
             var bookView = new BookView({ model: book });
+            // Store reference to the created view to make it easier to remove it later
             self._views.push(bookView);
             self.$el.append(bookView.render().$el);
         });
@@ -392,6 +394,8 @@ var BooksView = Backbone.View.extend({
         this._views = [];
 
     },
+    // Thoroughly remove subviews. Tip gotten from:
+    // http://stackoverflow.com/questions/9522845/backbone-js-remove-all-sub-views
     removeOldViews: function() {
         _.each(this._views, function(view) {
             view.remove();

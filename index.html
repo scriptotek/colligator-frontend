@@ -344,10 +344,6 @@ var Books = Backbone.Collection.extend({
         //   has no holdings
         //   has no cover
         var data = _.reject(response.documents, function(element) {
-            if (element.holdings.length === 0 || element.cover===null) {
-                console.log('removed');
-                console.log(element);
-            }
             return element.holdings.length === 0 || element.cover===null;
         });
 
@@ -636,8 +632,8 @@ var AppRouter = Backbone.Router.extend({
             var book = books.findWhere({ id: Number(bookId) });
             // Update the model and render
             bookFullView.model = book;
-            bookFullView.render();
             bookFullView.currentEmneord = books._emneord;
+            bookFullView.render();
 
             // TODO: Simplify
             if (!self.idle) {
@@ -780,8 +776,8 @@ var AppRouter = Backbone.Router.extend({
         	$("#books").one('carouselDone', function() {
         	    // Render bookFullView
         	    bookFullView.model = books.at(0);
-        	    bookFullView.render();
                 bookFullView.currentEmneord = books._emneord;
+        	    bookFullView.render();
         	    // Replace url
         	    self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
         	        replace: true

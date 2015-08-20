@@ -14,7 +14,7 @@
 
 <div class="container">
     <div class="row">
-        <h1 class="text-center" id="pageTitle">Samling 42</h1>
+        <h1 class="text-center" id="pageTitle" style="margin-bottom:.6em;">Samling 42</h1>
     </div>
 </div>
 
@@ -101,20 +101,89 @@
 <script src="carouseal.js"></script>
 
 <script id="startTemplate" type="text/template">
-    <p>Her kan du utforske bøkene i samlingen. Her er noen emneord du kan starte med.</p>
+    <p>Her kan du begynne å utforske samlingen. Velg et emne...</p>
+
+    <!-- Fysikk / astro -->
     <button type="button" data-emneord="Fysikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Fysikk</button>
-    <button type="button" data-emneord="Astronomi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Astronomi</button>
-    <button type="button" data-emneord="Kjemi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kjemi</button>
-    <button type="button" data-emneord="Biologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Biologi</button>
-    <button type="button" data-emneord="Matematikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Matematikk</button>
-    <button type="button" data-emneord="Informatikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Informatikk</button>
-    <button type="button" data-emneord="Geologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Geologi</button>
-    <button type="button" data-emneord="Medisin" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Medisin</button>
-    <button type="button" data-emneord="Miljø" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Miljø</button>
-    <button type="button" data-emneord="Vitenskapshistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Vitenskapshistorie</button>
     <button type="button" data-emneord="Energi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Energi</button>
-    <button type="button" data-emneord="Formidling" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Formidling</button>
+    <button type="button" data-emneord="Relativitetsteorien" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Relativitetsteorien</button>
+    <button type="button" data-emneord="Astronomi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Astronomi</button>
+    <button type="button" data-emneord="Sorte hull" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Sorte hull</button>
+
+    <!-- Filosofi -->
+    <button type="button" data-emneord="Filosofi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Filosofi</button>
+    <button type="button" data-emneord="Tidsbegrepet" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Tidsbegrepet</button>
+
+    <!-- Biologi -->
+    <button type="button" data-emneord="Biologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Biologi</button>
+    <button type="button" data-emneord="Evolusjonsteorien" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Evolusjonsteorien</button>
+    <button type="button" data-emneord="Genetikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Genetikk</button>
+    <button type="button" data-emneord="Økologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Økologi</button>
+
+    <!-- Geologi -->
+    <button type="button" data-emneord="Geologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Geologi</button>
+
+    <!-- Informatikk -->
+    <button type="button" data-emneord="Informatikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Informatikk</button>
+    <button type="button" data-emneord="Kunstig intelligens" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kunstig intelligens</button>
+
+    <!-- Matematikk -->
+    <button type="button" data-emneord="Matematikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Matematikk</button>
+    <button type="button" data-emneord="Populærmatematikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Populærmatematikk</button>
+    <button type="button" data-emneord="Matematikkhistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Matematikkhistorie</button>
+    <button type="button" data-emneord="Knuter" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Knuter</button>
+
+    <!-- Kjemi -->
+    <button type="button" data-emneord="Kjemi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kjemi</button>
+    <button type="button" data-emneord="Kjemihistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kjemihistorie</button>
+    <button type="button" data-emneord="Gastronomi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Gastronomi</button>
+
+    <!-- Resten -->
+    <button type="button" data-emneord="Medisin" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Medisin</button>
+    <button type="button" data-emneord="Oppfinnelser" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Oppfinnelser</button>
     <button type="button" data-emneord="Politikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Politikk</button>
+    <button type="button" data-emneord="Miljø" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Miljø</button>
+
+    <button type="button" data-emneord="Psykologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Psykologi</button>
+    <button type="button" data-emneord="Hobbyer" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Hobbyer</button>
+    <button type="button" data-emneord="Kunst" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kunst</button>
+
+    <button type="button" data-emneord="Vitenskapshistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Vitenskapshistorie</button>
+    <button type="button" data-emneord="Vitenskapelig forfatterskap" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Vitenskapelig forfatterskap</button>
+    <button type="button" data-emneord="Formidling" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Formidling</button>
+
+    <p>… et sted …</p>
+
+    <button type="button" data-emneord="Norge" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Norge</button>
+    <button type="button" data-emneord="Antarktis" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Antarktis</button>
+    <button type="button" data-emneord="Kina" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Kina</button>
+    <button type="button" data-emneord="Storbritannia" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Storbritannia</button>
+
+
+    <p>… en person …</p>
+
+    <button type="button" data-emneord="Newton, Isaac" class="emneord emneord-person btn btn-lg btn-info"><em></em>Isaac Newton</button>
+    <button type="button" data-emneord="Darwin, Charles (1809-1882)" class="emneord emneord-person btn btn-lg btn-info"><em></em>Charles Darwin</button>
+    <button type="button" data-emneord="Copernicus, Nicolaus" class="emneord emneord-person btn btn-lg btn-info"><em></em>Nicolaus Copernicus</button>
+    <button type="button" data-emneord="Linné, Carl von" class="emneord emneord-person btn btn-lg btn-info"><em></em>Carl von Linné</button>
+    <button type="button" data-emneord="Abel, Niels Henrik (1802-1829)" class="emneord emneord-person btn btn-lg btn-info"><em></em>Niels Henrik Abel</button>
+    <button type="button" data-emneord="Curie, Marie" class="emneord emneord-person btn btn-lg btn-info"><em></em>Marie Curie</button>
+    <button type="button" data-emneord="Faraday, Michael" class="emneord emneord-person btn btn-lg btn-info"><em></em>Michael Faraday</button>
+
+    <p>… eller kanskje en form …</p>
+
+    <button type="button" data-emneord="Humor" class="emneord emneord-form btn btn-lg btn-info"><em></em>Humor</button>
+    <button type="button" data-emneord="Biografier" class="emneord emneord-form btn btn-lg btn-info"><em></em>Biografier</button>
+    <button type="button" data-emneord="Sitatsamlinger" class="emneord emneord-form btn btn-lg btn-info"><em></em>Sitatsamlinger</button>
+    <button type="button" data-emneord="Skjønnlitteratur" class="emneord emneord-form btn btn-lg btn-info"><em></em>Skjønnlitteratur</button>
+    <button type="button" data-emneord="Dikt" class="emneord emneord-form btn btn-lg btn-info"><em></em>Dikt</button>
+    <button type="button" data-emneord="Bildeverk" class="emneord emneord-form btn btn-lg btn-info"><em></em>Bildeverk</button>
+    <button type="button" data-emneord="Tegneserier" class="emneord emneord-form btn btn-lg btn-info"><em></em>Tegneserier</button>
+    <button type="button" data-emneord="Reisekildringer" class="emneord emneord-form btn btn-lg btn-info"><em></em>Reisekildringer</button>
+
+    <p>
+    </p>
+
 </script>
 
 <script id="bookListTemplate" type="text/template">
@@ -593,22 +662,26 @@ var AppRouter = Backbone.Router.extend({
 
         // Handlers for autoRotate
         $('#books').on('autoRotateStart', function(e) {
-            self.idle = true;
             $('.handParagraph').show();
             $('#helpIcon').hide();
             $('#homeIcon').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
-            _paq.push(['trackEvent', 'BookView', 'Idle']);
+            if (!self.idle) {
+                self.idle = true;
+                _paq.push(['trackEvent', 'BookView', 'Idle']);
+            }
         });
         $('#books').on('autoRotateStop', function(e) {
-            self.idle = false;
             $('.handParagraph').hide();
             $('#helpIcon').show();
             $('#homeIcon').show();
             $('#bookInfoExtended').show();
-            _paq.push(['setUserId', generatePiwikUserId()]);
-            _paq.push(['trackEvent', 'BookView', 'WakeUp']);
+            if (self.idle) {
+                self.idle = false;
+                _paq.push(['setUserId', generatePiwikUserId()]);
+                _paq.push(['trackEvent', 'BookView', 'WakeUp']);
+            }
             bookFullView._hideExtended = false;
         });
 

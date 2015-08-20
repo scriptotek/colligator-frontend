@@ -307,6 +307,7 @@ String.prototype.capitalizeFirstLetter = function() {
 (function() {
 
   // ------ BEGIN LAST MINUTE FIXES FOR KIOSK MODE ---------
+  // Disable right click
   window.oncontextmenu = function(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -339,27 +340,29 @@ var Books = Backbone.Collection.extend({
     url: 'http://colligator.biblionaut.net/api/documents',
     parse: function(response, options) {
 
-        // Remove (reject) books that has no holdings
-        // Also remove books with no cover
+        // Remove books that:
+        //   has no holdings
+        //   has no cover
         var data = _.reject(response.documents, function(element) {
+            if (element.holdings.length === 0 || element.cover===null) {
+                console.log('removed');
+                console.log(element);
+            }
             return element.holdings.length === 0 || element.cover===null;
         });
 
-        // In the Book model above we've set a default image for the cover. The API gives cover: null if it didn't find a cover. Backbone will replace our own placeholder if the API returns any value at all (including null) for the cover property. Hence, we delete the cover property if the value is null, so that our placeholder cover is kept.
-        // Also remove description if it's null
-        // Also remove books with holdings===0
-        // ALso remove emneord 'Naturvitenskap'
+        // Filter and modify data
         data = _.map(data, function(val, ind, all) {
-            if (val.cover===null) {
-                delete val.cover;
-            } else {
-            	val.cover = val.cover.thumb.url;
-            }
 
+            // Set simpler key for cover
+            val.cover = val.cover.thumb.url;
+
+            // Remove the description key if there's no description, because then it's easier to test whether or not to show the description in #bookFullTemplate
             if (val.description===null) {
             	delete val.description;
             }
 
+            // Remove the emneord Naturvitenskap from the list of emneord because almost all books has that emneord
             val.subjects.noubomn = _.reject(val.subjects.noubomn, function(emneord) {
                 return emneord.prefLabel==='Naturvitenskap';
             });

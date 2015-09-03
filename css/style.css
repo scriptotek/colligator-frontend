@@ -116,10 +116,10 @@ margin-right:8px;
   /*background-color: #f5f5f5;*/
 }
 
-span.glyphicon {
+.glyphicon-large {
   font-size: 100px;
 }
-span.glyphicon:hover {
+.glyphicon-large:hover {
   cursor: pointer;
 }
 

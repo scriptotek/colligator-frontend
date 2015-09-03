@@ -59,13 +59,14 @@
         </svg>
     </div>
 
-	<div id="books"></div>
+    <div id="books"></div>
 
     <div id="help"></div>
 
 </div>
 
 <div class="container">
+    <div id="errormessage"></div>
     <div id="bookFull"></div>
     <div class="row">
         <p class="handParagraph">
@@ -79,7 +80,7 @@
 		<div class="row">
 			<div class="col-sm-3">
                 <p class="text-left">
-                    <a href="/" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home" aria-hidden="true"></span></a>
+                    <a href="./" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home glyphicon-large" aria-hidden="true"></span></a>
                 </p>
             </div>
 			<div class="col-sm-6">
@@ -89,7 +90,7 @@
             </div>
 			<div class="col-sm-3">
 				<p class="text-right">
-					<span id="helpIcon" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>			
+					<span id="helpIcon" class="glyphicon glyphicon-question-sign glyphicon-large" aria-hidden="true"></span>			
 				</p>
 			</div>
 		</div>
@@ -187,6 +188,17 @@
     <p>
     </p>
 
+</script>
+
+<script id="errorMessageTemplate" type="text/template">
+    <div class="alert alert-danger" role="alert">
+
+        <span style="font-size:42px">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <%= error %>
+        </span>
+
+    </div>
 </script>
 
 <script id="bookListTemplate" type="text/template">
@@ -441,20 +453,33 @@ var BooksView = Backbone.View.extend({
         // Empty content in case carouseal left something
         this.$el.empty();
 
-        // Create new views
-        var self = this;
-        this.model.each(function(book) {
-            var bookView = new BookView({ model: book });
-            // Store reference to the created view to make it easier to remove it later
-            self._views.push(bookView);
-            self.$el.append(bookView.render().$el);
-        });
+        // Create new views IF we have books
+        if (books.length>0) {
 
-        // Now that we have the images in the div, convert them to a carousel
-        carouSeal.element = $("#books");
-        carouSeal.initCarousel(rotateTo);
-        //carouSeal.autoRotate(null,3000);
-		carouSeal.autoRotate();
+            // Hide any previously shown error message
+            errorMessageView.$el.hide();
+
+            var self = this;
+            this.model.each(function(book) {
+                var bookView = new BookView({ model: book });
+                // Store reference to the created view to make it easier to remove it later
+                self._views.push(bookView);
+                self.$el.append(bookView.render().$el);
+            });
+
+            // Now that we have the images in the div, convert them to a carousel
+            carouSeal.element = $("#books");
+            carouSeal.initCarousel(rotateTo);
+            //carouSeal.autoRotate(null,3000);
+            carouSeal.autoRotate();
+
+        } else {
+            // Make sure the errormessagediv is shown
+            errorMessageView.$el.show();
+            errorMessageView.render('Ingen bøker funnet for emneord ' + books._emneord + '.');
+            console.log('No books found for this emneord.')
+        }
+
         return this;
     },
     initialize: function(options) {
@@ -493,97 +518,104 @@ var BookFullView = Backbone.View.extend({
         var template; // Will hold the compiled template
         var html; // Will hold the result of template(data)
 
-        // Create a print-friendly attribute for the author names
-        var authors = '';
-        _.each(this.model.get('creators'), function(creator) {
-            authors = authors.concat(', '+creator.name);
-        });
-        authors = authors.concat('.');
-        authors = authors.substr(2); // Remove starting ', '
-        // Store in model
-        this.model.set('authors', authors);
+        // Only render if we have a model
+        if (this.model != null) {
 
-        // The titles sometimes comes in as "Main title : subtitle : third title". We want that to display as mainTitle:"Main title" and the rest as restTitle:"subtitle : third title". In other words: Keep everything before the first " : " as the main title, and add the rest up as the subtitle if there is anything else.
-        var titles = this.model.get('title').split(' : ');
-        this.model.set('mainTitle', titles[0]);
-        if (titles.length > 1) {
-        	this.model.set('subTitle', titles.splice(1).join(' : '));
-        }
+            // Create a print-friendly attribute for the author names
+            var authors = '';
+            _.each(this.model.get('creators'), function(creator) {
+                authors = authors.concat(', '+creator.name);
+            });
+            authors = authors.concat('.');
+            authors = authors.substr(2); // Remove starting ', '
+            // Store in model
+            this.model.set('authors', authors);
 
-        // Store the current emneord in the model so that it's retrievable from the template
-        this.model.set('currentEmneord', bookFullView.currentEmneord);
+            // The titles sometimes comes in as "Main title : subtitle : third title". We want that to display as mainTitle:"Main title" and the rest as restTitle:"subtitle : third title". In other words: Keep everything before the first " : " as the main title, and add the rest up as the subtitle if there is anything else.
+            var titles = this.model.get('title').split(' : ');
+            this.model.set('mainTitle', titles[0]);
+            if (titles.length > 1) {
+                this.model.set('subTitle', titles.splice(1).join(' : '));
+            }
 
-        // TODO: 'availability'-koden under er såpass lang at det er ryddigere om den skilles ut
-        //       i en egen funksjon
+            // Store the current emneord in the model so that it's retrievable from the template
+            this.model.set('currentEmneord', bookFullView.currentEmneord);
 
-        // Decide what the availability-text will be. Four possible cases:
-        // 1. Book is in 42-collection and available.
-        // 2. Book is at UREAL and available.
-        // 3. Book is at UBO and available.
-        // 4. Book is not available.
-        var availableText = '';
-        var available = true;
-        // Check for case 1
-        var available42 = _.findWhere(this.model.get('holdings'), {
-            shelvinglocation: 'UREAL Samling 42',
-            circulation_status: 'Available'
-        });
-        // Check for case 2
-        var availableUREAL = _.findWhere(this.model.get('holdings'), {
-            sublocation: 'UREAL',
-            circulation_status: 'Available'
-        });
-        // Check for case 3
-        var availableUBO = _.findWhere(this.model.get('holdings'), {
-            location: 'UBO',
-            circulation_status: 'Available'
-        });
-        if (available42) {
-            availableText = 'Boka skal stå på hylla. Se etter ' + available42.callcode;
-        } else if (availableUREAL) {
-            availableText = 'Utlånt, men boka skal finnes et annet sted i biblioteket. Se (eller spør) etter ' + availableUREAL.shelvinglocation + ' ' + availableUREAL.callcode;
-        } else if (availableUBO) {
-            availableText = 'Utlånt, men boka skal finnes et annet sted på Universitetsbiblioteket, nærmere bestemt ' + availableUBO.shelvinglocation + ' ' + availableUBO.callcode;
+            // TODO: 'availability'-koden under er såpass lang at det er ryddigere om den skilles ut
+            //       i en egen funksjon
+
+            // Decide what the availability-text will be. Four possible cases:
+            // 1. Book is in 42-collection and available.
+            // 2. Book is at UREAL and available.
+            // 3. Book is at UBO and available.
+            // 4. Book is not available.
+            var availableText = '';
+            var available = true;
+            // Check for case 1
+            var available42 = _.findWhere(this.model.get('holdings'), {
+                shelvinglocation: 'UREAL Samling 42',
+                circulation_status: 'Available'
+            });
+            // Check for case 2
+            var availableUREAL = _.findWhere(this.model.get('holdings'), {
+                sublocation: 'UREAL',
+                circulation_status: 'Available'
+            });
+            // Check for case 3
+            var availableUBO = _.findWhere(this.model.get('holdings'), {
+                location: 'UBO',
+                circulation_status: 'Available'
+            });
+            if (available42) {
+                availableText = 'Boka skal stå på hylla. Se etter ' + available42.callcode;
+            } else if (availableUREAL) {
+                availableText = 'Utlånt, men boka skal finnes et annet sted i biblioteket. Se (eller spør) etter ' + availableUREAL.shelvinglocation + ' ' + availableUREAL.callcode;
+            } else if (availableUBO) {
+                availableText = 'Utlånt, men boka skal finnes et annet sted på Universitetsbiblioteket, nærmere bestemt ' + availableUBO.shelvinglocation + ' ' + availableUBO.callcode;
+            } else {
+                available = false;
+                availableText = 'Boka er utlånt. Ta kontakt med skranken om du vil reservere den.';
+            }
+            this.model.set('available', available);
+            this.model.set('availableText', availableText);
+
+            this.model.set('emneord', this.getSubjects(this.model));
+
+            // Is the book available as an ebook? If so we create a text for it
+            if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
+                this.model.set('ebook', true);
+                this.model.set('ebookText', 'Denne boka finnes også som ebok fra ' + this.model.get('other_form').fulltext.linktext);
+            } else {
+                this.model.set('ebook', false);
+            }
+
+            // Create template function
+            template = _.template($('#bookFullTemplate').html());
+            // Give data to template function and produce html
+            html = template(this.model.toJSON());
+            // Insert produced html into the view element
+            this.$el.html(html);
+
+            // If we are currently autorotating, hide extended bookinfo
+            if (this._hideExtended) {
+                $('#bookInfoExtended').hide();
+            }
+
+            // Give the element an id
+            this.$el.attr('id', 'bookFull'+this.model.get('id'));
+            // Give each emneord element a data-url and a data-emneord attribute
+            _.each(this.$('.emneord'), function(el, i, li) {
+                var $listItem = $(el);
+                // Give data-emneord
+                $listItem.attr('data-emneord', $listItem.text());
+                // Give data-url
+                $listItem.attr('data-url', 'cat/'+$listItem.text());
+            });
+            this.$el.attr('data-url', this.model.get('id'));
+
         } else {
-            available = false;
-            availableText = 'Boka er utlånt. Ta kontakt med skranken om du vil reservere den.';
+            this.$el.html('');
         }
-        this.model.set('available', available);
-        this.model.set('availableText', availableText);
-
-        this.model.set('emneord', this.getSubjects(this.model));
-
-        // Is the book available as an ebook? If so we create a text for it
-        if (typeof(this.model.get('other_form'))!=="undefined" && this.model.get('other_form').fulltext.access===true) {
-            this.model.set('ebook', true);
-            this.model.set('ebookText', 'Denne boka finnes også som ebok fra ' + this.model.get('other_form').fulltext.linktext);
-        } else {
-            this.model.set('ebook', false);
-        }
-
-        // Create template function
-        template = _.template($('#bookFullTemplate').html());
-        // Give data to template function and produce html
-        html = template(this.model.toJSON());
-        // Insert produced html into the view element
-        this.$el.html(html);
-
-        // If we are currently autorotating, hide extended bookinfo
-        if (this._hideExtended) {
-            $('#bookInfoExtended').hide();
-        }
-
-        // Give the element an id
-        this.$el.attr('id', 'bookFull'+this.model.get('id'));
-        // Give each emneord element a data-url and a data-emneord attribute
-        _.each(this.$('.emneord'), function(el, i, li) {
-            var $listItem = $(el);
-            // Give data-emneord
-            $listItem.attr('data-emneord', $listItem.text());
-            // Give data-url
-            $listItem.attr('data-url', 'cat/'+$listItem.text());
-        });
-        this.$el.attr('data-url', this.model.get('id'));
 
         return this;
     },
@@ -605,6 +637,26 @@ var BookFullView = Backbone.View.extend({
             emneord: $li.attr('data-emneord')
         });
 
+    }
+});
+
+
+
+var ErrorMessageView = Backbone.View.extend({
+    el: '#errormessage',
+    render: function(message) {
+
+        var template; // Will hold the compiled template
+        var html; // Will hold the result of template(data)
+
+        // Create template function
+        template = _.template($('#errorMessageTemplate').html());
+        // Give data to template function and produce html
+        html = template({ error: message});
+        // Insert produced html into the view element
+        this.$el.html(html);
+
+        return this;
     }
 });
 
@@ -775,6 +827,11 @@ var AppRouter = Backbone.Router.extend({
         // Load carousel IF new emneord
         if (books._emneord !== emneord) {
         	this.newCarousel(emneord);
+
+            // Remove the view of the current bookFullView
+            bookFullView.model = null;
+            bookFullView.render();
+
         	// When that's done:
         	$("#books").one('carouselDone', function() {
         	    // Render bookFullView
@@ -854,6 +911,8 @@ var booksView = new BooksView({
 });
 
 var bookFullView = new BookFullView();
+
+var errorMessageView = new ErrorMessageView();
 
 // Create an instance of the router
 var router = new AppRouter({

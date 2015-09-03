@@ -22,14 +22,17 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-4 text-left">
-            <button type="button" class="btn btn-lg btn-info" id="previousEmneord"></button>
-        </div>
-        <div class="col-sm-4 text-center">
-            <h2 id="currentEmneord"></h2>
-        </div>
-        <div class="col-sm-4 text-right">
-            <button type="button" class="btn btn-lg btn-info" id="nextEmneord"></button>
+        <!-- Usig .btn-group-justified to make the three elements equal size. This helped solve issue #56 because text overflowing the button width is now hidden. -->
+        <div class="col-sm-12  btn-group-justified">
+            <div class="btn-group text-left">
+                <button type="button" class="btn btn-lg btn-info" id="previousEmneord"></button>
+            </div>
+            <div class="btn-group text-center">
+                <h2 id="currentEmneord"></h2>
+            </div>
+            <div class="btn-group text-right">
+                <button type="button" class="btn btn-lg btn-info" id="nextEmneord"></button>
+            </div>
         </div>
     </div>
 </div>

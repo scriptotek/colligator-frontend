@@ -181,3 +181,8 @@ margin-right:8px;
 #help .bbm-modal {
   max-width: 700px; /* Increase from default 550px */
 }
+
+/* Used to hide overflow in emneordnav-buttons */
+.hide-overflow{
+  overflow: hidden;
+}

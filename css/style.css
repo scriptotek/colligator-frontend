@@ -22,7 +22,13 @@ body {
   border-radius: 30px;
   margin-top: 20px;
 }
-
+.samling-42{
+     color: black;
+   -webkit-text-fill-color: red; /* Will override color (regardless of order) */
+   -webkit-text-stroke-width: 2px;
+   -webkit-text-stroke-color: white;
+   font-weight: bolder;
+}
 
 
 p {

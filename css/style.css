@@ -12,7 +12,19 @@ body {
   -moz-user-select: none;     /* Firefox all */
   -ms-user-select: none;      /* IE 10+ */
   user-select: none;          /* Likely future */
+  background: #000000;
+  color: #ffffff;
 }
+
+#bjornehjornet-container{
+  background: #ffffff;
+  color: #000000;
+  border-radius: 30px;
+  margin-top: 20px;
+}
+
+
+
 p {
   font-size: 25px;
 }

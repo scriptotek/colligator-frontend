@@ -12,32 +12,59 @@
 </head>
 <body>
 
+<!-- <div class="container"> -->
+
+    <!-- <div class="row"> -->
+        <h1 class="text-center" id="pageTitle" style="margin-bottom:.6em;"><!-- Samling 42 --></h1>
+    <!-- </div> -->
+<!-- </div> -->
+
+
 <div class="container">
     <div class="row">
-        <h1 class="text-center" id="pageTitle" style="margin-bottom:.6em;">Samling 42</h1>
-    </div>
-</div>
-
-<div class="container text-center" id="startView"></div>
-
-<div class="container">
-    <div class="row">
-        <!-- Usig .btn-group-justified to make the three elements equal size. This helped solve issue #56 because text overflowing the button width is now hidden. -->
-        <div class="col-sm-12  btn-group-justified">
-            <div class="btn-group text-left">
-                <button type="button" class="btn btn-lg btn-info hide-overflow" id="previousEmneord"></button>
-            </div>
-            <div class="btn-group text-center">
-                <h2 id="currentEmneord"></h2>
-            </div>
-            <div class="btn-group text-right">
-                <button type="button" class="btn btn-lg btn-info hide-overflow" id="nextEmneord"></button>
-            </div>
+        <div class="col-sm-3">
+            <p class="text-center">
+                <span style="font-size:40px;">Samling</span><br>
+                <span style="font-size:60px;">42</span>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <p class="text-center">
+            <span style="font-size:30px;">Anbefalinger fra</span><br>
+            <span style="font-size:40px;font-weight:bold;">Bjørnelab</span><br>
+            Bio1000 H2015
+            </p>
+        </div>
+        <div class="col-sm-3">
+            <p class="text-right">
+                
+            </p>
         </div>
     </div>
 </div>
 
-<div class="container-fluid">
+<!-- <div class="container text-center" id="startView"></div> -->
+
+<!-- <div class="container"> -->
+    <!-- <div class="row"> -->
+        <!-- Usig .btn-group-justified to make the three elements equal size. This helped solve issue #56 because text overflowing the button width is now hidden. -->
+        <!-- <div class="col-sm-12  btn-group-justified"> -->
+            <!-- <div class="btn-group text-left"> -->
+                <!-- <button type="button" class="btn btn-lg btn-info hide-overflow" id="previousEmneord"></button> -->
+            <!-- </div> -->
+            <!-- <div class="btn-group text-center"> -->
+                <!-- <h2 id="currentEmneord"></h2> -->
+            <!-- </div> -->
+            <!-- <div class="btn-group text-right"> -->
+                <!-- <button type="button" class="btn btn-lg btn-info hide-overflow" id="nextEmneord"></button> -->
+            <!-- </div> -->
+        <!-- </div> -->
+    <!-- </div> -->
+<!-- </div> -->
+
+<div id="bjornehjornet-container" class="container">
+
+<!-- <div class="container-fluid"> -->
 
     <div class="loader" title="0">
         <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -63,9 +90,10 @@
 
     <div id="help"></div>
 
-</div>
+<!-- </div> -->
 
-<div class="container">
+<!-- <div class="container-fluid"> -->
+
     <div id="errormessage"></div>
     <div id="bookFull"></div>
     <div class="row">
@@ -73,6 +101,9 @@
             <img id="touchHand" height="450px" class="animateHand" src="swipeIcon.png" alt="">
         </p>
     </div>
+
+<!-- </div> -->
+
 </div>
 
 <footer class="footer">
@@ -80,17 +111,18 @@
 		<div class="row">
 			<div class="col-sm-3">
                 <p class="text-left">
-                    <a href="./" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home glyphicon-large" aria-hidden="true"></span></a>
+                    <!-- <a href="./" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home glyphicon-large" aria-hidden="true"></span></a> -->
                 </p>
             </div>
 			<div class="col-sm-6">
-<!--                 <p class="text-left">
-                    <img src="strekkodeleser.jpg" height="150" alt="">
-                </p> -->
+                <p class="text-left">
+                    <!-- <img src="strekkodeleser.jpg" height="150" alt=""> -->
+                    <img id="uio-logo" src="uio_seal_a_eng.png" width="400px" alt="">
+                </p>
             </div>
 			<div class="col-sm-3">
 				<p class="text-right">
-					<span id="helpIcon" class="glyphicon glyphicon-question-sign glyphicon-large" aria-hidden="true"></span>			
+					<!-- <span id="helpIcon" class="glyphicon glyphicon-question-sign glyphicon-large" aria-hidden="true"></span>			 -->
 				</p>
 			</div>
 		</div>
@@ -627,18 +659,18 @@ var BookFullView = Backbone.View.extend({
     },
     // This is for when a new emneord has been selected
     onEmneOrdClick: function(e) {
-        // Since we've clicked an "entirely new" emneord, get rid of any old history
-        router.emneordHistory = router.emneordHistory.slice(0, router.emneordHistoryIndex + 1);
+        // // Since we've clicked an "entirely new" emneord, get rid of any old history
+        // router.emneordHistory = router.emneordHistory.slice(0, router.emneordHistoryIndex + 1);
 
-        var $li = $(e.target);
+        // var $li = $(e.target);
 
-        _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
+        // _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
 
-        // Change URL and trigger route handler
-        router.navigate($li.attr('data-url'), {
-            trigger: true,
-            emneord: $li.attr('data-emneord')
-        });
+        // // Change URL and trigger route handler
+        // router.navigate($li.attr('data-url'), {
+        //     trigger: true,
+        //     emneord: $li.attr('data-emneord')
+        // });
 
     }
 });
@@ -719,6 +751,7 @@ var AppRouter = Backbone.Router.extend({
             $('.handParagraph').show();
             $('#helpIcon').hide();
             $('#homeIcon').hide();
+            $('#uio-logo').hide();
             $('#bookInfoExtended').hide();
             bookFullView._hideExtended = true;
             if (!self.idle) {
@@ -730,6 +763,7 @@ var AppRouter = Backbone.Router.extend({
             $('.handParagraph').hide();
             $('#helpIcon').show();
             $('#homeIcon').show();
+            $('#uio-logo').show();
             $('#bookInfoExtended').show();
             if (self.idle) {
                 self.idle = false;

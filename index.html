@@ -384,7 +384,7 @@ var Book = Backbone.Model.extend({
 
 var Books = Backbone.Collection.extend({
     model: Book,
-    url: '/api/documents',
+    url: '/api/documents?collection=2',
     parse: function(response, options) {
 
         // Remove books that:
@@ -791,7 +791,9 @@ var AppRouter = Backbone.Router.extend({
         '*other': 'defaultView'
     },
     defaultView: function() {
-        startView.render();
+        // startView.render();
+
+        this.newCarousel(null);
 
         // this.viewEmneord('Forskning');
     },

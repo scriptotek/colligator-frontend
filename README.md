@@ -1,6 +1,11 @@
 # colligator-frontend
 Colligator (COLLection naviGATOR) is a system for displaying and navigating book collections.
 
+![Startside](assets/screenshot1.png)
+
+![Emnevisning](assets/screenshot2.png)
+
+
 # Install
 npm install  
 bower install

@@ -352,7 +352,7 @@ var Book = Backbone.Model.extend({
 
 var Books = Backbone.Collection.extend({
     model: Book,
-    url: 'http://colligator.biblionaut.net/api/documents',
+    url: '/api/documents',
     parse: function(response, options) {
 
         // Remove books that:

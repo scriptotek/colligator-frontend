@@ -553,17 +553,16 @@ var BookFullView = Backbone.View.extend({
             var available = true;
             // Check for case 1
             var available42 = _.findWhere(this.model.get('holdings'), {
-                shelvinglocation: 'UREAL Samling 42',
+                shelvinglocation: 'k00475',
                 circulation_status: 'Available'
             });
             // Check for case 2
             var availableUREAL = _.findWhere(this.model.get('holdings'), {
-                sublocation: 'UREAL',
+                location: '1030310',
                 circulation_status: 'Available'
             });
             // Check for case 3
             var availableUBO = _.findWhere(this.model.get('holdings'), {
-                location: 'UBO',
                 circulation_status: 'Available'
             });
             if (available42) {

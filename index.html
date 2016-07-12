@@ -359,14 +359,18 @@ var Books = Backbone.Collection.extend({
         //   has no holdings
         //   has no cover
         var data = _.reject(response.documents, function(element) {
-            return element.holdings.length === 0 || element.cover===null;
+            return element.holdings.length === 0; // || element.cover===null;
         });
 
         // Filter and modify data
         data = _.map(data, function(val, ind, all) {
 
             // Set simpler key for cover
-            val.cover = val.cover.thumb.url;
+            if (val.cover) {
+                val.cover = val.cover.thumb.url;
+            } else {
+                val.cover = '/assets/blank-cover.jpg';
+            }
 
             // Remove the description key if there's no description, because then it's easier to test whether or not to show the description in #bookFullTemplate
             if (val.description===null) {

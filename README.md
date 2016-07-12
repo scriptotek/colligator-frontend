@@ -1,14 +1,9 @@
 # colligator-frontend
-Colligator (COLLection naviGATOR) is a system for displaying and navigating book collections. See also
+Colligator (COLLection naviGATOR) is a system for displaying and navigating book collections.
 
-- [A description of the system (in Norwegian)](http://www.ub.uio.no/om/prosjekter/scriptotek/colligator.html)
-- [The backend](https://github.com/scriptotek/colligator-backend)
-- [Vagrant box for development](https://github.com/scriptotek/colligator-vagrant)
+![Startside](assets/screenshot1-sh.png)
 
-![Startside](assets/screenshot1.png)
-
-![Emnevisning](assets/screenshot2.png)
-
+![Emnevisning](assets/screenshot3-sh.png)
 
 # Install
 npm install  

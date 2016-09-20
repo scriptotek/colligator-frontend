@@ -32,7 +32,7 @@
             <p class="text-center">
             <span style="font-size:30px;">Anbefalinger fra</span><br>
             <span style="font-size:40px;font-weight:bold;">Bjørnelab</span><br>
-            BIO1000 H2016
+            GEO1010 H2016
             </p>
         </div>
         <div class="col-sm-3">
@@ -384,7 +384,7 @@ var Book = Backbone.Model.extend({
 
 var Books = Backbone.Collection.extend({
     model: Book,
-    url: '/api/documents?collection=2',
+    url: '/api/documents?collection=3',
     parse: function(response, options) {
 
         // Remove books that:
@@ -822,7 +822,7 @@ var AppRouter = Backbone.Router.extend({
         $('.loader').toggle();
         books.fetch({
             data: {
-                collection: 2,
+                collection: 3,
                 subject: emneord,
                 limit: 150
             },

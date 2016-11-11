@@ -80,7 +80,7 @@
 		<div class="row">
 			<div class="col-sm-3">
                 <p class="text-left">
-                    <a href="./" onclick="javascript:_paq.push(['trackEvent', 'BookView', 'TapHomeIcon']);"><span id="homeIcon" class="glyphicon glyphicon-home glyphicon-large" aria-hidden="true"></span></a>
+                    <a href="./" onclick="javascript:ga('send', 'event', 'BookView', 'TapHomeIcon');"><span id="homeIcon" class="glyphicon glyphicon-home glyphicon-large" aria-hidden="true"></span></a>
                 </p>
             </div>
 			<div class="col-sm-6">
@@ -287,27 +287,30 @@
 
 
 <!-- Piwik -->
-<script type="text/javascript">
+<script>
 
-  function generatePiwikUserId() {
-    var current_date = (new Date()).valueOf().toString();
-    var random = Math.random().toString();
-    return current_date + random;
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-72054416-5', {
+    'storage': 'none',
+    'forceSSL': true,
+  });
+
+  function useIppProxy() {
+        // Modifies sendHitTask to hit ipproxy
+        ga(function(tracker) {
+            tracker.set('sendHitTask', function(model) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '//w3prod-ipproxy.uio.no/collect?' + model.get('hitPayload'), true);
+                xhr.send();
+            });
+        });
   }
-
-  var _paq = _paq || [];
-  _paq.push(['setUserId', generatePiwikUserId()]);
-  // _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://analytics.biblionaut.net/";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 2]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  })();
+  // useIppProxy();
 </script>
-<!-- End Piwik Code -->
 
 
 <script type="text/javascript">
@@ -414,7 +417,7 @@ var StartView = Backbone.View.extend({
     onEmneOrdClick: function(e) {
         var $li = $(e.target);
 
-        _paq.push(['trackEvent', 'StartView', 'TapSubject', $li.attr('data-emneord')]);
+        ga('send', 'event', 'StartView', 'TapSubject', $li.attr('data-emneord'));
 
         // Change URL and trigger route handler
         router.navigate('cat/'+$li.attr('data-emneord'), {
@@ -632,7 +635,7 @@ var BookFullView = Backbone.View.extend({
 
         var $li = $(e.target);
 
-        _paq.push(['trackEvent', 'BookView', 'TapSubject', $li.attr('data-emneord')]);
+        ga('send', 'event', 'BookView', 'TapSubject', $li.attr('data-emneord'));
 
         // Change URL and trigger route handler
         router.navigate($li.attr('data-url'), {
@@ -698,7 +701,7 @@ var AppRouter = Backbone.Router.extend({
                 if (this.initialActiveItemEvent) {
                     this.initialActiveItemEvent = false;
                 } else {
-                    _paq.push(['trackEvent', 'BookView', 'SwipeToBook', 'Book: ' + bookId]);
+                    ga('send', 'event', 'BookView', 'SwipeToBook', 'Book: ' + bookId);
                 }
             }
 
@@ -723,7 +726,7 @@ var AppRouter = Backbone.Router.extend({
             bookFullView._hideExtended = true;
             if (!self.idle) {
                 self.idle = true;
-                _paq.push(['trackEvent', 'BookView', 'Idle']);
+                ga('send', 'event', 'BookView', 'Idle');
             }
         });
         $('#books').on('autoRotateStop', function(e) {
@@ -733,8 +736,8 @@ var AppRouter = Backbone.Router.extend({
             $('#bookInfoExtended').show();
             if (self.idle) {
                 self.idle = false;
-                _paq.push(['setUserId', generatePiwikUserId()]);
-                _paq.push(['trackEvent', 'BookView', 'WakeUp']);
+                ga('send', 'pageview', {'sessionControl': 'start'});
+                // ga('send', 'event', 'BookView', 'WakeUp');
             }
             bookFullView._hideExtended = false;
         });
@@ -743,12 +746,12 @@ var AppRouter = Backbone.Router.extend({
         $('#previousEmneord').on('click', function() {
             self.emneordHistoryIndex--;
             self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
-            _paq.push(['trackEvent', 'BookView', 'TapPreviousSubject', self.emneordHistory[self.emneordHistoryIndex]]);
+            ga('send', 'event', 'BookView', 'TapPreviousSubject', self.emneordHistory[self.emneordHistoryIndex]);
         });
         $('#nextEmneord').on('click', function() {
             self.emneordHistoryIndex++;
             self.viewEmneord(self.emneordHistory[self.emneordHistoryIndex]);
-            _paq.push(['trackEvent', 'BookView', 'TapNextSubject', self.emneordHistory[self.emneordHistoryIndex]]);
+            ga('send', 'event', 'BookView', 'TapNextSubject', self.emneordHistory[self.emneordHistoryIndex]);
         });
     },
     routes: {
@@ -827,8 +830,7 @@ var AppRouter = Backbone.Router.extend({
 
         // TODO: Backbone-routeren har sikkert støtte for å endre tittel?
         document.title = 'Samling 42 - Emne: ' + emneord;
-        _paq.push(['setDocumentTitle', document.title]);
-        _paq.push(['trackPageView']);
+        ga('send', 'pageview', {title: document.title});
 
         var self = this;
 
@@ -907,7 +909,7 @@ $('#helpIcon').on('click', function() {
     var modalView = new Modal();
     $('#help').html(modalView.render().el);
 
-    _paq.push(['trackEvent', 'BookView', 'TapHelpIcon']);
+    ga('send', 'event', 'BookView', 'TapHelpIcon');
 });
 
 // ---------------------------------------- CREATE VIEWS + ROUTER INSTANCE

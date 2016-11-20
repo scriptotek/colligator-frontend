@@ -1,3 +1,19 @@
+<?php
+function getAnalyticsDimenesion1() {
+    $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : (
+            isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : (
+              isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''
+            )
+          );
+
+    switch ($ip) {
+        case '129.240.239.186':
+            return 'ubreal48';
+        default:
+            return 'other';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -286,7 +302,7 @@
   </script>
 
 
-<!-- Piwik -->
+<!-- Analytics -->
 <script>
 
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -295,9 +311,11 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-72054416-5', {
-    'storage': 'none',
-    'forceSSL': true,
+    storage: 'none',  // Don't use tracking cookie
+    forceSSL: true,
   });
+
+  ga('set', 'dimension1', '<?php echo getAnalyticsDimenesion1(); ?>');
 
   function useIppProxy() {
         // Modifies sendHitTask to hit ipproxy

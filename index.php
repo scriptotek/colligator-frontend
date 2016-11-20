@@ -258,7 +258,7 @@ function getDataSource() {
                     <% } %>
                 <% }); %>
             </div>
-<!--            <a href="http://colligator.biblionaut.net/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a> for debugging -->
+<!--            <a href="/colligator/api/documents/<%= id %>" style="color:#ddd; font-size:80%; float:right;"><%= id %></a> for debugging -->
 
         </div>
     </div>
@@ -373,7 +373,7 @@ var Book = Backbone.Model.extend({
 
 var Books = Backbone.Collection.extend({
     model: Book,
-    url: '/api/documents',
+    url: '/colligator/api/documents',
     parse: function(response, options) {
 
         // Remove books that:
@@ -390,7 +390,7 @@ var Books = Backbone.Collection.extend({
             if (val.cover) {
                 val.cover = val.cover.thumb.url;
             } else {
-                val.cover = '/assets/blank-cover.jpg';
+                val.cover = '/colligator/assets/blank-cover.jpg';
             }
 
             // Remove the description key if there's no description, because then it's easier to test whether or not to show the description in #bookFullTemplate

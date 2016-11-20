@@ -1,5 +1,5 @@
 <?php
-function getAnalyticsDimenesion1() {
+function getDataSource() {
     $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : (
             isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : (
               isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''
@@ -10,7 +10,7 @@ function getAnalyticsDimenesion1() {
         case '129.240.239.186':
             return 'ubreal48';
         default:
-            return 'other';
+            return 'web';
     }
 }
 ?>
@@ -315,7 +315,7 @@ function getAnalyticsDimenesion1() {
     forceSSL: true,
   });
 
-  ga('set', 'dimension1', '<?php echo getAnalyticsDimenesion1(); ?>');
+  ga('set', 'dataSource', '<?php echo getDataSource(); ?>');
 
   function useIppProxy() {
         // Modifies sendHitTask to hit ipproxy

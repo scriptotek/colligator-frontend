@@ -18,7 +18,7 @@ function getDataSource() {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Samling 42</title>
+    <title>S-litt</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/carouseal.css">
     <link rel="stylesheet" href="bower_components/backbone-modal/backbone.modal.css">
@@ -30,7 +30,7 @@ function getDataSource() {
 
 <div class="container">
     <div class="row">
-        <h1 class="text-center" id="pageTitle" style="margin-bottom:.6em;">Samling 42</h1>
+        <h1 class="text-center" id="pageTitle" style="margin-bottom:.6em;">Skjønnlitteratur i GSH</h1>
     </div>
 </div>
 
@@ -122,86 +122,35 @@ function getDataSource() {
 <script src="carouseal.js"></script>
 
 <script id="startTemplate" type="text/template">
-    <p>Her kan du begynne å utforske samlingen. Velg et emne...</p>
+    <p>Velg et språk...</p>
 
-    <!-- Fysikk / astro -->
-    <button type="button" data-emneord="Fysikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Fysikk</button>
-    <button type="button" data-emneord="Energi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Energi</button>
-    <button type="button" data-emneord="Relativitetsteorien" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Relativitetsteorien</button>
-    <button type="button" data-emneord="Astronomi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Astronomi</button>
-    <button type="button" data-emneord="Sorte hull" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Sorte hull</button>
-
-    <!-- Filosofi -->
-    <button type="button" data-emneord="Filosofi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Filosofi</button>
-    <button type="button" data-emneord="Tidsbegrepet" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Tidsbegrepet</button>
-
-    <!-- Biologi -->
-    <button type="button" data-emneord="Biologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Biologi</button>
-    <button type="button" data-emneord="Evolusjonsteorien" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Evolusjonsteorien</button>
-    <button type="button" data-emneord="Genetikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Genetikk</button>
-    <button type="button" data-emneord="Økologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Økologi</button>
-
-    <!-- Geologi -->
-    <button type="button" data-emneord="Geologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Geologi</button>
-
-    <!-- Informatikk -->
-    <button type="button" data-emneord="Informatikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Informatikk</button>
-    <button type="button" data-emneord="Kunstig intelligens" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kunstig intelligens</button>
-
-    <!-- Matematikk -->
-    <button type="button" data-emneord="Matematikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Matematikk</button>
-    <button type="button" data-emneord="Populærmatematikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Populærmatematikk</button>
-    <button type="button" data-emneord="Matematikkhistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Matematikkhistorie</button>
-    <button type="button" data-emneord="Knuteteori" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Knuteteori</button>
-
-    <!-- Kjemi -->
-    <button type="button" data-emneord="Kjemi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kjemi</button>
-    <button type="button" data-emneord="Kjemihistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kjemihistorie</button>
-    <button type="button" data-emneord="Gastronomi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Gastronomi</button>
-
-    <!-- Resten -->
-    <button type="button" data-emneord="Medisin" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Medisin</button>
-    <button type="button" data-emneord="Oppfinnelser" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Oppfinnelser</button>
-    <button type="button" data-emneord="Politikk" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Politikk</button>
-    <button type="button" data-emneord="Miljø" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Miljø</button>
-
-    <button type="button" data-emneord="Psykologi" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Psykologi</button>
-    <button type="button" data-emneord="Hobbyer" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Hobbyer</button>
-    <button type="button" data-emneord="Kunst" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kunst</button>
-
-    <button type="button" data-emneord="Vitenskapshistorie" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Vitenskapshistorie</button>
-    <button type="button" data-emneord="Vitenskapelig forfatterskap" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Vitenskapelig forfatterskap</button>
-    <button type="button" data-emneord="Formidling" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Formidling</button>
-
-    <p>… et sted …</p>
-
-    <button type="button" data-emneord="Norge" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Norge</button>
-    <button type="button" data-emneord="Antarktis" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Antarktis</button>
-    <button type="button" data-emneord="Kina" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Kina</button>
-    <button type="button" data-emneord="Storbritannia" class="emneord emneord-geographic btn btn-lg btn-info"><em></em>Storbritannia</button>
-
-
-    <p>… en person …</p>
-
-    <button type="button" data-emneord="Newton, Isaac" class="emneord emneord-person btn btn-lg btn-info"><em></em>Isaac Newton</button>
-    <button type="button" data-emneord="Darwin, Charles (1809-1882)" class="emneord emneord-person btn btn-lg btn-info"><em></em>Charles Darwin</button>
-    <button type="button" data-emneord="Copernicus, Nicolaus" class="emneord emneord-person btn btn-lg btn-info"><em></em>Nicolaus Copernicus</button>
-    <button type="button" data-emneord="Linné, Carl von" class="emneord emneord-person btn btn-lg btn-info"><em></em>Carl von Linné</button>
-    <button type="button" data-emneord="Abel, Niels Henrik (1802-1829)" class="emneord emneord-person btn btn-lg btn-info"><em></em>Niels Henrik Abel</button>
-    <button type="button" data-emneord="Curie, Marie" class="emneord emneord-person btn btn-lg btn-info"><em></em>Marie Curie</button>
-    <button type="button" data-emneord="Faraday, Michael" class="emneord emneord-person btn btn-lg btn-info"><em></em>Michael Faraday</button>
-
-    <p>… eller kanskje en form …</p>
-
-    <button type="button" data-emneord="Humor" class="emneord emneord-form btn btn-lg btn-info"><em></em>Humor</button>
-    <button type="button" data-emneord="Biografier" class="emneord emneord-form btn btn-lg btn-info"><em></em>Biografier</button>
-    <button type="button" data-emneord="Sitatsamlinger" class="emneord emneord-form btn btn-lg btn-info"><em></em>Sitatsamlinger</button>
-    <button type="button" data-emneord="Skjønnlitteratur" class="emneord emneord-form btn btn-lg btn-info"><em></em>Skjønnlitteratur</button>
-    <button type="button" data-emneord="Dikt" class="emneord emneord-form btn btn-lg btn-info"><em></em>Dikt</button>
-    <button type="button" data-emneord="Bildeverk" class="emneord emneord-form btn btn-lg btn-info"><em></em>Bildeverk</button>
-    <button type="button" data-emneord="Tegneserier" class="emneord emneord-form btn btn-lg btn-info"><em></em>Tegneserier</button>
-    <button type="button" data-emneord="Reiseskildringer" class="emneord emneord-form btn btn-lg btn-info"><em></em>Reiseskildringer</button>
-
+    <!-- Språk -->
+	<button type="button" data-emneord="alb" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Albansk</button>
+    <button type="button" data-emneord="nob" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Bokmål</button>
+	<button type="button" data-emneord="bos" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Bosnisk</button>
+	<button type="button" data-emneord="bul" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Bulgarsk</button>
+	<button type="button" data-emneord="dan" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Dansk</button>
+	<button type="button" data-emneord="eng" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Engelsk</button>
+	<button type="button" data-emneord="mul" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Flerspråklig</button>
+	<button type="button" data-emneord="fre" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Fransk</button>
+	<button type="button" data-emneord="fro" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Gammelfransk</button>
+	<button type="button" data-emneord="ice" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Islandsk</button>
+	<button type="button" data-emneord="ita" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Italiensk</button>
+	<button type="button" data-emneord="cat" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Katalansk</button>
+	<button type="button" data-emneord="hrv" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Kroatisk</button>
+	<button type="button" data-emneord="nno" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Nynorsk</button>
+    <button type="button" data-emneord="pol" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Polsk</button>
+    <button type="button" data-emneord="por" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Portugisisk</button>
+    <button type="button" data-emneord="rus" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Russisk</button>
+    <button type="button" data-emneord="srp" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Serbisk</button>
+    <button type="button" data-emneord="slo" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Slovakisk</button>
+	<button type="button" data-emneord="spa" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Spansk</button>
+    <button type="button" data-emneord="swe" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Svensk</button>
+	<button type="button" data-emneord="cze" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Tsjekkisk</button>
+    <button type="button" data-emneord="ger" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Tysk</button>
+	<button type="button" data-emneord="hun" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Ungarsk</button>
+	<button type="button" data-emneord="ukr" class="emneord emneord-topic btn btn-lg btn-info"><em></em>Ukrainsk</button>
+	
     <p>
     </p>
 
@@ -267,7 +216,7 @@ function getDataSource() {
 
 <script type="text/template" id="helpModal">
     <div class="bbm-modal__topbar">
-      <h3 class="bbm-modal__title">#samling42</h3>
+      <h3 class="bbm-modal__title">Skjønnlitteratursamlingen</h3>
     </div>
     <div class="bbm-modal__section">
       <p>Noen tips:</p>
@@ -277,13 +226,16 @@ function getDataSource() {
       </ul>
 
       <p>
-        Samling 42 er en samling for alle med interesse for generell naturvitenskap.
-        Den ble påbegynt i 1972, og vi kjøper inn nye bøker fortløpende
-        (når vi har penger).
+        Vi har en stor skjønnlitteratursamling, hovedsaklig i underetasjen i Georg Sverdrups hus. 
+		Her kan du finne litteratur på mange språk, bl.a. en stor norsk samling med ca. 18000 bind. 
       </p>
-      <p>
-          Samlingen rommer populærvitenskap, vitenskapsfilosofi, -historie, -sosiologi og -etikk, vitenskapelig forfatterskap, barnebøker, og det meste egentlig.
-        </p>
+      <p style="font-size:90%; font-weight: bold; line-height: 140%;">
+        Skjønnlitteratursamlingen finner du hovedsaklig i underetasjen i Georg Sverdrups hus. 
+		Samlingen består av romaner, noveller, lyrikk, og en egen barne- og ungdomssamling. 
+		Samlingen har koden S-Litt i biblioteket og i Oria. Bøkene er inndelt etter originalspråk. 
+		Eksempler: Bøker på norsk står i gruppe 839.82. Bøker på spansk står i gruppe 860. 
+		Skjønnlitteraturmagasinet i underetasjen er åpent for alle og bøkene er til utlån. 
+      </p>
       <p style="font-size:80%; line-height: 140%;">
           Karusellen du ser på nå består av åpen kildekode-komponentene
           Carouseal og Colligator, som ble utviklet frem til første
@@ -443,7 +395,7 @@ var StartView = Backbone.View.extend({
         ga('send', 'event', 'StartView', 'TapSubject', $li.attr('data-emneord'));
 
         // Change URL and trigger route handler
-        router.navigate('cat/'+$li.attr('data-emneord'), {
+        router.navigate('lang/'+$li.attr('data-emneord'), {
             trigger: true,
             emneord: $li.attr('data-emneord')
         });
@@ -583,12 +535,12 @@ var BookFullView = Backbone.View.extend({
             var available = true;
             // Check for case 1
             var available42 = _.findWhere(this.model.get('holdings'), {
-                shelvinglocation: 'k00475',
+                shelvinglocation: 'k00040',
                 circulation_status: 'Available'
             });
             // Check for case 2
             var availableUREAL = _.findWhere(this.model.get('holdings'), {
-                location: '1030310',
+                location: '1030300',
                 circulation_status: 'Available'
             });
             // Check for case 3
@@ -731,7 +683,7 @@ var AppRouter = Backbone.Router.extend({
             }
 
             // Update url
-            self.navigate('cat/' + books._emneord + '/' + bookId);
+            self.navigate('lang/' + books._emneord + '/' + bookId);
         });
 
         // Add listener for key left/right
@@ -780,8 +732,8 @@ var AppRouter = Backbone.Router.extend({
         });
     },
     routes: {
-        'cat/:emneord': 'viewEmneord',
-        'cat/:emneord/:bookId': 'viewBookById',
+        'lang/:lang': 'viewEmneord',
+        'lang/:lang/:bookId': 'viewBookById',
         '*other': 'defaultView'
     },
     defaultView: function() {
@@ -814,8 +766,8 @@ var AppRouter = Backbone.Router.extend({
         $('.loader').toggle();
         books.fetch({
             data: {
-                collection: 1,
-                subject: emneord,
+                collection: 2,
+                language: emneord,
                 limit: 150
             },
             success: function() {
@@ -840,7 +792,7 @@ var AppRouter = Backbone.Router.extend({
     },
     spinCarousel: function(bookId) {
         carouSeal.rotateTo('b'+bookId);
-        this.navigate('cat/' + books._emneord + '/' + bookId);
+        this.navigate('lang/' + books._emneord + '/' + bookId);
     },
     addEmneordToHistory: function(emneord) {
         // Don't add to history if coming from the previousEmneord/nextEmneord buttons
@@ -874,7 +826,7 @@ var AppRouter = Backbone.Router.extend({
                 bookFullView.currentEmneord = books._emneord;
         	    bookFullView.render();
         	    // Replace url
-        	    self.navigate('cat/' + books._emneord + '/' + bookFullView.model.get('id'), {
+        	    self.navigate('lang/' + books._emneord + '/' + bookFullView.model.get('id'), {
         	        replace: true
         	    });
         	});

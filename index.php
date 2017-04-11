@@ -113,6 +113,7 @@ function getDataSource() {
 	</div>
 </footer>
 
+<script src="https://cdn.ravenjs.com/3.14.0/raven.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/backbone/backbone.js"></script>
@@ -335,11 +336,14 @@ function getDataSource() {
 
 "use strict";
 
+Raven.config('https://c3cbca03730b40fab785ef602eaa77c4@sentry.io/157266').install();
+
 // Extending String so that we can easily capitalize the first letter
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+try {
 (function() {
 
   // ------ BEGIN LAST MINUTE FIXES FOR KIOSK MODE ---------
@@ -501,8 +505,8 @@ var BooksView = Backbone.View.extend({
         } else {
             // Make sure the errormessagediv is shown
             errorMessageView.$el.show();
-            errorMessageView.render('Ingen bøker funnet for emneord ' + books._emneord + '.');
-            console.log('No books found for this emneord.')
+            errorMessageView.render('Ingen bøker funnet for emneordet «' + books._emneord + '».');
+            console.log('No books found for this emneord.');
         }
 
         return this;
@@ -679,6 +683,8 @@ var ErrorMessageView = Backbone.View.extend({
         html = template({ error: message});
         // Insert produced html into the view element
         this.$el.html(html);
+
+        Raven.captureMessage(message);
 
         return this;
     }
@@ -975,6 +981,9 @@ $(document).keypress(function(e) {
 });
 
 })();
+} catch (e) {
+    Raven.captureException(e)
+}
 
 </script>
 

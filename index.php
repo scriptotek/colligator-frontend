@@ -390,7 +390,7 @@ var Books = Backbone.Collection.extend({
             if (val.cover) {
                 val.cover = val.cover.thumb.url;
             } else {
-                val.cover = '/colligator/assets/blank-cover.jpg';
+                val.cover = 'assets/blank-cover.jpg';
             }
 
             // Remove the description key if there's no description, because then it's easier to test whether or not to show the description in #bookFullTemplate

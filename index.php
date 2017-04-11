@@ -370,7 +370,8 @@ var Book = Backbone.Model.extend({
         title: '',
         isbn: '',
         authors: '',
-        publisher: ''
+        publisher: '',
+        year: ''
         // cover: 'http://snyderstreasures.com/images/thumbnails/germanmilitaria/books/BookReichsblattPlainC_small.jpg'
     }
 });

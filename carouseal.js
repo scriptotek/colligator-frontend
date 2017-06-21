@@ -130,7 +130,7 @@ var carouSeal= (function () {
 
 		//console.log(speedfactor,velocity,projectionfactor,heightfactor,carousellength,rotate);
 
-		rotated = rotated + rotate;
+		rotated = rotated - rotate;
 		
 		addTransforms(0);	
 	}
@@ -177,7 +177,7 @@ var carouSeal= (function () {
 
 		rotate=(sector*numOfItemsToMove);
 
-		rotated=rotated+rotate;
+		rotated=rotated-rotate;
 
 		addTransforms(duration);
 
@@ -296,9 +296,9 @@ var carouSeal= (function () {
 			rotate=shortestRotation(item);
 		}
 		
-		rotated = rotated + rotate;
+		rotated = rotated - rotate;
 
-		//Need timeout zero here because JAVASCRIPT REASONS
+		//Need timeout zero here because DOM REASONS
 		
 		setTimeout(function(){
 		

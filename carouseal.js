@@ -527,6 +527,7 @@ var carouSeal= (function () {
 	function carousealHammer(){
 		//Init hammer.js
 		// console.log('Hammer time!');
+		waitforswipe=false;
 
 		var mc = new Hammer($('#hammer_overlay')[0],{preventDefault: true});
 

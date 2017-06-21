@@ -202,9 +202,6 @@ function getDataSource() {
     <button type="button" data-emneord="Tegneserier" class="emneord emneord-form btn btn-lg btn-info"><em></em>Tegneserier</button>
     <button type="button" data-emneord="Reiseskildringer" class="emneord emneord-form btn btn-lg btn-info"><em></em>Reiseskildringer</button>
 
-    <p>
-    </p>
-
 </script>
 
 <script id="errorMessageTemplate" type="text/template">

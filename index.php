@@ -391,7 +391,7 @@ var Books = Backbone.Collection.extend({
         //   has no holdings
         //   has no cover
         var data = _.reject(response.documents, function(element) {
-            return element.holdings.length === 0; // || element.cover===null;
+            return !element.holdings || element.holdings.length === 0; // || element.cover===null;
         });
 
         // Filter and modify data

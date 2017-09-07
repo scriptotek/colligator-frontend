@@ -394,6 +394,20 @@ var Books = Backbone.Collection.extend({
             return !element.holdings || element.holdings.length === 0; // || element.cover===null;
         });
 
+        var maxBooks = 100;
+
+        if (data.length > maxBooks) {
+            data = _.reject(response.documents, function(element) {
+                return element.cover===null;
+            });
+        }
+
+        if (data.length > maxBooks) {
+            data = data.slice(0, maxBooks);
+        }
+
+        console.log(data.length + ' books after filtering');
+
         // Filter and modify data
         data = _.map(data, function(val, ind, all) {
 

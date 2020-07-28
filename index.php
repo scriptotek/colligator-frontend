@@ -284,8 +284,8 @@ function getDataSource() {
       <p style="font-size:80%; line-height: 140%;">
           Karusellen du ser på nå består av åpen kildekode-komponentene
           Carouseal og Colligator, som ble utviklet frem til første
-          brukbare versjon av Realfagsbibliotekets Scriptotek-patrulje
-          sommeren 2015. Ta gjerne kontakt med oss: samling42@ub.uio.no
+          brukbare versjon av Dan Michael O. Heggø, Kyrre T. Låberg og Stian Lågstad
+          sommeren 2015.
       </p>
       <p style="font-size:80%; line-height: 140%;">
           Data: Bokomtaler og -omslag fra Nielsen BookData (begrenset bruk),
@@ -394,7 +394,7 @@ var Books = Backbone.Collection.extend({
             return !element.holdings || element.holdings.length === 0; // || element.cover===null;
         });
 
-        var maxBooks = 100;
+        var maxBooks = 30;
 
         if (data.length > maxBooks) {
             data = _.reject(response.documents, function(element) {
